@@ -1,0 +1,15 @@
+var a
+modify a with add_small_const 3
+var b 
+modify b with add_small_const 2
+var c
+assign c to a * b
+var d 
+modify d with add_small_const 10
+modify d with sub_small_const 4
+clear a
+assign a to c = d
+if a then goto ACCEPT_TIME
+reject
+label ACCEPT_TIME
+accept
