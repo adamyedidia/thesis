@@ -84,9 +84,15 @@ def convertStatesToString(listOfStates, variableSet):
 
 	numberOfStates = len(listOfStates)
 	numberOfTapes = len(variableSet)
+
+	tupleOfTapes = tuple(variableSet.keys())
+
+	stringOfTapes = ""
+	for tape in tupleOfTapes:
+		stringOfTapes += tape + ","
 	
 	output.write("States: " + str(numberOfStates) + "\n")
-	output.write("Tapes: " + str(numberOfTapes) + "\n")
+	output.write("Tapes: " + str(numberOfTapes) + " (" + stringOfTapes + ")\n")
 	output.write("\n")
 	
 	for state in listOfStates:

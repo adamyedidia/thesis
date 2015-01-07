@@ -49,11 +49,11 @@ def subSmallConst(inState, outState, x, smallConstant, lineNumber):
 	
 	for i in range(smallConstant - 1):
 		sub1State = listOfSub1States[i]
-		increment(sub1State, listOfSub1States[i+1])
+		decrement(sub1State, listOfSub1States[i+1])
 		returnList.append(sub1State)
 		
 	sub1State = listOfSub1States[smallConstant - 1]
-	increment(sub1State, getBackToStartState)
+	decrement(sub1State, getBackToStartState)
 	returnList.append(sub1State)
 
 	getBackToStart(getBackToStartState, outState)

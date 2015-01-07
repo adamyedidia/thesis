@@ -33,7 +33,7 @@ def assignEquals(inState, outState, x, y, z, lineNumber):
 	
 	write1over0(writeTrueState, getBackToStartZState)
 	
-	getBackToStart(getBackToStartZState, getBackToStartZState)
+	getBackToStart(getBackToStartZState, getBackToStartYState)
 	getBackToStart(getBackToStartYState, outState)
 	
 	return [inState, moveAlongZState, checkForEndZState, writeTrueState, getBackToStartZState, getBackToStartYState]
@@ -70,7 +70,7 @@ def assignNotEquals(inState, outState, x, y, z, lineNumber):
 	
 	write1over0(writeTrueState, getBackToStartZState)
 	
-	getBackToStart(getBackToStartZState, getBackToStartZState)
+	getBackToStart(getBackToStartZState, getBackToStartYState)
 	getBackToStart(getBackToStartYState, outState)
 	
 	return [inState, moveAlongZState, checkForEndZState, writeTrueState, getBackToStartZState, getBackToStartYState]

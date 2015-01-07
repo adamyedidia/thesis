@@ -15,6 +15,15 @@ def increment(state, nextState):
 	
 	state.setWrite("_", "END")
 	state.setWrite("END", "1")
+
+def decrement(state, nextState):
+	state.setNextState("1", nextState)
+	state.setNextState("END", state)
+	
+	state.setHeadMove("END", "L")
+	
+	state.setWrite("1", "END")
+	state.setWrite("END", "_")
 	
 def write1over0(state, nextState):
 	state.setNextState("_", nextState)	
