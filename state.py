@@ -118,6 +118,42 @@ class State:
 		else:
 			raise			
 	
+	def getNextState(self, symbol):
+		if symbol == "1":
+			return self.nextState1
+		elif symbol == "_":
+			return self.nextState_ 
+		elif symbol == "NEXT":
+			return self.nextStateNEXT
+		elif symbol == "END":
+			return self.nextStateEND 
+		else:
+			raise
+
+	def getHeadMove(self, symbol):
+		if symbol == "1":
+			return self.headMove1 
+		elif symbol == "_":
+			return self.headMove_ 		
+		elif symbol == "NEXT":
+			return self.headMoveNEXT
+		elif symbol == "END":
+			return self.headMoveEND 	
+		else:
+			raise
+
+	def getWrite(self, symbol):
+		if symbol == "1":
+			return self.write1 
+		elif symbol == "_":
+			return self.write_ 
+		elif symbol == "NEXT":
+			return self.writeNEXT 
+		elif symbol == "END":
+			return self.writeEND 	
+		else:
+			raise			
+	
 	def makeStartState(self):
 		self.isStartState = True
 		
