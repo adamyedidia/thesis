@@ -1,0 +1,84 @@
+var a
+set 0
+
+INCA
+inc a
+var b
+push a
+
+TESTADD
+print a
+print T
+print b
+print T
+print I
+print NL
+print TM
+
+var a2
+push a
+var b2
+push b
+
+var c1
+set 0
+
+A2C1
+inc c1
+dec a2
+ifeq0 a2 B2C1
+goto A2C1
+
+B2C1
+inc c1
+dec b2
+ifeq0 b2 REVERSE
+goto B2C1
+
+REVERSE
+var a3
+push a
+var b3
+push b
+
+var c2
+set 0
+
+B3C2
+inc c2
+dec b3
+ifeq0 b3 A3C2
+goto B3C2
+
+A3C2
+inc c2
+dec a3
+ifeq0 a3 TESTEQ
+goto A3C2
+
+TESTEQ
+
+dec c1
+dec c2
+ifeq0 c1 ZERO1
+ifeq0 c2 NEQ
+goto TESTEQ
+
+NEQ
+halt
+
+ZERO1
+ifeq0 c2 EQ
+goto NEQ
+
+EQ
+
+clear a2
+
+dec b
+ifeq0 b BZERO
+goto TESTADD
+
+BZERO
+clear b
+goto INCA
