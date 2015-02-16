@@ -46,13 +46,18 @@ class Gang:
 			self.secondOutStateLineNumber = None
 			
 class SimpleState:
-	def __init__(self, stateName):
+	def __init__(self, stateName, alphabet=None):
 		self.stateName = stateName
 		self.nextStateDict = {}
 		self.headMoveDict = {}
 		self.writeDict = {}
 
-		for symbol in alphabet():
+		if alphabet == None:
+			self.alphabet = alphabetTurdToTM()
+		else:
+			self.alphabet = alphabet
+
+		for symbol in self.alphabet:
 			self.nextStateDict[symbol] = self
 			self.headMoveDict[symbol] = "-"
 			self.writeDict[symbol] = symbol
@@ -60,8 +65,7 @@ class SimpleState:
 		self.isStartState = False
 			
 class State:
-	def __init__(self, stateName, tapeName):
-		errorState = SimpleState("ERROR")
+	def __init__(self, stateName, tapeName=None, alphabet=None):
 	
 		self.stateName = stateName
 		self.tapeName = tapeName
@@ -69,13 +73,55 @@ class State:
 		self.headMoveDict = {}
 		self.writeDict = {}
 
-		for symbol in alphabet():
+		if alphabet == None:
+			self.alphabet = alphabetTurdToTM()
+		else:
+			self.alphabet = alphabet
+
+		errorState = SimpleState("ERROR", self.alphabet)
+
+		for symbol in self.alphabet:
 			self.nextStateDict[symbol] = errorState
 			self.headMoveDict[symbol] = "-"
 			self.writeDict[symbol] = symbol
 
 		self.isStartState = False
 	
+	def __eq__(self, other):
+		if not isinstance(other, self.__class__):
+			return False
+		
+		for i, symbol in enumerate(self.alphabet):
+			if other.alphabet[i] != symbol:
+				return False
+
+		for symbol in self.alphabet:
+			if self.nextStateDict[symbol].stateName != other.nextStateDict[symbol].stateName:
+				return False
+			
+			if self.headMoveDict[symbol] != other.headMoveDict[symbol]:
+				return False
+
+			if self.writeDict[symbol] != other.writeDict[symbol]:
+				return False
+
+		if self.tapeName != other.tapeName:
+			return False
+
+		return True
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def infoHash(self):
+		returnString = ""
+		
+		for symbol in self.alphabet:
+			returnString += symbol + ":" + self.nextStateDict[symbol].stateName + ";" + \
+					self.headMoveDict[symbol] + self.writeDict[symbol]
+
+		return returnString
+
 	def setNextState(self, symbol, nextState):
 		self.nextStateDict[symbol] = nextState
 			
@@ -84,6 +130,18 @@ class State:
 			
 	def setWrite(self, symbol, write):
 		self.writeDict[symbol] = write
+
+	def setAllNextStates(self, nextState):
+		for symbol in self.alphabet:
+			self.nextStateDict[symbol] = nextState
+
+	def setAllHeadMoves(self, headMove):
+		for symbol in self.alphabet:
+			self.headMoveDict[symbol] = headMove
+
+	def setAllWrites(self, write):
+		for symbol in self.alphabet:
+			self.writeDict[symbol] = write
 
 	def getNextState(self, symbol):
 		return self.nextStateDict[symbol]

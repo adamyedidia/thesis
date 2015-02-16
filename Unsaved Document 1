@@ -1,0 +1,10 @@
+Possible issues:
+
+-alphabet clashes between segments
+-Make each part have its own State class?
+
+Current issues:
+
+Possible optimizations:
+
+-Could try to remove duplicate states

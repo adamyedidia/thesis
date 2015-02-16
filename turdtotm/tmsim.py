@@ -1,4 +1,5 @@
 import string
+import sys
 
 from state import *
 from constants import *
@@ -13,17 +14,17 @@ def getStateAndTapeNames(line):
 	return stateName, tapeName
 
 class TuringMachine:
-	def __init__(self):
+	def __init__(self, path):
 		self.state = None
 
-		listOfSymbols = alphabet()
+		listOfSymbols = alphabetTurdToTM()
 
-		inp = open("turingmachine.txt", "r")
+		inp = open(path, "r")
 		tmLines = inp.readlines()
 
 		tapeLine = tmLines[1]
 		tapeTuple = str.split(tapeLine, "(")[1]
-		tapeNames = str.split(tapeTuple, ";")
+		tapeNames = str.split(tapeTuple, ",")
 		tapeNames = tapeNames[:len(tapeNames) - 1]
 
 		self.tapeDictionary = {}
@@ -34,24 +35,28 @@ class TuringMachine:
 			"REJECT": SimpleState("REJECT"),
 			"ERROR": SimpleState("ERROR")}
 
+		self.listOfRealStates = []
+
 		# initialize state dictionary
-		for line in tmLines:
-			if line != "\n":
+		for line in tmLines[2:]:
+			if line != "\n": # not a blank line
 				lineSplit = string.split(line)
                 
 				if lineSplit[0] == "START":
 					stateName, tapeName = getStateAndTapeNames(line[6:])
 					self.startState = State(stateName, tapeName)
 					self.stateDictionary[stateName] = self.startState
-                
+					self.startState.makeStartState()
+				
 				elif not lineSplit[0] in listOfSymbols:
 					stateName, tapeName = getStateAndTapeNames(line)
 					self.stateDictionary[stateName] = State(stateName, tapeName)
+					self.listOfRealStates.append(self.stateDictionary[stateName])
                 
 		currentStateBeingModified = None
 
 		# fill in state dictionary
-		for line in tmLines:
+		for line in tmLines[2:]:
 			if line != "\n":
 				lineSplit = string.split(line)
             
@@ -159,5 +164,5 @@ class Tape:
 		print tapeString
 
 if __name__ == "__main__":
-	tm = TuringMachine()
+	tm = TuringMachine(sys.argv[1])
 	tm.run()

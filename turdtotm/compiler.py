@@ -104,7 +104,7 @@ def convertStatesToString(listOfStates, variableSet):
 		output.write(state.stateName + "(" + state.tapeName + "):\n")
 		
 		for symbol in alphabet():			
-			output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + ", " + \
+			output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + "; " + \
 				state.getHeadMove(symbol) + "; " + state.getWrite(symbol) + "\n")
 		
 		output.write("\n")

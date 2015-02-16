@@ -1,2 +1,2 @@
-def alphabet():
+def alphabetTurdToTM():
 	return ["_", "1", "[", ",", "]", "E"]

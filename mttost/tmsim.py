@@ -1,65 +1,63 @@
 import string
+import sys
 
+from constants import *
+sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from state import *
+from constants import *
 
-def getStateAndTapeNames(line):
-	openParenLoc = string.find(line, "(")
-	closeParenLoc = string.find(line, ")")
+def getStateName(line):
+	colonLoc = string.find(line, ":")
     
-	stateName = line[:openParenLoc]
-	tapeName = line[openParenLoc+1:closeParenLoc]
+	stateName = line[:colonLoc]
 
-	return stateName, tapeName
+	return stateName
 
-class TuringMachine:
-	def __init__(self):
+class SingleTapeTuringMachine:
+	def __init__(self, path):
 		self.state = None
+		self.tape = Tape(None)
 
-		listOfSymbols = ["1", "_", "NEXT", "END"]
+		listOfSymbols = alphabetMTToST()
 
-		inp = open("turingmachine.txt", "r")
+		inp = open(path, "r")
 		tmLines = inp.readlines()
 
-		tapeLine = tmLines[1]
-		tapeTuple = str.split(tapeLine, "(")[1]
-		tapeNames = str.split(tapeTuple, ",")
-		tapeNames = tapeNames[:len(tapeNames) - 1]
+		self.stateDictionary = {"ACCEPT": SimpleState("ACCEPT", alphabetMTToST()),
+			"REJECT": SimpleState("REJECT", alphabetMTToST()),
+			"ERROR": SimpleState("ERROR", alphabetMTToST())}
 
-		self.tapeDictionary = {}
-		for name in tapeNames:
-			self.tapeDictionary[name] = Tape(name)
-
-		self.stateDictionary = {"ACCEPT": SimpleState("ACCEPT"),
-			"REJECT": SimpleState("REJECT"),
-			"ERROR": SimpleState("ERROR")}
+		self.listOfRealStates = []
 
 		# initialize state dictionary
-		for line in tmLines:
-			if line != "\n":
+		for line in tmLines[1:]:
+			if line != "\n": # not a blank line
 				lineSplit = string.split(line)
                 
 				if lineSplit[0] == "START":
-					stateName, tapeName = getStateAndTapeNames(line[6:])
-					self.startState = State(stateName, tapeName)
+					stateName = getStateName(line[6:])
+					self.startState = State(stateName, None, alphabetMTToST())
 					self.stateDictionary[stateName] = self.startState
-                
+					self.startState.makeStartState()
+				
 				elif not lineSplit[0] in listOfSymbols:
-					stateName, tapeName = getStateAndTapeNames(line)
-					self.stateDictionary[stateName] = State(stateName, tapeName)
+					stateName = getStateName(line)
+					self.stateDictionary[stateName] = State(stateName, None, alphabetMTToST())
+					self.listOfRealStates.append(self.stateDictionary[stateName])
                 
 		currentStateBeingModified = None
 
 		# fill in state dictionary
-		for line in tmLines:
+		for line in tmLines[1:]:
 			if line != "\n":
 				lineSplit = string.split(line)
             
 				if lineSplit[0] == "START":
-					stateName, tapeName = getStateAndTapeNames(line[6:])
+					stateName = getStateName(line[6:])
 					currentStateBeingModified = self.stateDictionary[stateName]
                 
 				elif not lineSplit[0] in listOfSymbols:
-					stateName, tapeName = getStateAndTapeNames(line)
+					stateName = getStateName(line)
 					currentStateBeingModified = self.stateDictionary[stateName]    
 
 				else:
@@ -68,6 +66,9 @@ class TuringMachine:
 					headMove = lineSplit[3][:-1]
 					write = lineSplit[4]                    
 
+					if currentStateBeingModified.stateName == "a_init_name.1":
+						print currentStateBeingModified.stateName, symbol, write
+
 					currentStateBeingModified.setNextState(symbol, 
 						self.stateDictionary[stateName])
 					currentStateBeingModified.setHeadMove(symbol, headMove)
@@ -75,9 +76,12 @@ class TuringMachine:
 
 	def run(self):
 		self.state = self.startState
+
+		self.numSteps = 0
         
-		while True:
-			self.printAllTapes(-2, 10)
+		while self.numSteps < 20:
+			self.printTape(-2, 10)
+			self.numSteps += 1
 
 			if self.state.stateName == "ERROR":
 				print "Turing machine threw error!"
@@ -91,19 +95,17 @@ class TuringMachine:
 				print "Turing machine rejected."
 				break
 
-			tape = self.tapeDictionary[self.state.tapeName]
-			symbol = tape.readSymbol()
-            
-			tape.writeSymbol(self.state.getWrite(symbol))
-			tape.moveHead(self.state.getHeadMove(symbol))  
+			symbol = self.tape.readSymbol()
+
+			self.tape.writeSymbol(self.state.getWrite(symbol))
+			self.tape.moveHead(self.state.getHeadMove(symbol))  
 			self.state = self.state.getNextState(symbol)     
 	
-	def printAllTapes(self, start, end):
+	def printTape(self, start, end):
 		print self.state.stateName
 		print ""
 
-		for tape in self.tapeDictionary.values():
-			tape.printTape(start, end)
+		self.tape.printTape(start, end)
 		print "--------------------------------------"
 
 class Tape:
@@ -139,7 +141,7 @@ class Tape:
 	def printTape(self, start, end):
 
 		print "Name:", self.name
-		
+
 		headString = ""
 		tapeString = ""
 		for i in range(start, end):
@@ -158,5 +160,5 @@ class Tape:
 		print tapeString
 
 if __name__ == "__main__":
-	tm = TuringMachine()
+	tm = SingleTapeTuringMachine(sys.argv[1])
 	tm.run()
