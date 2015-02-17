@@ -30,6 +30,7 @@ class TuringMachine:
 		self.tapeDictionary = {}
 		for name in tapeNames:
 			self.tapeDictionary[name] = Tape(name)
+			self.tapeDictionary[name].writeSymbol("E")
 
 		self.stateDictionary = {"ACCEPT": SimpleState("ACCEPT"),
 			"REJECT": SimpleState("REJECT"),
@@ -47,6 +48,7 @@ class TuringMachine:
 					self.startState = State(stateName, tapeName)
 					self.stateDictionary[stateName] = self.startState
 					self.startState.makeStartState()
+					self.listOfRealStates.append(self.startState)
 				
 				elif not lineSplit[0] in listOfSymbols:
 					stateName, tapeName = getStateAndTapeNames(line)
@@ -82,7 +84,9 @@ class TuringMachine:
 	def run(self):
 		self.state = self.startState
         
-		while True:
+		numSteps = 0
+
+		while numSteps < 200:
 			self.printAllTapes(-2, 10)
 
 			if self.state.stateName == "ERROR":
@@ -99,10 +103,12 @@ class TuringMachine:
 
 			tape = self.tapeDictionary[self.state.tapeName]
 			symbol = tape.readSymbol()
-            
+
 			tape.writeSymbol(self.state.getWrite(symbol))
 			tape.moveHead(self.state.getHeadMove(symbol))  
-			self.state = self.state.getNextState(symbol)     
+			self.state = self.state.getNextState(symbol)    
+			
+			numSteps += 1 
 	
 	def printAllTapes(self, start, end):
 		print self.state.stateName

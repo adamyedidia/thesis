@@ -65,13 +65,14 @@ class SimpleState:
 		self.isStartState = False
 			
 class State:
-	def __init__(self, stateName, tapeName=None, alphabet=None):
+	def __init__(self, stateName, tapeName=None, alphabet=None, description=""):
 	
 		self.stateName = stateName
 		self.tapeName = tapeName
 		self.nextStateDict = {}
 		self.headMoveDict = {}
 		self.writeDict = {}
+		self.description = description
 
 		if alphabet == None:
 			self.alphabet = alphabetTurdToTM()

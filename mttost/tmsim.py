@@ -66,9 +66,6 @@ class SingleTapeTuringMachine:
 					headMove = lineSplit[3][:-1]
 					write = lineSplit[4]                    
 
-					if currentStateBeingModified.stateName == "a_init_name.1":
-						print currentStateBeingModified.stateName, symbol, write
-
 					currentStateBeingModified.setNextState(symbol, 
 						self.stateDictionary[stateName])
 					currentStateBeingModified.setHeadMove(symbol, headMove)
@@ -79,8 +76,8 @@ class SingleTapeTuringMachine:
 
 		self.numSteps = 0
         
-		while self.numSteps < 20:
-			self.printTape(-2, 10)
+		while self.numSteps < 200000:
+			self.printTape(-2, 100)
 			self.numSteps += 1
 
 			if self.state.stateName == "ERROR":
@@ -103,7 +100,6 @@ class SingleTapeTuringMachine:
 	
 	def printTape(self, start, end):
 		print self.state.stateName
-		print ""
 
 		self.tape.printTape(start, end)
 		print "--------------------------------------"
@@ -139,9 +135,6 @@ class Tape:
 			self.tapeDict[self.headLoc] = "_"
 
 	def printTape(self, start, end):
-
-		print "Name:", self.name
-
 		headString = ""
 		tapeString = ""
 		for i in range(start, end):

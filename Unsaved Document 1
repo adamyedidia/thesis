@@ -5,6 +5,15 @@ Possible issues:
 
 Current issues:
 
+Invariants:
+
+-In the multi-tape abstraction, no head may be to the right of an E symbol.
+-In the multi-tape abstraction, there may be no underscores except before the expression of the number and after the expression of the number
+-In the multi-tape abstraction, position 0 may never be occupied by an underscore.
+-In the multi-tape abstraction, you may not switch variables unless there is exactly one E symbol per variable.
+
 Possible optimizations:
 
--Could try to remove duplicate states
+-Could try to remove identical transition states
+-Be able to "pre-prune" error states in the two-symbol version
+-At both the top level and the middle level, make more error states

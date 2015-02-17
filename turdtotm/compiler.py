@@ -17,7 +17,7 @@ lineNumber = 1
 output = open("turingmachine.txt", "w")
 outputString = ""
 
-listOfSymbols = alphabet()
+listOfSymbols = alphabetTurdToTM()
 
 listOfStates = []
 		
@@ -103,7 +103,7 @@ def convertStatesToString(listOfStates, variableSet):
 		
 		output.write(state.stateName + "(" + state.tapeName + "):\n")
 		
-		for symbol in alphabet():			
+		for symbol in alphabetTurdToTM():			
 			output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + "; " + \
 				state.getHeadMove(symbol) + "; " + state.getWrite(symbol) + "\n")
 		
@@ -160,12 +160,14 @@ def fillTheGangs(gangDictionary):
 		
 
 variableSet, labelDictionary = scanForVariablesAndLabels()
-lastInitState = initializeTapes(variableSet)
+#lastInitState = initializeTapes(variableSet)
 gangDictionary = createTheGangDictionary(labelDictionary)
 firstInState = getInState(1, gangDictionary)
 
-lastInitState.setNextState("_", firstInState)
-lastInitState.setWrite("_", "E")
+firstInState.makeStartState()
+
+#lastInitState.setNextState("_", firstInState)
+#lastInitState.setWrite("_", "E")
 
 fillTheGangs(gangDictionary)
 convertStatesToString(listOfStates, variableSet)

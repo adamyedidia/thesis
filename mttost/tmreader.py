@@ -14,7 +14,7 @@ def convertStatesToString(listOfStates, output):
 	statesIveAlreadyPrinted = {}
 
 	for state in listOfStates:
-		print state.stateName
+#		print state.stateName
 		
 		assert (not state.stateName in statesIveAlreadyPrinted)
 		
@@ -44,25 +44,29 @@ def initializeTape(variableSet, listOfStates):
 
 		# Write the variable name value
 		prevState = processInitState(variable + "_init_name.0", "_", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_name.1", "_", prevState, listOfStates)
 		for i in range(variableCounter):
-			prevState = processInitState(variable + "_init_name." + str(i+1), "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_name." + str(variableCounter+1), "_", prevState, listOfStates)
+			prevState = processInitState(variable + "_init_name." + str(i+2), "1", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_name." + str(variableCounter+2), "E", prevState, listOfStates)
 
 		# Write the variable head location (1)
 		prevState = processInitState(variable + "_init_head.0", "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_head.1", "1", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_head.2", "E", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_head.1", "_", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_head.2", "1", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_head.3", "E", prevState, listOfStates)
 
 		# Write the variable value (0)
 		prevState = processInitState(variable + "_init_value.0", "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_value.1", "E", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_value.1", "_", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_value.2", "E", prevState, listOfStates)
 
 		variableDictionary[variable] = variableCounter
 
 		variableCounter += 1
 	
 	prevState = processInitState("write_f.0", "_", prevState, listOfStates)
-	prevState = processInitState("write_f.1", "F", prevState, listOfStates, False)
+	prevState = processInitState("write_f.1", "_", prevState, listOfStates)
+	prevState = processInitState("write_f.2", "F", prevState, listOfStates, False)
 
 	return prevState, variableDictionary
 
@@ -91,25 +95,27 @@ def pushEverythingDown(name, branchState, listOfStates):
 	for symbol in alphabetMTToST():
 		stateDict[symbol] = State(name + "_extend_write_" + symbol, None, alphabetMTToST())
 
-	branchState.setAllNextStates(stateDict["_"])
+	findSymbol(branchState, "_", "R", "-", stateDict["_"])
 	listOfStates.append(branchState)
 
 	# make each state for every alphabet symbol intelligent
 	
-	outState = None
+	outState = State(name + "extend_out", None, alphabetMTToST())
 
 	for symbol in alphabetMTToST():
 
 		if symbol == "F":
-			outState = stateDict[symbol]
+			stateDict[symbol].setNextState("_", outState)
+			stateDict[symbol].setHeadMove("_", "L")
+			stateDict[symbol].setWrite("_", "F")
 		else:
 			for readSymbol in alphabetMTToST():
 				stateDict[symbol].setNextState(readSymbol, stateDict[readSymbol])
 			
-			listOfStates.append(stateDict[symbol])
+			stateDict[symbol].setAllHeadMoves("R")
+			stateDict[symbol].setAllWrites(symbol)		
 
-		stateDict[symbol].setAllHeadMoves("R")
-		stateDict[symbol].setAllWrites(symbol)		
+		listOfStates.append(stateDict[symbol])
 
 	return outState
 
@@ -126,20 +132,24 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	listOfStates.append(decisionState)
 
 	# initialize the countin' states (make sure the variable's the right one!
-	for i in range(outerStateTapeNumber):
-		listOfCountOnesStates.append(State(name + "_return_var_count_" + str(i), None, alphabetMTToST()))
-		listOfStates.append(listOfCountOnesStates[i])
+	for i in range(outerStateTapeNumber+1):
+		if not i == outerStateTapeNumber:
+			listOfCountOnesStates.append(State(name + "_return_var_count_" + str(i), None, alphabetMTToST()))
+			print "Adding", listOfCountOnesStates[i].stateName
+			listOfStates.append(listOfCountOnesStates[i])
+
+		else:
+			listOfCountOnesStates.append(None)
 
 	# startCountState is a the state that gets pointed to once we see the right number of E's
-	startCountState = None
-	if outerStateTapeNumber == 0:
-		startCountState = decisionState
-	else:
-		startCountState = listOfCountOnesStates[0]
-		for i in range(outerStateTapeNumber - 1):
-			listOfCountOnesStates[i].setNextState("1", listOfCountOnesStates[i+1])
-			listOfCountOnesStates[i].setNextState("_", branchState)
-			listOfCountOnesStates[i].setAllHeadMoves("L")
+
+	listOfCountOnesStates[outerStateTapeNumber] = decisionState
+	startCountState = listOfCountOnesStates[0]
+	for i in range(outerStateTapeNumber):
+#			print "Connecting to", listOfCountOnesStates[i+1]
+		listOfCountOnesStates[i].setNextState("1", listOfCountOnesStates[i+1])
+		listOfCountOnesStates[i].setNextState("_", branchState)
+		listOfCountOnesStates[i].setAllHeadMoves("L")
 	
 	# first we need to get to the point where we're reading a variable number
 	seenOneEnds = State(name + "_return_var_one_ends", None, alphabetMTToST())
@@ -176,10 +186,15 @@ def goToEndHeadLocMarkerFromStartVariableNameMarker(name, branchState, finalHead
 
 def goToEndHeadLocMarkerFromMiddleVariableValue(name, branchState, finalHeadMove, listOfStates):
 	outState = State(name + "_from_mid_go_head_out", None, alphabetMTToST())
+	findState = State(name + "_from_mid_go_head_find", None, alphabetMTToST())
+	
+	branchState.setAllNextStates(findState)
+	branchState.setAllHeadMoves("L")
 
-	findSymbol(branchState, "E", "L", finalHeadMove, outState)
+	findSymbol(findState, "E", "L", finalHeadMove, outState)
 
 	listOfStates.append(branchState)
+	listOfStates.append(findState)
 
 	return outState
 
@@ -234,6 +249,12 @@ def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
 	# then go right.
 	goRightNormalStateDictionary = {}
 
+	# go left, when you see E, go left. (it's a lot like goLeftState)
+	firstGoLeftStateDictionary = {}
+
+	# Write F where you are, remember what you see, and go left.
+	firstRememberState = State(name + "_first_remember", None, alphabetMTToST())
+
 	# Write F where you are, remember what you see, and go left.
 	rememberState = State(name + "_remember", None, alphabetMTToST())
 
@@ -255,20 +276,27 @@ def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
 	rememberState.setAllHeadMoves("L")
 	rememberState.setAllWrites("F")
 
+	firstRememberState.setAllHeadMoves("L")
+	firstRememberState.setAllWrites("F")
+
 	for symbol in alphabetWithoutF:
+		firstGoLeftStateDictionary[symbol] = State(name + "_update_head_pos_first_go_left_" + symbol, None, alphabetMTToST())
 		goRightNormalStateDictionary[symbol] = State(name + "_update_head_pos_go_right_normal_" + symbol, None, alphabetMTToST())
 		goLeftStateDictionary[symbol] = State(name + "_update_head_pos_go_left_" + symbol, None, alphabetMTToST())
 		writeFStateDictionary[symbol] = State(name + "_update_head_pos_write_f_" + symbol, None, alphabetMTToST())
 		goRightFinishStateDictionary[symbol] = State(name + "_update_head_pos_go_right_finish_" + symbol, None, alphabetMTToST())
 
 	for symbol in alphabetWithoutF:
+		firstRememberState.setNextState(symbol, firstGoLeftStateDictionary[symbol])
 		rememberState.setNextState(symbol, goLeftStateDictionary[symbol])
 
+		findSymbolW(firstGoLeftStateDictionary[symbol], "E", "L", "L", "E", writeFStateDictionary[symbol])
 		findSymbolW(goRightNormalStateDictionary[symbol], "F", "R", "R", symbol, rememberState)
 		findSymbolW(goLeftStateDictionary[symbol], "F", "L", "L", "1", writeFStateDictionary[symbol])
-		findSymbolW(goRightFinishStateDictionary[symbol], "F", "L", "-", symbol, outState)
+		findSymbolW(goRightFinishStateDictionary[symbol], "F", "R", "-", symbol, outState)
 		
 		writeFStateDictionary[symbol].setNextState("1", goRightNormalStateDictionary[symbol])
+		# if we see an _, then we know we've reached the end of this process!
 		writeFStateDictionary[symbol].setNextState("_", goRightFinishStateDictionary[symbol])
 
 		writeFStateDictionary[symbol].setAllHeadMoves("R")
@@ -276,7 +304,7 @@ def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
 		writeFStateDictionary[symbol].setWrite("1", "F")
 
 	# go right, when you see anything not _, go left and remember.
-	branchState.setAllNextStates(rememberState)
+	branchState.setAllNextStates(firstRememberState)
 	branchState.setNextState("_", branchState)
 
 	branchState.setAllHeadMoves("L")
@@ -284,8 +312,10 @@ def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
 
 	listOfStates.append(branchState)
 	listOfStates.append(rememberState)
+	listOfStates.append(firstRememberState)
 
 	for symbol in alphabetWithoutF:
+		listOfStates.append(firstGoLeftStateDictionary[symbol])
 		listOfStates.append(goRightNormalStateDictionary[symbol])
 		listOfStates.append(goLeftStateDictionary[symbol])
 		listOfStates.append(writeFStateDictionary[symbol])
@@ -312,6 +342,8 @@ if __name__ == "__main__":
 	variableSet = tm.tapeDictionary.keys()	
 	lastInitState, variableDictionary = initializeTape(variableSet, listOfStates) 
 
+	print variableDictionary
+
 	coreStateDictionary = {}
 
 	outerStartState = tm.startState
@@ -330,6 +362,8 @@ if __name__ == "__main__":
 	for outerState in tm.listOfRealStates:
 
 		innerState = coreStateDictionary[outerState.stateName]
+
+		listOfStates.append(innerState)
 
 		# check each symbol for important state transitions
 		for symbol in alphabetTurdToTM(): # yes that TurdToTM is on purpose
@@ -357,11 +391,9 @@ if __name__ == "__main__":
 
 				# Write what needs to be written
 
-				write = nextOuterState.getWrite(symbol)
+				write = outerState.getWrite(symbol)
 			
 				innerState.setWrite(symbol, write)
-				
-				listOfStates.append(innerState)
 
 				if symbol == "_" and write != "_":
 					# Then we need to extend!
@@ -372,7 +404,7 @@ if __name__ == "__main__":
 					# Going to the tape head location marker
 
 				# At this point we are at position E on the head marker
-				headMove = nextOuterState.getHeadMove(symbol)
+				headMove = outerState.getHeadMove(symbol)
 
 				if headMove != "-":
 					# Then we need to update the head position!
@@ -384,6 +416,8 @@ if __name__ == "__main__":
 				# At this point we are at position one to the right of E on the original variable's head marker
 	
 				nextTapeName = nextOuterState.tapeName
+
+				print nextOuterState.stateName, variableDictionary[nextTapeName]
 
 				if outerState.tapeName != nextTapeName:
 					# Then we need to find the new variable!

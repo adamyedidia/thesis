@@ -3,9 +3,7 @@ from state import *
 from constants import *
 
 # clear x
-def clear(inState, outState, x, lineNumber):	
-
-	alphabet()
+def clearOld(inState, outState, x, lineNumber):	
 
 	# inState might have been called findEndState
 	inState.tapeName = x
@@ -15,7 +13,7 @@ def clear(inState, outState, x, lineNumber):
 	findEnd(inState, clearState)
 
 	# clearState
-	for symbol in alphabet():
+	for symbol in alphabetTurdToTM():
 		if symbol == "_":
 			clearState.setNextState(symbol, writeEndState)
 			clearState.setHeadMove(symbol, "R")
@@ -32,3 +30,27 @@ def clear(inState, outState, x, lineNumber):
 	# writeEndState
 	
 	return [inState, clearState, writeEndState]
+
+def clear(inState, outState, x, lineNumber):
+	inState.tapeName = x
+
+	clearState = State(str(lineNumber) + ".1", x)
+	leftState = State(str(lineNumber) + ".2", x)
+	checkState = State(str(lineNumber) + ".3", x)
+
+	findSymbol(inState, "E", "R", "-", clearState)
+
+	clearState.setAllNextStates(leftState)
+	clearState.setAllHeadMoves("L")
+	clearState.setAllWrites("_")
+	
+	leftState.setAllNextStates(checkState)
+	leftState.setAllHeadMoves("L")
+	leftState.setAllWrites("E")
+	
+	checkState.setAllNextStates(clearState)
+	checkState.setNextState("_", outState)
+	checkState.setAllHeadMoves("R")
+	
+	return [inState, clearState, leftState, checkState]
+
