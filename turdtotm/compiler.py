@@ -6,7 +6,7 @@ from comparison import *
 from clear import *
 from arithConst import *
 from state import *
-from constants import *
+from constantsTurdToTM import *
 
 inp = open(sys.argv[1], "r")
 

@@ -1,4 +1,5 @@
-from constants import *
+from constantsTurdToTM import *
+from state import *
 
 def getBackToStart(state, nextState):
 	state.setNextState("1", state)
@@ -27,7 +28,7 @@ def incrementM(state, headMove, nextState):
 
 def decrementM(state, headMove, nextState):
 	state.setNextState("1", nextState)
-	state.setNextState("E", state)
+	state.setNextState("E", state) 
 	
 	state.setHeadMove("1", headMove)
 	state.setHeadMove("E", "L")
@@ -46,7 +47,32 @@ def write1over0(state, nextState):
 	state.setWrite("E", "1")
 	
 
-# findEnd was equivalent to findSymbol(
+def moveBy(state, name, amount, direction, nextState, alphabet=alphabetTurdToTM()):
+	returnList = [state]
+	
+	if amount == 0:
+		state.setAllNextStates(nextState)
+
+	elif amount == 1:
+		state.setAllNextStates(nextState)
+		state.setAllHeadMoves(direction)
+
+	else:
+		prevState = state
+		for i in range(amount - 1):
+			currentState = State(name + "move_by." + str(i+1), None, alphabet)
+
+			returnList.append(currentState)
+			prevState.setAllNextStates(currentState)
+			prevState.setAllHeadMoves(direction)
+			
+			prevState = currentState
+	
+		currentState.setAllNextStates(nextState)
+		currentState.setAllHeadMoves(direction)
+
+	return returnList
+
 def findEnd(state, nextState):
 	findSymbol(state, "E", "R", "-", nextState)
 

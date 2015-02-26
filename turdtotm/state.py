@@ -1,5 +1,5 @@
 import string
-from constants import *
+from constantsTurdToTM import *
 
 class Gang:
 	def __init__(self, line, lineNumber, labelDictionary):
@@ -148,14 +148,24 @@ class State:
 		return self.nextStateDict[symbol]
 
 	def getNextStateName(self, symbol):
-		return self.nextStateDict[symbol].stateName
+		try:
+			return self.nextStateDict[symbol].stateName
+		except KeyError:
+			print "Error: I, state", self.stateName, "don't know about symbol", symbol
+			raise
 
 	def getHeadMove(self, symbol):
 		return self.headMoveDict[symbol]
 
 	def getWrite(self, symbol):
-		return self.writeDict[symbol]		
+		try:
+			return self.writeDict[symbol]		
+		except KeyError:
+			print "Error: I, state", self.stateName, "don't know about symbol", symbol
+			print "My alphabet is", self.alphabet
+			raise
 	
+
 	def makeStartState(self):
 		self.isStartState = True
 		

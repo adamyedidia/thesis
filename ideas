@@ -17,3 +17,7 @@ Possible optimizations:
 -Could try to remove identical transition states
 -Be able to "pre-prune" error states in the two-symbol version
 -At both the top level and the middle level, make more error states
+-At bottom level, at least make it ignore the impossible symbol
+-Could make the variable labels use base |a| instead of base 1
+
+

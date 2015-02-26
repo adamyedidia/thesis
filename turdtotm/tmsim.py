@@ -2,7 +2,7 @@ import string
 import sys
 
 from state import *
-from constants import *
+from constantsTurdToTM import *
 
 def getStateAndTapeNames(line):
 	openParenLoc = string.find(line, "(")
@@ -81,24 +81,29 @@ class TuringMachine:
 					currentStateBeingModified.setHeadMove(symbol, headMove)
 					currentStateBeingModified.setWrite(symbol, write)
 
-	def run(self):
+	def run(self, quiet=False, numSteps=float("Inf"), outputFile=None):
 		self.state = self.startState
         
-		numSteps = 0
+		stepCounter = 0
+		halted = False
 
-		while numSteps < 200:
-			self.printAllTapes(-2, 10)
+		while stepCounter < numSteps:
+			if not quiet:
+				self.printAllTapes(-2, 20, outputFile)
 
 			if self.state.stateName == "ERROR":
 				print "Turing machine threw error!"
+				halted = True
 				break
 
 			if self.state.stateName == "ACCEPT":
 				print "Turing machine accepted."
+				halted = True
 				break
         
 			if self.state.stateName == "REJECT":
 				print "Turing machine rejected."
+				halted = True
 				break
 
 			tape = self.tapeDictionary[self.state.tapeName]
@@ -108,21 +113,35 @@ class TuringMachine:
 			tape.moveHead(self.state.getHeadMove(symbol))  
 			self.state = self.state.getNextState(symbol)    
 			
-			numSteps += 1 
+			stepCounter += 1 
 	
-	def printAllTapes(self, start, end):
-		print self.state.stateName
-		print ""
+		if not halted:
+			print "Turing machine ran for", numSteps, "steps without halting."
 
-		for tape in self.tapeDictionary.values():
-			tape.printTape(start, end)
-		print "--------------------------------------"
+	def printAllTapes(self, start, end, output):
+		if outputFile == None:
+			print self.state.stateName
+			print ""
+
+			for tape in self.tapeDictionary.values():
+				tape.printTape(start, end)
+			print "--------------------------------------"
+
+		else:
+			output.write(self.state.stateName + "\n")
+			output.write("\n"
+
+			for tape in self.tapeDictionary.values():
+				tape.printTape(start, end, outputFile)
+			output.write("--------------------------------------\n")			
 
 class Tape:
-	def __init__(self, name):
+	# By convention the first symbol in the alphabet is the initial symbol
+	def __init__(self, name, initSymbol):
 		self.name = name
 		self.headLoc = 0
-		self.tapeDict = {0: "_"}
+		self.tapeDict = {0: initSymbol}
+		self.initSymbol = initSymbol
 
 	def readSymbol(self):
 		return self.tapeDict[self.headLoc]
@@ -146,12 +165,9 @@ class Tape:
 
 	def continueTape(self):
 		if not self.headLoc in self.tapeDict:
-			self.tapeDict[self.headLoc] = "_"
+			self.tapeDict[self.headLoc] = self.initSymbol
 
-	def printTape(self, start, end):
-
-		print "Name:", self.name
-		
+	def printTape(self, start, end, output=None):
 		headString = ""
 		tapeString = ""
 		for i in range(start, end):
@@ -164,11 +180,27 @@ class Tape:
 			if i in self.tapeDict:
 				tapeString += self.tapeDict[i][0]
 			else:
-				tapeString += "_"
+				tapeString += self.initSymbol
 
-		print headString
-		print tapeString
+		if output == None:
+			print headString
+			print tapeString
+		else:		
+			output.write(headString + "\n")
+			output.write(tapeString + "\n")
 
 if __name__ == "__main__":
-	tm = TuringMachine(sys.argv[1])
-	tm.run()
+	tm = TuringMachine(sys.argv[-1])
+	args = sys.argv[1:-1]
+
+	quiet = ("-q" in args)
+
+	numSteps = float("Inf") # default value
+	if ("-s" in args):
+		numSteps = args[args.index("-s") + 1]
+
+	output = None
+	if ("-f" in args):
+		output = open(args[args.index("-f") + 1], "w")
+
+	tm.run(quiet, numSteps, output)
