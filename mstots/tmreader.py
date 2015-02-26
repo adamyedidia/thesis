@@ -1,14 +1,14 @@
 import sys
 import string
 import math
-sys.path.insert(0, '/home/adamyedidia/thesis/mttost')
-from constantsMTToST import *
-from tmsim import *
 sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from state import *
 from constantsTurdToTM import *
 from constantsMSToTS import *
 from stateTemplates import *
+from tmsim import *
+sys.path.insert(0, '/home/adamyedidia/thesis/mttost')
+from constantsMTToST import *
 
 def convertStatesToString(listOfStates, output):
 
@@ -261,7 +261,7 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
 				
 
 if __name__ == "__main__":
-	sttm = SingleTapeTuringMachine("../mttost/turingmachine.txt")
+	sttm = SingleTapeTuringMachine(sys.argv[1])
 
 	listOfStates = []
 
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
 		
 
-	convertStatesToString(listOfStates, open("turingmachine.txt", "w"))				
+	convertStatesToString(listOfStates, open(sys.argv[2], "w"))				
 
 		
 

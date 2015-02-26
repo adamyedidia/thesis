@@ -1,0 +1,2 @@
+def langName():
+	return "TURD"

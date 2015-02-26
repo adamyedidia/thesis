@@ -5,11 +5,10 @@ from constantsMSToTS import *
 sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from state import *
 from constantsTurdToTM import *
-sys.path.insert(0, '/home/adamyedidia/thesis/mttost')
 from tmsim import *
 
 if __name__ == "__main__":
-	sttm = TuringMachine(sys.argv[-1])
+	sttm = SingleTapeTuringMachine(sys.argv[-1], alphabetMSToTS())
 	args = sys.argv[1:-1]
 
 	quiet = ("-q" in args)
@@ -18,4 +17,7 @@ if __name__ == "__main__":
 	if ("-s" in args):
 		numSteps = args[args.index("-s") + 1]
 
-	sttm.run(quiet, numSteps)
+	if ("-f" in args):
+		output = open(args[args.index("-f") + 1], "w")
+
+	sttm.run(quiet, numSteps, output)

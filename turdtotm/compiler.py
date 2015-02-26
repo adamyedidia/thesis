@@ -14,7 +14,7 @@ inpLines = inp.readlines()
 
 lineNumber = 1
 
-output = open("turingmachine.txt", "w")
+output = open(sys.argv[2], "w")
 outputString = ""
 
 listOfSymbols = alphabetTurdToTM()

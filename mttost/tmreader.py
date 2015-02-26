@@ -135,7 +135,7 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	for i in range(outerStateTapeNumber+1):
 		if not i == outerStateTapeNumber:
 			listOfCountOnesStates.append(State(name + "_return_var_count_" + str(i), None, alphabetMTToST()))
-			print "Adding", listOfCountOnesStates[i].stateName
+#			print "Adding", listOfCountOnesStates[i].stateName
 			listOfStates.append(listOfCountOnesStates[i])
 
 		else:
@@ -335,14 +335,14 @@ def findNewVariableLocation(name, branchState,
 	return foundFState
 	
 if __name__ == "__main__":
-	tm = TuringMachine("../turdtotm/turingmachine.txt")
+	tm = TuringMachine(sys.argv[1])
 
 	listOfStates = []
 
 	variableSet = tm.tapeDictionary.keys()	
 	lastInitState, variableDictionary = initializeTape(variableSet, listOfStates) 
 
-	print variableDictionary
+#	print variableDictionary
 
 	coreStateDictionary = {}
 
@@ -417,7 +417,7 @@ if __name__ == "__main__":
 	
 				nextTapeName = nextOuterState.tapeName
 
-				print nextOuterState.stateName, variableDictionary[nextTapeName]
+#				print nextOuterState.stateName, variableDictionary[nextTapeName]
 
 				if outerState.tapeName != nextTapeName:
 					# Then we need to find the new variable!
@@ -426,7 +426,7 @@ if __name__ == "__main__":
 				
 				goToTapeHeadLocationWithOutState(name, branchState, listOfStates, coreStateDictionary[nextOuterState.stateName])
 
-	convertStatesToString(listOfStates, open("turingmachine.txt", "w"))				
+	convertStatesToString(listOfStates, open(sys.argv[2], "w"))				
 
 		
 
