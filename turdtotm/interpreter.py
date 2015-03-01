@@ -1,7 +1,22 @@
 import sys
 import string
 
-inp = open(sys.argv[1], "r")
+path = sys.argv[-1]
+flags = sys.argv[1:-1]
+
+inp = open(path, "r")
+
+numSteps = float("Inf")
+if "-s" in flags:
+	numSteps = flags[flags.index("-s") + 1]
+
+output = None
+if "-f" in flags:
+	output = open(flags[flags.index("-f") + 1], "w")
+
+quiet = False
+if "-q" in flags:
+	quiet = True
 
 inpLines = inp.readlines()
 
@@ -14,21 +29,20 @@ variableDictionary = {}
 labelDictionary = {}
 
 def parseValue(string, variableDictionary):
-	if string == "[]":
-		return []
-	elif string == "0":
-		return 0
-	elif string == "1":
-		return 1
-	else:
-		return variableDictionary[string]
+	try:
+		return int(string)
+	except:
+		if string == "[]":
+			return []
+		else:
+			return variableDictionary[string]
 			
 def evaluate(value1, value2, operation, lineNumber):
-	if operation == "+":
+	if operation == "+" or operation == "add_small_const":
 		return value1 + value2
 	if operation == "*":
 		return value1 * value2
-	if operation == "-":
+	if operation == "-" or operation == "sub_small_const":
 		return value1 - value2
 	if operation == "append":
 		return value1 + [value2]
@@ -123,9 +137,12 @@ lineNumber = 1
 
 wayOfHalting = None
 
+stepCounter = 0
+
 # while we haven't reached the end of the program
-while True:
+while stepCounter < float(numSteps):
 	line = inpLines[lineNumber - 1]
+#	print line
 	# those stupid 1-indexed lines again
 	
 	lineSplit = string.split(line)
@@ -137,7 +154,25 @@ while True:
 			lineNumber = int(labelDictionary[lineSplit[4]])
 		else:
 			lineNumber += 1
-	
+
+	if lineSplit[0] == "clear":
+		variableName = lineSplit[1]
+		variableDictionary[variableName] = 0
+		lineNumber += 1
+
+	if lineSplit[0] == "modify":
+		variableName = lineSplit[1]
+		variableValue = variableDictionary[variableName]
+
+		if len(lineSplit) == 4:
+			variableDictionary[variableName] = evaluate(variableValue, None, "not", lineNumber)
+
+		elif len(lineSplit) == 5:
+			variableDictionary[variableName] = evaluate(variableValue, parseValue(lineSplit[4], variableDictionary),
+				lineSplit[3], lineNumber)		
+
+		lineNumber += 1	
+
 	if lineSplit[0] == "assign":
 		
 		variableName = lineSplit[1]
@@ -147,10 +182,10 @@ while True:
 			variableDictionary[variableName] = parseValue(lineSplit[3], variableDictionary)
 			
 		elif len(lineSplit) == 5:
-			variableDictionary[variableName] = evaluate(variableValue, None, "not", lineNumber)
+			variableDictionary[variableName] = evaluate(parseValue(lineSplit[4], variableDictionary), None, "not", lineNumber)
 		
 		elif len(lineSplit) == 6:
-			variableDictionary[variableName] = evaluate(variableValue,
+			variableDictionary[variableName] = evaluate(parseValue(lineSplit[3], variableDictionary),
 				parseValue(lineSplit[5], variableDictionary), lineSplit[4], lineNumber)
 			
 		lineNumber += 1
@@ -165,7 +200,12 @@ while True:
 		lineNumber += 1
 	
 	if lineSplit[0] == "print":
-		print lineSplit[1] + ": " + str(variableDictionary[lineSplit[1]])
+		if not quiet:
+			if output == None:
+				print lineSplit[1] + ": " + str(variableDictionary[lineSplit[1]])
+			else:
+				output.write(lineSplit[1] + ": " + str(variableDictionary[lineSplit[1]]) + "\n")
+
 		lineNumber += 1
 
 	if lineSplit[0] == "accept":
@@ -177,6 +217,11 @@ while True:
 		break 
 		
 	if lineNumber == maxLineNumber:
-		print "reached end of program without halt statement"
+		print "Reached end of program without halt statement."
+
+	stepCounter += 1
 	
+if wayOfHalting == None:
+	print "Turing machine ran for", numSteps, "steps without halting."
+
 print "Code", wayOfHalting + "ed successfully on line", lineNumber

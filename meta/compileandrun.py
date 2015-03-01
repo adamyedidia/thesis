@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
 	if runType == "all" or intRunType == 0:
 		print "Interpreting the " + langName() + " program..."
-		os.system("python ../turdtotm/interpreter.py " + flagString(flags))
+		os.system(simulationCommand("../turdtotm/interpreter.py", path, "interpreter_output.txt", flags))
 
 	if runType == "all" or intRunType >= 1:
 		print "Compiling the " + langName() + " program down to a multi-tape, multi-symbol Turing machine..."
