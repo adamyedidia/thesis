@@ -16,8 +16,12 @@ def convertStatesToString(listOfStates, output):
 	for state in listOfStates:
 #		print state.stateName
 		
-		assert (not state.stateName in statesIveAlreadyPrinted)
-		
+		try:
+			assert (not state.stateName in statesIveAlreadyPrinted)
+		except:
+			print "duplicated state:", state.stateName
+			raise		
+
 		statesIveAlreadyPrinted[state.stateName] = None
 		
 		if state.isStartState:
@@ -50,15 +54,18 @@ def initializeTape(variableSet, listOfStates):
 		prevState = processInitState(variable + "_init_name." + str(variableCounter+2), "E", prevState, listOfStates)
 
 		# Write the variable head location (1)
-		prevState = processInitState(variable + "_init_head.0", "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_head.1", "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_head.2", "1", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_head.3", "E", prevState, listOfStates)
+#		prevState = processInitState(variable + "_init_head.0", "_", prevState, listOfStates)
+#		prevState = processInitState(variable + "_init_head.1", "_", prevState, listOfStates)
+#		prevState = processInitState(variable + "_init_head.2", "1", prevState, listOfStates)
+#		prevState = processInitState(variable + "_init_head.3", "E", prevState, listOfStates)
+
+#		Whoa, no more of this! Not with the Luke optimization.
 
 		# Write the variable value (0)
 		prevState = processInitState(variable + "_init_value.0", "_", prevState, listOfStates)
 		prevState = processInitState(variable + "_init_value.1", "_", prevState, listOfStates)
-		prevState = processInitState(variable + "_init_value.2", "E", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_value.2", "H", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_value.3", "E", prevState, listOfStates)
 
 		variableDictionary[variable] = variableCounter
 
@@ -153,7 +160,6 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	
 	# first we need to get to the point where we're reading a variable number
 	seenOneEnds = State(name + "_return_var_one_ends", None, alphabetMTToST())
-	seenTwoEnds = State(name + "_return_var_two_ends", None, alphabetMTToST())
 
 	branchState.setAllNextStates(branchState)
 	branchState.setNextState("E", seenOneEnds)
@@ -161,14 +167,9 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	listOfStates.append(branchState)	
 
 	seenOneEnds.setAllNextStates(seenOneEnds)
-	seenOneEnds.setNextState("E", seenTwoEnds)
+	seenOneEnds.setNextState("E", startCountState)
 	seenOneEnds.setAllHeadMoves("L")
 	listOfStates.append(seenOneEnds)
-
-	seenTwoEnds.setAllNextStates(seenTwoEnds)
-	seenTwoEnds.setNextState("E", startCountState)
-	seenTwoEnds.setAllHeadMoves("L")
-	listOfStates.append(seenTwoEnds)
 
 	return outState
 
@@ -198,7 +199,7 @@ def goToEndHeadLocMarkerFromMiddleVariableValue(name, branchState, finalHeadMove
 
 	return outState
 
-def extendSpace(name, branchState, outerStateTapeNumber, listOfStates):
+def extendSpaceOld(name, branchState, outerStateTapeNumber, listOfStates):
 	branchState = pushEverythingDown(name + "_first", branchState, listOfStates)
 	branchState = returnToVariableNameMarker(name + "_first", branchState, outerStateTapeNumber, listOfStates)
 	branchState = goToEndHeadLocMarkerFromStartVariableNameMarker(name + "_first", branchState, "R", listOfStates)
@@ -206,6 +207,21 @@ def extendSpace(name, branchState, outerStateTapeNumber, listOfStates):
 	branchState = returnToVariableNameMarker(name + "_second", branchState, outerStateTapeNumber, listOfStates)
 	branchState = goToEndHeadLocMarkerFromStartVariableNameMarker(name + "_second", branchState, "-", listOfStates)
 	# need to be smack on that E so we can update the head position
+	return branchState
+
+# The extra optional arguments are in case the branchState "is" really innerState
+def extendSpace(name, branchState, outerStateTapeNumber, listOfStates, innerState=None, innerStateIsSingle=False, readSymbol=""):
+	underscoreFoundState = State(name + "_found_underscore", None, alphabetMTToST()) 
+	if not innerStateIsSingle:
+		findSymbol(branchState, "_", "R", "-", underscoreFoundState)
+		listOfStates.append(branchState)
+	else:
+		searchState = State(name + "_search_underscore", None, alphabetMTToST())
+		innerState.setNextState(readSymbol, searchState)
+		findSymbol(searchState, "_", "R", "-", underscoreFoundState)
+		listOfStates.append(searchState)		
+
+	branchState = pushEverythingDown(name, underscoreFoundState, listOfStates)
 	return branchState
 
 def dontExtendSpace(name, branchState, listOfStates):
@@ -239,12 +255,75 @@ def dontUpdateHeadPosition(name, branchState, listOfStates):
 	listOfStates.append(branchState)	
 	return outState
 
+def moveHeadRight(name, branchState, readSymbol, writtenSymbol, listOfStates, outState=None):
+	writeHState = State(name + "_move_head_right_write_H", None, alphabetMTToST())
+	
+	if outState == None:
+		outState = State(name + "_move_head_right_out", None, alphabetMTToST())
+
+	rememberState = State(name + "_move_head_right_remember_" + symbol, None, alphabetMTToST())
+	branchState.setNextState(readSymbol, rememberState)
+	branchState.setHeadMove(readSymbol, "L")
+
+	rememberState.setNextState("H", writeHState)
+	rememberState.setHeadMove("H", "R")
+	rememberState.setWrite("H", writtenSymbol)
+	
+	writeHState.setNextState(writtenSymbol, outState)
+	writeHState.setHeadMove(writtenSymbol, "R")
+	writeHState.setWrite(writtenSymbol, "H")
+
+	listOfStates.append(rememberState)
+	listOfStates.append(writeHState)
+
+	return outState
+
+def moveHeadLeft(name, branchState, readSymbol, writtenSymbol, listOfStates, outState=None):
+	seeHState = State(name + "_move_head_left_see_H", None, alphabetMTToST())
+	readSwitchSymbolState = State(name + "_move_head_left_read_switch", None, alphabetMTToST())
+
+	if outState == None:
+		outState = State(name + "_move_head_left_out", None, alphabetMTToST())
+
+	branchState.setNextState(readSymbol, seeHState)
+	branchState.setHeadMove(readSymbol, "L")
+	
+	seeHState.setNextState("H", readSwitchSymbolState)
+	seeHState.setHeadMove("H", "L")
+
+	rememberStateDictionary = {}
+	alphabetWithoutH = alphabetMTToST()
+	alphabetWithoutH.remove("H")
+
+	for symbol in alphabetWithoutH:
+		rememberState = State(name + "_move_head_left_remember_" + symbol, None, alphabetMTToST())
+		rememberStateDictionary[symbol] = rememberState
+
+		readSwitchSymbolState.setNextState(symbol, rememberState)
+		readSwitchSymbolState.setHeadMove(symbol, "R")
+		readSwitchSymbolState.setWrite(symbol, "H")
+		
+		rememberState.setNextState("H", outState)		
+		rememberState.setWrite("H", symbol)
+
+		listOfStates.append(rememberState)
+	listOfStates.append(seeHState)
+	listOfStates.append(readSwitchSymbolState)
+
+	return outState
+	
+def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
+	findSymbol(branchState, "H", "R", "R", outState)
+	listOfStates.append(branchState)
+
 # This is the most confusing function in this file. A lot of weird 
 # stuff needs to happen in order to rewrite the stuff that was on the tape.
 
 # the fact that this function is uses an outstate is a hack :P If time permits,
 # it's probably a good idea to fix it
-def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
+
+# Now it's not necessary anymore, thanks to Luke's optimization. Sweet!
+def goToTapeHeadLocationWithOutStateOld(name, branchState, listOfStates, outState):
 	# go right, when you see F, write [symbol] on top of it, 
 	# then go right.
 	goRightNormalStateDictionary = {}
@@ -322,15 +401,20 @@ def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
 		listOfStates.append(goRightFinishStateDictionary[symbol])
 
 def findNewVariableLocation(name, branchState,
-						outerStateTapeNumber, listOfStates):
+						outerStateTapeNumber, listOfStates, innerState=None, 
+						innerStateIsSingle=False, readSymbol=""):
 	# first go to F
 	foundFState = State(name + "_find_var_found_f", None, alphabetMTToST())
-	findSymbol(branchState, "F", "R", "L", foundFState)
-
-	listOfStates.append(branchState)
+	if not innerStateIsSingle:
+		findSymbol(branchState, "F", "R", "L", foundFState)
+		listOfStates.append(branchState)
+	else:
+		searchState = State(name + "_find_var_search_f", None, alphabetMTToST())
+		findSymbol(searchState, "F", "R", "L", foundFState)
+		innerState.setNextState(readSymbol, searchState)
+		listOfStates.append(searchState)
 
 	foundFState = returnToVariableNameMarker(name, foundFState, outerStateTapeNumber, listOfStates)
-	foundFState = goToEndHeadLocMarkerFromStartVariableNameMarker(name, foundFState, "R", listOfStates)
 
 	return foundFState
 	
@@ -356,7 +440,7 @@ if __name__ == "__main__":
 #		listOfStates.append(coreStateDictionary[outerState.stateName])
 
 	lastInitState = returnToVariableNameMarker("init", lastInitState, variableDictionary[outerStartState.tapeName], listOfStates)
-	lastInitState = goToEndHeadLocMarkerFromStartVariableNameMarker("init", lastInitState, "R", listOfStates)
+#	lastInitState = goToEndHeadLocMarkerFromStartVariableNameMarker("init", lastInitState, "R", listOfStates)
 	goToTapeHeadLocationWithOutState("init", lastInitState, listOfStates, innerStateCorrespondingToOuterStartState)
 
 	for outerState in tm.listOfRealStates:
@@ -386,45 +470,74 @@ if __name__ == "__main__":
 
 				branchState = State(name + "_read_" + symbol, None, alphabetMTToST()) 
 				# branchState is the state that draws the path using this symbol
-			
-				innerState.setNextState(symbol, branchState)
 
 				# Write what needs to be written
 
 				write = outerState.getWrite(symbol)
+				outerHeadMove = outerState.getHeadMove(symbol)
+				nextTapeName = nextOuterState.tapeName
 			
 				innerState.setWrite(symbol, write)
+				
+				innerState.setNextState(symbol, coreStateDictionary[nextOuterState.stateName]) 
+				# Might be overwritten!! That's ok! it's a default.
 
-				if symbol == "_" and write != "_":
+				innerStateIsSingle = True
+
+				if outerState.tapeName != nextTapeName or (symbol == "_" and (write != "_" or outerHeadMove == "R")):
+					# I know this is terrible! I'm sorry! I don't know how to make it better!
+					if outerHeadMove == "R":
+						branchState = moveHeadRight(name, innerState, symbol, write, listOfStates)
+						innerStateIsSingle = False
+						# Okay so this is very much a sketchy thing to do because the
+						# innerState input to this function has already been tampered with.
+						# for this reason, moveHead is a weird, non-general-purpose function :(
+
+					elif outerHeadMove == "L":
+						branchState = moveHeadLeft(name, innerState, symbol, write, listOfStates)
+						innerStateIsSingle = False
+					else:
+						pass # we actually don't need to do anything here
+
+				else:
+					# I'm sorry, okay?
+					if outerHeadMove == "R":
+						moveHeadRight(name, innerState, symbol, write, listOfStates, coreStateDictionary[nextOuterState.stateName])
+
+					elif outerHeadMove == "L":
+						moveHeadLeft(name, innerState, symbol, write, listOfStates, coreStateDictionary[nextOuterState.stateName])
+					else:
+						pass
+
+				if symbol == "_" and (write != "_" or outerHeadMove == "R"):
 					# Then we need to extend!
 					branchState = extendSpace(name, branchState, 
-						variableDictionary[outerState.tapeName], listOfStates)
+						variableDictionary[outerState.tapeName], listOfStates, innerState, innerStateIsSingle, symbol)
+					innerStateIsSingle = False
 				else:
-					branchState = dontExtendSpace(name, branchState, listOfStates)
-					# Going to the tape head location marker
-
-				# At this point we are at position E on the head marker
-				headMove = outerState.getHeadMove(symbol)
-
-				if headMove != "-":
-					# Then we need to update the head position!
-					branchState = updateHeadPosition(name, branchState, 
-						headMove, listOfStates)	
-				else:
-					branchState = dontUpdateHeadPosition(name, branchState, listOfStates)
+					pass # I think this is fine?
+					#branchState = dontExtendSpace(name, branchState, listOfStates)
+					# Going to the tape head location marker [deprecated]
 				
 				# At this point we are at position one to the right of E on the original variable's head marker
-	
-				nextTapeName = nextOuterState.tapeName
 
 #				print nextOuterState.stateName, variableDictionary[nextTapeName]
 
 				if outerState.tapeName != nextTapeName:
 					# Then we need to find the new variable!
 					branchState = findNewVariableLocation(name, branchState,
-						variableDictionary[nextTapeName], listOfStates)
+						variableDictionary[nextTapeName], listOfStates, innerState, innerStateIsSingle, symbol)
+					innerStateIsSingle = False
 				
-				goToTapeHeadLocationWithOutState(name, branchState, listOfStates, coreStateDictionary[nextOuterState.stateName])
+					goToTapeHeadLocationWithOutState(name, branchState, listOfStates, coreStateDictionary[nextOuterState.stateName])
+
+				elif symbol == "_" and (write != "_" or outerHeadMove == "R"):
+					# Then we have to get back to where we were :P
+					branchState = findNewVariableLocation(name, branchState,
+						variableDictionary[outerState.tapeName], listOfStates)					
+					# no extra arguments cuz I know inner State can't still be single; we extended already
+
+					goToTapeHeadLocationWithOutState(name, branchState, listOfStates, coreStateDictionary[nextOuterState.stateName])
 
 	convertStatesToString(listOfStates, open(sys.argv[2], "w"))				
 

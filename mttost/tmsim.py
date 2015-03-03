@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
 #	print "numSteps", numSteps
 
+	output = None
 	if ("-f" in args):
 		output = open(args[args.index("-f") + 1], "w")
 

@@ -1,2 +1,2 @@
 def alphabetMTToST():
-	return ["_", "1", "[", ",", "]", "E", "F"]
+	return ["_", "1", "[", ",", "]", "H", "E", "F"]
