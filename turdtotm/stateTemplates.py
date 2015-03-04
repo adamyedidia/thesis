@@ -1,5 +1,33 @@
 from constantsTurdToTM import *
 from state import *
+import sys
+
+# not a state structure function
+def findBestMatch(bigString, goalString):
+	matchSize = len(goalString)
+
+#	while matchSize > 
+
+#def findPattern(branchState, pattern, direction, alphabet=alphabetTurdToTM(), 
+#	name="", tapeName=None, listOfStates=None, lastDirection="-", lastWrite=None):
+#
+#	patternSize = len(pattern)
+#
+#	assert patternSize >= 1
+#
+#	if lastWrite == None:
+#		actualLastWrite = pattern[-1]
+#
+#	listOfPatternMatchStates = [state]
+#	for i in range(patternSize - 1):
+#		listOfPatternMatchStates.append(State(name + "_match_" + pattern + "_" + str(i+1),
+#			tapeName, alphabet))
+#
+#	for i in range(patternSize - 1):
+#		currentState = listOfPatternMatchStates[i]
+#		nextState = listOfPatternMatchStates[i+1]
+#
+#		currentState.setAllNextStates
 
 def getBackToStart(state, nextState):
 	state.setNextState("1", state)
@@ -87,3 +115,43 @@ def findSymbolW(state, symbol, direction, lastDirection, lastWrite, nextState):
 	state.setHeadMove(symbol, lastDirection)
 	
 	state.setWrite(symbol, lastWrite)
+
+def find1_(state, nextState, listOfStates, name):
+	foundOneState = State(name + "_find_fin_seen_1", None, alphabetMTToST())
+	
+	state.setAllNextStates(state)
+	state.setNextState("1", foundOneState)
+	
+	state.setAllHeadMoves("R")
+
+	foundOneState.setAllNextStates(state)
+	foundOneState.setNextState("1", foundOneState)
+	foundOneState.setNextState("_", nextState)
+
+	foundOneState.setAllHeadMoves("R")
+	foundOneState.setHeadMove("_", "L")
+
+	listOfStates.append(foundOneState)
+
+def findE_(state, nextState, listOfStates, name):
+	# There's two weird things going on here. The first is that
+	# we're going left; the second is that we're also
+	# fine with the EH_ pattern. (This implementation is also 
+	# fine with EHHH_, which is too bad but oh well)
+
+	foundUnderscoreState = State(name + "_find_end_seen_underscore", 
+		None, alphabetMTToST())
+
+	state.setAllNextStates(state)
+	state.setNextState("_", foundUnderscoreState)
+	
+	state.setAllHeadMoves("L")
+		
+	foundUnderscoreState.setAllNextStates(state)
+	foundUnderscoreState.setNextState("_", foundUnderscoreState)
+	foundUnderscoreState.setNextState("H", foundUnderscoreState)
+	foundUnderscoreState.setNextState("E", nextState)
+	
+	foundUnderscoreState.setAllHeadMoves("L")
+
+	listOfStates.append(foundUnderscoreState)

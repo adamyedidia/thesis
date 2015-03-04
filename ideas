@@ -10,7 +10,7 @@ Invariants:
 -In the multi-tape abstraction, no head may be to the right of an E symbol.
 -In the multi-tape abstraction, there may be no underscores except before the expression of the number and after the expression of the number
 -In the multi-tape abstraction, position 0 may never be occupied by an underscore.
--In the multi-tape abstraction, you may not switch variables unless there is exactly one E symbol per variable.
+-In the multi-tape abstraction, you may not switch variables unless there is exactly one E_ pattern per variable.
 
 Possible optimizations:
 
@@ -19,5 +19,6 @@ Possible optimizations:
 -At both the top level and the middle level, make more error states
 -At bottom level, at least make it ignore the impossible symbol
 -Could make the variable labels use base |a| instead of base 1
+-Make sure we never move right on top of underscores when we don't need to
 
 

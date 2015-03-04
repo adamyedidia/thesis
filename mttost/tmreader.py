@@ -71,9 +71,9 @@ def initializeTape(variableSet, listOfStates):
 
 		variableCounter += 1
 	
-	prevState = processInitState("write_f.0", "_", prevState, listOfStates)
-	prevState = processInitState("write_f.1", "_", prevState, listOfStates)
-	prevState = processInitState("write_f.2", "F", prevState, listOfStates, False)
+	prevState = processInitState("write_fin.0", "_", prevState, listOfStates)
+	prevState = processInitState("write_fin.1", "_", prevState, listOfStates)
+	prevState = processInitState("write_fin.2", "1", prevState, listOfStates, False)
 
 	return prevState, variableDictionary
 
@@ -110,17 +110,16 @@ def pushEverythingDown(name, branchState, listOfStates):
 	outState = State(name + "extend_out", None, alphabetMTToST())
 
 	for symbol in alphabetMTToST():
+	
+		for readSymbol in alphabetMTToST():
+			stateDict[symbol].setNextState(readSymbol, stateDict[readSymbol])
+		stateDict[symbol].setAllHeadMoves("R")
+		stateDict[symbol].setAllWrites(symbol)
 
-		if symbol == "F":
+		if symbol == "1":
 			stateDict[symbol].setNextState("_", outState)
 			stateDict[symbol].setHeadMove("_", "L")
-			stateDict[symbol].setWrite("_", "F")
-		else:
-			for readSymbol in alphabetMTToST():
-				stateDict[symbol].setNextState(readSymbol, stateDict[readSymbol])
-			
-			stateDict[symbol].setAllHeadMoves("R")
-			stateDict[symbol].setAllWrites(symbol)		
+			stateDict[symbol].setWrite("_", "1")	
 
 		listOfStates.append(stateDict[symbol])
 
@@ -404,19 +403,19 @@ def findNewVariableLocation(name, branchState,
 						outerStateTapeNumber, listOfStates, innerState=None, 
 						innerStateIsSingle=False, readSymbol=""):
 	# first go to F
-	foundFState = State(name + "_find_var_found_f", None, alphabetMTToST())
+	foundFinState = State(name + "_find_var_found_f", None, alphabetMTToST())
 	if not innerStateIsSingle:
-		findSymbol(branchState, "F", "R", "L", foundFState)
+		find1_(branchState, foundFinState, listOfStates, name)
 		listOfStates.append(branchState)
 	else:
 		searchState = State(name + "_find_var_search_f", None, alphabetMTToST())
-		findSymbol(searchState, "F", "R", "L", foundFState)
+		find1_(searchState, foundFinState, listOfStates, name)
 		innerState.setNextState(readSymbol, searchState)
 		listOfStates.append(searchState)
 
-	foundFState = returnToVariableNameMarker(name, foundFState, outerStateTapeNumber, listOfStates)
+	foundFinState = returnToVariableNameMarker(name, foundFinState, outerStateTapeNumber, listOfStates)
 
-	return foundFState
+	return foundFinState
 	
 if __name__ == "__main__":
 	tm = TuringMachine(sys.argv[1])
