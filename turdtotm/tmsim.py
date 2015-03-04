@@ -3,8 +3,6 @@ import sys
 
 from state import *
 from constantsTurdToTM import *
-sys.path.insert(0, '/home/adamyedidia/thesis/mttost')
-from constantsMTToST import *
 
 def getStateName(line):
 	colonLoc = string.find(line, ":")

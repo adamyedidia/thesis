@@ -1,6 +1,6 @@
 from stateTemplates import *
 from state import *
-from constants import *
+from constantsTurdToTM import *
 
 # clear x
 def clearOld(inState, outState, x, lineNumber):	
@@ -39,12 +39,15 @@ def clear(inState, outState, x, lineNumber):
 	checkState = State(str(lineNumber) + ".3", x)
 
 	findSymbol(inState, "E", "R", "-", clearState)
+	inState.setNextState("_", SimpleState("ERROR"))
 
 	clearState.setAllNextStates(leftState)
+	clearState.setNextState("_", SimpleState("ERROR"))
 	clearState.setAllHeadMoves("L")
 	clearState.setAllWrites("_")
 	
 	leftState.setAllNextStates(checkState)
+	leftState.setNextState("_", SimpleState("ERROR"))
 	leftState.setAllHeadMoves("L")
 	leftState.setAllWrites("E")
 	

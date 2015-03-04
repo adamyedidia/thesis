@@ -4,11 +4,8 @@ import math
 sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from state import *
 from constantsTurdToTM import *
-from constantsMSToTS import *
 from stateTemplates import *
 from tmsim import *
-sys.path.insert(0, '/home/adamyedidia/thesis/mttost')
-from constantsMTToST import *
 
 def convertStatesToString(listOfStates, output):
 
@@ -144,7 +141,7 @@ def getSymbolMapping():
 	for i, symbol in enumerate(alphabetMTToST()):	
 		symbolMapping[symbol] = listOfAllABCombos[i]
 		reverseSymbolMapping[listOfAllABCombos[i]] = symbol
-		
+
 	return symbolMapping, reverseSymbolMapping
 
 # This is the key function of this program, and making it optimized in terms of states means 

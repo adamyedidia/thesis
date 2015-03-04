@@ -108,6 +108,7 @@ def findSymbol(state, symbol, direction, lastDirection, nextState):
 	findSymbolW(state, symbol, direction, lastDirection, symbol, nextState)
 
 def findSymbolW(state, symbol, direction, lastDirection, lastWrite, nextState):
+
 	state.setAllNextStates(state)
 	state.setNextState(symbol, nextState)
 

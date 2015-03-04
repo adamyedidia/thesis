@@ -1,7 +1,6 @@
 import string
 import sys
 
-from constantsMSToTS import *
 sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from state import *
 from constantsTurdToTM import *

@@ -16,6 +16,7 @@ def addSmallConst(inState, outState, x, smallConstant, lineNumber):
 	getBackToStartState = State(str(lineNumber) + "." + str(smallConstant+1), x)
 		
 	findEnd(inState, listOfAdd1States[0])
+	inState.setNextState("_", SimpleState("ERROR"))
 	
 	for i in range(smallConstant - 1):
 		add1State = listOfAdd1States[i]
@@ -46,6 +47,7 @@ def subSmallConst(inState, outState, x, smallConstant, lineNumber):
 	getBackToStartState = State(str(lineNumber) + "." + str(smallConstant+1), x)
 		
 	findEnd(inState, listOfSub1States[0])
+	inState.setNextState("_", SimpleState("ERROR"))
 	
 	for i in range(smallConstant - 1):
 		sub1State = listOfSub1States[i]

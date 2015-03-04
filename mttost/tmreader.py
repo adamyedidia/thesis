@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, '/home/adamyedidia/thesis/turdtotm')
 from tmsim import *
 from stateTemplates import *
-from constantsMTToST import *
+from constantsTurdToTM import *
 
 def convertStatesToString(listOfStates, output):
 
