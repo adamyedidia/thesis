@@ -1,0 +1,8 @@
+input k n r holder1 holder2 holder3
+clear holder1
+clear holder2
+modify holder1 with add_small_const 8
+assign holder2 to k * holder1
+assign holder1 to n * holder2
+assign holder2 to r * holder1
+function factorial holder2 holder1 holder3

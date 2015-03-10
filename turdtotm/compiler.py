@@ -7,6 +7,7 @@ from clear import *
 from arithConst import *
 from state import *
 from constantsTurdToTM import *
+from assign import *
 
 inp = open(sys.argv[1], "r")
 
@@ -140,11 +141,15 @@ def fillTheGangs(gangDictionary):
 			listOfStates.extend(clear(gang.inState, outState, gang.lineSplit[1], gang.lineNumber))
 	
 		if gang.lineType == "assign":
-			if gang.lineSplit[4] == "*":
+			if len(gang.lineSplit) == 4:
+				listOfStates.extend(simpleAssign(gang.inState, outState, gang.lineSplit[1], 
+					gang.lineSplit[3], gang.lineNumber))
+
+			elif gang.lineSplit[4] == "*":
 				listOfStates.extend(assignMult(gang.inState, outState, gang.lineSplit[1], 
 					gang.lineSplit[3], gang.lineSplit[5], gang.lineNumber))
 					
-			if gang.lineSplit[4] == "=":
+			elif gang.lineSplit[4] == "=":
 				listOfStates.extend(assignEquals(gang.inState, outState, gang.lineSplit[1],
 					gang.lineSplit[3], gang.lineSplit[5], gang.lineNumber))
 					

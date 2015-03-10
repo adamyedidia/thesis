@@ -1,22 +1,16 @@
+input x 
+output product 
+local_count 1
 var input
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
-assign input to itself + 1
 var product
-assign product to itself + 1
-var inputIsNotOne
+modify product with add_small_const 1
+var holder
 label MULTIPLY_LOOP
-assign product to itself * input
-assign input to itself - 1
-assign inputIsNotOne to input
-assign inputIsNotOne to itself != 1
-if inputIsNotOne then goto MULTIPLY_LOOP
+clear holder
+assign holder to product
+clear product
+assign product to holder * input
 print product
+modify input with sub_small_const 1
+if input then goto MULTIPLY_LOOP
 accept

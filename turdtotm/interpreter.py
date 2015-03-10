@@ -1,7 +1,14 @@
 import sys
 import string
 
+class FunctionCall:
+	def __init__(self, functionLines, returnLine, variableMapping):
+		self.functionLines = functionLines
+		self.returnLine = returnLine
+		self.variableMapping = variableMapping
+
 path = sys.argv[-1]
+directory = path[:string.rfind(path, "/") + 1]
 flags = sys.argv[1:-1]
 
 inp = open(path, "r")
@@ -28,14 +35,14 @@ variableDictionary = {}
 # maps from labels to line numbers
 labelDictionary = {}
 
-def parseValue(string, variableDictionary):
+def parseValue(string, currentMapping, variableDictionary):
 	try:
 		return int(string)
 	except:
 		if string == "[]":
 			return []
 		else:
-			return variableDictionary[string]
+			return variableDictionary[currentMapping[string]]
 			
 def evaluate(value1, value2, operation, lineNumber):
 	if operation == "+" or operation == "add_small_const":
@@ -105,10 +112,17 @@ def evaluate(value1, value2, operation, lineNumber):
 		else:
 			return 1	
 		
+# Maps from function name to function code
+#functionDict = {None: inpLines}
 
-# figure out what the variables are 
+# figure out what the variables and functions are 
 for line in inpLines:
 	lineSplit = string.split(line)
+	
+#	if lineSplit[0] == "function":
+#		inp = open(directory + lineSplit[1] + ".tfn", "r")
+#		functionDict[lineSplit[1]] = inp.readlines()
+
 	if lineSplit[0] == "var":
 		variableName = lineSplit[1]
 		
@@ -130,26 +144,40 @@ for line in inpLines:
 			labelDictionary[labelName] = lineNumber
 	
 	lineNumber += 1
-			
-maxLineNumber = lineNumber
+
+identityMapping = {}
+for variable in variableDictionary:
+	identityMapping[variable] = variable
+
 # parse the rest of the program
 lineNumber = 1
+
+# This is the variable that tracks where to return after a function is done
+# it's a stack of FunctionCalls
+stack = [FunctionCall(inpLines, None, identityMapping)]
+
+currentFunction = inpLines
 
 wayOfHalting = None
 
 stepCounter = 0
 
+# I think functions mutate inputs!
+
 # while we haven't reached the end of the program
 while stepCounter < float(numSteps):
-	line = inpLines[lineNumber - 1]
-#	print line
+	currentFunction = stack[-1].functionLines	
+	currentMapping = stack[-1].variableMapping	
+
+	line = currentFunction[lineNumber - 1]
+	print line
 	# those stupid 1-indexed lines again
 	
 	lineSplit = string.split(line)
 	if lineSplit[0] == "if":
 		# if statement
-		
-		if variableDictionary[lineSplit[1]] == 1:
+		print variableDictionary[currentMapping[lineSplit[1]]]
+		if variableDictionary[currentMapping[lineSplit[1]]] >= 1:
 			# then goto
 			lineNumber = int(labelDictionary[lineSplit[4]])
 		else:
@@ -162,13 +190,14 @@ while stepCounter < float(numSteps):
 
 	if lineSplit[0] == "modify":
 		variableName = lineSplit[1]
-		variableValue = variableDictionary[variableName]
+		homeName = currentMapping[variableName]
+		variableValue = variableDictionary[homeName]
 
 		if len(lineSplit) == 4:
-			variableDictionary[variableName] = evaluate(variableValue, None, "not", lineNumber)
+			variableDictionary[homeName] = evaluate(variableValue, None, "not", lineNumber)
 
 		elif len(lineSplit) == 5:
-			variableDictionary[variableName] = evaluate(variableValue, parseValue(lineSplit[4], variableDictionary),
+			variableDictionary[homeName] = evaluate(variableValue, parseValue(lineSplit[4], currentMapping, variableDictionary),
 				lineSplit[3], lineNumber)		
 
 		lineNumber += 1	
@@ -176,20 +205,31 @@ while stepCounter < float(numSteps):
 	if lineSplit[0] == "assign":
 		
 		variableName = lineSplit[1]
-		variableValue = variableDictionary[variableName]
+		homeName = currentMapping[variableName]
+		variableValue = variableDictionary[homeName]
 		
 		if len(lineSplit) == 4:
-			variableDictionary[variableName] = parseValue(lineSplit[3], variableDictionary)
+			variableDictionary[homeName] = parseValue(lineSplit[3], currentMapping, variableDictionary)
 			
 		elif len(lineSplit) == 5:
-			variableDictionary[variableName] = evaluate(parseValue(lineSplit[4], variableDictionary), None, "not", lineNumber)
+			variableDictionary[homeName] = evaluate(parseValue(lineSplit[4], currentMapping, variableDictionary), None, "not", lineNumber)
 		
 		elif len(lineSplit) == 6:
-			variableDictionary[variableName] = evaluate(parseValue(lineSplit[3], variableDictionary),
-				parseValue(lineSplit[5], variableDictionary), lineSplit[4], lineNumber)
+			variableDictionary[homeName] = evaluate(parseValue(lineSplit[3], currentMapping, variableDictionary),
+				parseValue(lineSplit[5], currentMapping, variableDictionary), lineSplit[4], lineNumber)
 			
 		lineNumber += 1
 		
+	if lineSplit[0] == "function":
+		functionLines = open(directory + lineSplit[1] + ".tfn", "r").readlines()
+		firstLine = string.split(functionLines[0])
+		variableMapping = {}
+		for i, variableName in enumerate(firstLine[1:]):
+			variableMapping[variableName] = currentMapping[lineSplit[2 + i]]
+
+		stack.append(FunctionCall(functionLines, lineNumber + 1, variableMapping))
+		lineNumber = 1
+	
 	if lineSplit[0] == "goto":
 		lineNumber = int(lineSplit[1])
 	
@@ -198,13 +238,16 @@ while stepCounter < float(numSteps):
 		
 	if lineSplit[0] == "label":
 		lineNumber += 1
+
+	if lineSplit[0] == "input":
+		lineNumber += 1
 	
 	if lineSplit[0] == "print":
 		if not quiet:
 			if output == None:
-				print lineSplit[1] + ": " + str(variableDictionary[lineSplit[1]])
+				print lineSplit[1] + ": " + str(variableDictionary[currentMapping[lineSplit[1]]])
 			else:
-				output.write(lineSplit[1] + ": " + str(variableDictionary[lineSplit[1]]) + "\n")
+				output.write(lineSplit[1] + ": " + str(variableDictionary[currentMapping[lineSplit[1]]]) + "\n")
 
 		lineNumber += 1
 
@@ -216,8 +259,13 @@ while stepCounter < float(numSteps):
 		wayOfHalting = "reject"
 		break 
 		
-	if lineNumber == maxLineNumber:
-		print "Reached end of program without halt statement."
+	print lineNumber
+	if lineNumber == len(currentFunction) + 1:
+		if currentFunction == inpLines:
+			print "Reached end of program without halt statement."
+		else:
+			lineNumber = stack[-1].returnLine
+			stack.pop()
 
 	stepCounter += 1
 	

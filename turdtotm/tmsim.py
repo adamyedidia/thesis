@@ -96,7 +96,7 @@ class TuringMachine:
 
 		while stepCounter < float(numSteps):
 			if not quiet:
-				self.printAllTapes(-2, 20, outputFile)
+				self.printAllTapes(-2, 160, outputFile)
 
 			if self.state.stateName == "ERROR":
 				print "Turing machine threw error!"
@@ -298,6 +298,9 @@ class Tape:
 				tapeString += self.tapeDict[i][0]
 			else:
 				tapeString += self.initSymbol
+		
+		if not self.name == None:
+			tapeString += " " + self.name
 
 		if output == None:
 			print headString

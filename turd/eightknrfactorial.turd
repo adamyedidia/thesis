@@ -1,0 +1,35 @@
+var knr_limit
+var k
+var n
+var r
+var knr8
+var notEqual
+var holder1
+label MAKE_LIMIT_INCREASE
+	label MAKE_K_BIGGER
+		clear n
+		label MAKE_N_BIGGER
+			clear r
+			label MAKE_R_BIGGER
+				modify r with add_small_const 1
+				function eightknr k n r notEqual holder1 knr8
+				print knr8
+				clear notEqual
+				assign notEqual to r != knr_limit
+				if notEqual goto MAKE_R_BIGGER
+			modify n with add_small_const 1
+			function eightknr k n r notEqual holder1 knr8
+			print knr8
+			clear notEqual
+			assign notEqual to n != knr_limit
+			if notEqual goto MAKE_N_BIGGER
+		modify k with add_small_const 1
+		function eightknr k n r notEqual holder1 knr8
+		print knr8
+		clear notEqual
+		assign notEqual to k != knr_limit
+		if notEqual goto MAKE_K_BIGGER
+	modify knr_limit with add_small_const 1
+	function eightknr k n r notEqual holder1 knr8
+	print knr8
+	goto MAKE_LIMIT_INCREASE
