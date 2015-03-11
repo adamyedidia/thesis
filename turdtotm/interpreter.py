@@ -2,10 +2,11 @@ import sys
 import string
 
 class FunctionCall:
-	def __init__(self, functionLines, returnLine, variableMapping):
+	def __init__(self, functionLines, returnLine, variableMapping, labelDictionary):
 		self.functionLines = functionLines
 		self.returnLine = returnLine
 		self.variableMapping = variableMapping
+		self.labelDictionary = labelDictionary
 
 path = sys.argv[-1]
 directory = path[:string.rfind(path, "/") + 1]
@@ -31,9 +32,6 @@ lineNumber = 1
 
 # maps from variables to their values
 variableDictionary = {}
-
-# maps from labels to line numbers
-labelDictionary = {}
 
 def parseValue(string, currentMapping, variableDictionary):
 	try:
@@ -111,9 +109,30 @@ def evaluate(value1, value2, operation, lineNumber):
 			return 0
 		else:
 			return 1	
-		
-# Maps from function name to function code
-#functionDict = {None: inpLines}
+
+def getLabelDictionary(functionLines):
+	labelDictionary = {}
+	lineNumber = 1
+
+	for line in functionLines:
+		lineSplit = string.split(line)
+
+		if lineSplit[0] == "label":
+			labelName = lineSplit[1]
+
+			if labelName in labelDictionary:
+				print "duplicate declaration of label", label, "on line", lineNumber
+				raise
+
+			else:
+				labelDictionary[labelName] = lineNumber
+
+		lineNumber += 1
+
+	return labelDictionary
+
+# maps from labels to line numbers
+homeLabelDictionary = getLabelDictionary(inpLines)
 
 # figure out what the variables and functions are 
 for line in inpLines:
@@ -132,16 +151,6 @@ for line in inpLines:
 		
 		else:
 			variableDictionary[variableName] = 0
-			
-	if lineSplit[0] == "label":
-		labelName = lineSplit[1]
-		
-		if labelName in labelDictionary:
-			print "duplicate declaration of label", label, "on line", lineNumber
-			raise
-		
-		else:
-			labelDictionary[labelName] = lineNumber
 	
 	lineNumber += 1
 
@@ -154,7 +163,7 @@ lineNumber = 1
 
 # This is the variable that tracks where to return after a function is done
 # it's a stack of FunctionCalls
-stack = [FunctionCall(inpLines, None, identityMapping)]
+stack = [FunctionCall(inpLines, None, identityMapping, homeLabelDictionary)]
 
 currentFunction = inpLines
 
@@ -168,24 +177,32 @@ stepCounter = 0
 while stepCounter < float(numSteps):
 	currentFunction = stack[-1].functionLines	
 	currentMapping = stack[-1].variableMapping	
+	currentLabelDictionary = stack[-1].labelDictionary
 
-	line = currentFunction[lineNumber - 1]
-	print line
+	if lineNumber == len(currentFunction) + 1:
+		if currentFunction == inpLines:
+			print "Reached end of program without halt statement."
+			break
+		else:
+			lineNumber = stack[-1].returnLine
+			stack.pop()
+			continue
+
 	# those stupid 1-indexed lines again
-	
+	line = currentFunction[lineNumber - 1]
+
 	lineSplit = string.split(line)
 	if lineSplit[0] == "if":
 		# if statement
-		print variableDictionary[currentMapping[lineSplit[1]]]
 		if variableDictionary[currentMapping[lineSplit[1]]] >= 1:
 			# then goto
-			lineNumber = int(labelDictionary[lineSplit[4]])
+			lineNumber = int(currentLabelDictionary[lineSplit[4]])
 		else:
 			lineNumber += 1
 
 	if lineSplit[0] == "clear":
 		variableName = lineSplit[1]
-		variableDictionary[variableName] = 0
+		variableDictionary[currentMapping[variableName]] = 0
 		lineNumber += 1
 
 	if lineSplit[0] == "modify":
@@ -222,16 +239,17 @@ while stepCounter < float(numSteps):
 		
 	if lineSplit[0] == "function":
 		functionLines = open(directory + lineSplit[1] + ".tfn", "r").readlines()
+		labelDictionary = getLabelDictionary(functionLines)
 		firstLine = string.split(functionLines[0])
 		variableMapping = {}
 		for i, variableName in enumerate(firstLine[1:]):
 			variableMapping[variableName] = currentMapping[lineSplit[2 + i]]
 
-		stack.append(FunctionCall(functionLines, lineNumber + 1, variableMapping))
+		stack.append(FunctionCall(functionLines, lineNumber + 1, variableMapping, labelDictionary))
 		lineNumber = 1
 	
 	if lineSplit[0] == "goto":
-		lineNumber = int(lineSplit[1])
+		lineNumber = int(currentLabelDictionary[lineSplit[1]])
 	
 	if lineSplit[0] == "var":
 		lineNumber += 1
@@ -258,18 +276,10 @@ while stepCounter < float(numSteps):
 	if lineSplit[0] == "reject":
 		wayOfHalting = "reject"
 		break 
-		
-	print lineNumber
-	if lineNumber == len(currentFunction) + 1:
-		if currentFunction == inpLines:
-			print "Reached end of program without halt statement."
-		else:
-			lineNumber = stack[-1].returnLine
-			stack.pop()
 
 	stepCounter += 1
 	
 if wayOfHalting == None:
 	print "Turing machine ran for", numSteps, "steps without halting."
-
-print "Code", wayOfHalting + "ed successfully on line", lineNumber
+else:	
+	print "Code", wayOfHalting + "ed successfully on line", lineNumber
