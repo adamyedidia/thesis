@@ -8,8 +8,13 @@ from arithConst import *
 from state import *
 from constantsTurdToTM import *
 from assign import *
+from function import *
 
-inp = open(sys.argv[1], "r")
+path = sys.argv[1]
+
+inp = open(path, "r")
+
+directory = path[:string.rfind(path, "/") + 1]
 
 inpLines = inp.readlines()
 
@@ -21,7 +26,7 @@ outputString = ""
 listOfSymbols = alphabetTurdToTM()
 
 listOfStates = []
-		
+
 def scanForVariablesAndLabels():
 	# hashSet of variables
 	variableSet = {}
@@ -29,7 +34,7 @@ def scanForVariablesAndLabels():
 	# maps from labels to line numbers
 	labelDictionary = {}
 	
-	# stupid 1-indexed line numberes
+	# stupid 1-indexed line numbers
 	lineNumber = 1
 	
 	for line in inpLines:
@@ -57,6 +62,35 @@ def scanForVariablesAndLabels():
 		lineNumber += 1
 		
 	return variableSet, labelDictionary
+
+def getLabelDictionary(functionName):
+	labelDictionary = {}
+	
+	# stupid 1-indexed line numbers
+	lineNumber = 1
+
+
+	if functionName == "main":
+		codeLines = open(path, "r").readlines()
+	else:
+		codeLines = open(directory + functionName + ".tfn", "r").readlines()
+
+	for line in codeLines:
+		lineSplit = string.split(line)
+	
+		if lineSplit[0] == "label":
+			labelName = lineSplit[1]
+			
+			if labelName in labelDictionary:
+				print "duplicate declaration of label", label, "on line", lineNumber
+				raise
+			
+			else:
+				labelDictionary[labelName] = lineNumber
+		
+		lineNumber += 1
+
+	return labelDictionary
 
 def initializeTapes(variableSet):
 	global listOfStates
@@ -90,6 +124,8 @@ def convertStatesToString(listOfStates, variableSet):
 
 	tupleOfTapes = tuple(variableSet.keys())
 
+	setOfStates = {}
+
 	stringOfTapes = ""
 	for tape in tupleOfTapes:
 		stringOfTapes += tape + ","
@@ -102,7 +138,13 @@ def convertStatesToString(listOfStates, variableSet):
 		if state.isStartState:
 			output.write("START ")
 		
-		output.write(state.stateName + "(" + state.tapeName + "):\n")
+		if state.stateName in setOfStates:
+			print "duplicate state " + state.stateName
+			raise
+		else:
+			output.write(state.stateName + "(" + state.tapeName + "):\n")
+			setOfStates[state.stateName] = None
+			print state.stateName
 		
 		for symbol in alphabetTurdToTM():			
 			output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + "; " + \
@@ -110,15 +152,42 @@ def convertStatesToString(listOfStates, variableSet):
 		
 		output.write("\n")
 		
-def createTheGangDictionary(labelDictionary):
-	global inpLines
+def getMapping(functionName, lineSplit, oldMapping):
+	firstLineSplit = string.split(open(directory + functionName + ".tfn", "r").readlines()[0])
 
+	mapping = {}
+	
+	for i, variableName in enumerate(firstLineSplit[1:]):
+		mapping[variableName] = oldMapping[lineSplit[2 + i]]
+
+	return mapping
+
+def createTheGangDictionary(functionName, stackTraceTuple, labelDictionary, mapping):
 	gangDictionary = {}
 	
 	lineNumber = 1
+
+	if functionName == "main":
+		codeLines = open(path, "r").readlines()
+	else:
+		codeLines = open(directory + functionName + ".tfn", "r").readlines()
+
+
+	for line in codeLines:
+		lineSplit = string.split(line)
 	
-	for line in inpLines:
-		gangDictionary[lineNumber] = Gang(line, lineNumber, labelDictionary)
+		if "function" in line:
+			gangDictionary = dict(gangDictionary, **createTheGangDictionary(lineSplit[1], 
+				(lineNumber + 1, functionName, 
+				stackTraceTuple), getLabelDictionary(lineSplit[1]), 
+				getMapping(lineSplit[1], lineSplit, mapping)))
+
+	#	print (lineNumber, functionName, stackTraceTuple)
+		gangDictionary[(lineNumber, functionName, stackTraceTuple)] = Gang(line, lineNumber, 
+			functionName, stackTraceTuple, mapping, labelDictionary)
+
+#		print gangDictionary[(lineNumber, functionName, stackTraceTuple)].lineSplit
+#		print gangDictionary[(lineNumber, functionName, stackTraceTuple)].stackTraceTuple
 		
 		lineNumber += 1
 	
@@ -128,46 +197,66 @@ def fillTheGangs(gangDictionary):
 	global listOfStates
 	
 	for gang in gangDictionary.values():	
+		
 		if gang.lineType != "accept" and gang.lineType != "reject":
-			outState = getInState(gang.firstOutStateLineNumber, gangDictionary)
+			outState = getInState(gang.firstOutStateStackTrace, gangDictionary)
 	
 		if gang.lineType == "if":
-			gang.inState.setNextState("1", getInState(gang.firstOutStateLineNumber, gangDictionary))
-			gang.inState.setNextState("E", getInState(gang.secondOutStateLineNumber, gangDictionary))
+			gang.inState.setNextState("1", getInState(gang.firstOutStateStackTrace, gangDictionary))
+			gang.inState.setNextState("E", getInState(gang.secondOutStateStackTrace, gangDictionary))
 			
 			listOfStates.append(gang.inState)
 	
 		if gang.lineType == "clear":
-			listOfStates.extend(clear(gang.inState, outState, gang.lineSplit[1], gang.lineNumber))
+			listOfStates.extend(clear(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+				convertStackTraceTupleToName(gang.stackTraceTuple)))
 	
 		if gang.lineType == "assign":
 			if len(gang.lineSplit) == 4:
-				listOfStates.extend(simpleAssign(gang.inState, outState, gang.lineSplit[1], 
-					gang.lineSplit[3], gang.lineNumber))
+				listOfStates.extend(simpleAssign(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
 			elif gang.lineSplit[4] == "*":
-				listOfStates.extend(assignMult(gang.inState, outState, gang.lineSplit[1], 
-					gang.lineSplit[3], gang.lineSplit[5], gang.lineNumber))
+				listOfStates.extend(assignMult(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))
 					
 			elif gang.lineSplit[4] == "=":
-				listOfStates.extend(assignEquals(gang.inState, outState, gang.lineSplit[1],
-					gang.lineSplit[3], gang.lineSplit[5], gang.lineNumber))
+				listOfStates.extend(assignEquals(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[4] == "!=":
+				listOfStates.extend(assignNotEquals(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			else:
+				raise
 					
 		if gang.lineType == "modify":
 			if gang.lineSplit[3] == "add_small_const":
-				listOfStates.extend(addSmallConst(gang.inState, outState, gang.lineSplit[1],
-					int(gang.lineSplit[4]), gang.lineNumber))
+				listOfStates.extend(addSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))
 			
-			if gang.lineSplit[3] == "sub_small_const":
-				listOfStates.extend(subSmallConst(gang.inState, outState, gang.lineSplit[1],
-					int(gang.lineSplit[4]), gang.lineNumber))
+			elif gang.lineSplit[3] == "sub_small_const":
+				listOfStates.extend(subSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			else:
+				raise
 	
 		
 
 variableSet, labelDictionary = scanForVariablesAndLabels()
+
+identityMapping = {}
+for variable in variableSet:
+	identityMapping[variable] = variable
+
 #lastInitState = initializeTapes(variableSet)
-gangDictionary = createTheGangDictionary(labelDictionary)
-firstInState = getInState(1, gangDictionary)
+gangDictionary = createTheGangDictionary("main", None, labelDictionary, identityMapping)
+firstInState = getInState((1, "main", None), gangDictionary)
 
 firstInState.makeStartState()
 

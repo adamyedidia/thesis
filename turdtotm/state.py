@@ -1,49 +1,75 @@
 import string
 from constantsTurdToTM import *
+from function import *
+
+def convertStackTraceTupleToName(stackTraceTuple):
+#	print stackTraceTuple
+	if stackTraceTuple == None:
+		return ""
+	
+	else:
+		return convertStackTraceTupleToName(stackTraceTuple[2]) + \
+ 			stackTraceTuple[1] + str(stackTraceTuple[0]) 
 
 class Gang:
-	def __init__(self, line, lineNumber, labelDictionary):
+	def __init__(self, line, lineNumber, functionName, stackTraceTuple, mapping, labelDictionary):
 		lineSplit = string.split(line)
 		lineType = lineSplit[0]
 	
 		self.lineNumber = lineNumber
 		self.lineSplit = lineSplit
 		self.lineType = lineType
-		
-		if lineType == "var" or lineType == "label" or lineType == "print":
+		self.mapping = mapping
+		self.labelDictionary = labelDictionary		
+		self.stackTraceTuple = (lineNumber, functionName, stackTraceTuple)
+
+		if lineType == "var" or lineType == "label" or lineType == "print" or lineType == "input":
 			self.inState = None
-			self.firstOutStateLineNumber = lineNumber + 1
-			self.secondOutStateLineNumber = None
+			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
+			self.secondOutStateStackTrace = None
 		
 		elif lineType == "assign" or lineType == "modify" or lineType == "clear":
 			# possibly there is an optimization possible here
-			inState = State(str(lineNumber) + ".0", lineSplit[1]) 
+			inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]]) 
 			self.inState = inState
-			self.firstOutStateLineNumber = lineNumber + 1
-			self.secondOutStateLineNumber = None
+			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
+			self.secondOutStateStackTrace = None
 			
 		elif lineType == "goto":
 			self.inState = None
-			self.firstOutStateLineNumber = int(labelDictionary[lineSplit[1]])
-			self.secondOutStateLineNumber = None
+			self.firstOutStateStackTrace = (int(labelDictionary[lineSplit[1]]), functionName, stackTraceTuple)
+			self.secondOutStateStackTrace = None
 			
 		elif lineType == "if":
-			inState = State(str(lineNumber) + ".0", lineSplit[1])
+			inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]])
 			self.inState = inState
-			self.firstOutStateLineNumber = int(labelDictionary[lineSplit[4]])
-			self.secondOutStateLineNumber = lineNumber + 1
-			
+			self.firstOutStateStackTrace = (int(labelDictionary[lineSplit[4]]), functionName, stackTraceTuple)
+			self.secondOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
+		
+		elif lineType == "function":
+			self.inState = None
+			self.firstOutStateStackTrace = (1, lineSplit[1], (lineNumber + 1, functionName, stackTraceTuple))
+			self.secondOutStateStackTrace = None
+
+		elif lineType == "return":
+			self.inState = None
+			self.firstOutStateStackTrace = stackTraceTuple # Say WHAAAT
+			self.secondOutStateStackTrace = None
+	
 		elif lineType == "accept":
 			inState = SimpleState("ACCEPT")
 			self.inState = inState
-			self.firstOutStateLineNumber = None
-			self.secondOutStateLineNumber = None
+			self.firstOutStateStackTrace = None
+			self.secondOutStateStackTrace = None
 
 		elif lineType == "reject":
 			inState = SimpleState("REJECT")
 			self.inState = inState
-			self.firstOutStateLineNumber = None
-			self.secondOutStateLineNumber = None
+			self.firstOutStateStackTrace = None
+			self.secondOutStateStackTrace = None
+
+		else:
+			raise
 			
 class SimpleState:
 	def __init__(self, stateName, alphabet=None):
@@ -169,10 +195,10 @@ class State:
 	def makeStartState(self):
 		self.isStartState = True
 		
-def getInState(lineNumber, gangDictionary):
-	gang = gangDictionary[lineNumber]
+def getInState(stackTraceTuple, gangDictionary):
+	gang = gangDictionary[stackTraceTuple]
 
 	if gang.inState == None:
-		return getInState(gang.firstOutStateLineNumber, gangDictionary)
+		return getInState(gang.firstOutStateStackTrace, gangDictionary)
 	
 	return gang.inState

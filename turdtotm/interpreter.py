@@ -1,12 +1,6 @@
 import sys
 import string
-
-class FunctionCall:
-	def __init__(self, functionLines, returnLine, variableMapping, labelDictionary):
-		self.functionLines = functionLines
-		self.returnLine = returnLine
-		self.variableMapping = variableMapping
-		self.labelDictionary = labelDictionary
+from function import *
 
 path = sys.argv[-1]
 directory = path[:string.rfind(path, "/") + 1]
@@ -163,7 +157,7 @@ lineNumber = 1
 
 # This is the variable that tracks where to return after a function is done
 # it's a stack of FunctionCalls
-stack = [FunctionCall(inpLines, None, identityMapping, homeLabelDictionary)]
+stack = [FunctionCall("main", inpLines, None, identityMapping, homeLabelDictionary)]
 
 currentFunction = inpLines
 
@@ -181,11 +175,9 @@ while stepCounter < float(numSteps):
 
 	if lineNumber == len(currentFunction) + 1:
 		if currentFunction == inpLines:
-			print "Reached end of program without halt statement."
+			print "Reached end of function", stack[-1].functionName, "without halt or return statement."
 			break
 		else:
-			lineNumber = stack[-1].returnLine
-			stack.pop()
 			continue
 
 	# those stupid 1-indexed lines again
@@ -245,7 +237,7 @@ while stepCounter < float(numSteps):
 		for i, variableName in enumerate(firstLine[1:]):
 			variableMapping[variableName] = currentMapping[lineSplit[2 + i]]
 
-		stack.append(FunctionCall(functionLines, lineNumber + 1, variableMapping, labelDictionary))
+		stack.append(FunctionCall(lineSplit[1], functionLines, lineNumber + 1, variableMapping, labelDictionary))
 		lineNumber = 1
 	
 	if lineSplit[0] == "goto":
@@ -268,6 +260,10 @@ while stepCounter < float(numSteps):
 				output.write(lineSplit[1] + ": " + str(variableDictionary[currentMapping[lineSplit[1]]]) + "\n")
 
 		lineNumber += 1
+
+	if lineSplit[0] == "return":
+		lineNumber = stack[-1].returnLine
+		stack.pop()
 
 	if lineSplit[0] == "accept":
 		wayOfHalting = "accept"
