@@ -159,16 +159,11 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	
 	# first we need to get to the point where we're reading a variable number
 	seenOneEnds = State(name + "_return_var_one_ends", None, alphabetMTToST())
-
-	branchState.setAllNextStates(branchState)
-	branchState.setNextState("E", seenOneEnds)
-	branchState.setAllHeadMoves("L")
-	listOfStates.append(branchState)	
-
-	seenOneEnds.setAllNextStates(seenOneEnds)
-	seenOneEnds.setNextState("E", startCountState)
-	seenOneEnds.setAllHeadMoves("L")
+	findE_(seenOneEnds, startCountState, listOfStates, name + "_return_var_1_")
 	listOfStates.append(seenOneEnds)
+	
+	findE_(branchState, seenOneEnds, listOfStates, name + "_return_var_0_")
+	listOfStates.append(branchState)	
 
 	return outState
 

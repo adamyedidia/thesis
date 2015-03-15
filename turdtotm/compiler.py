@@ -9,6 +9,7 @@ from state import *
 from constantsTurdToTM import *
 from assign import *
 from function import *
+from listOper import *
 
 path = sys.argv[1]
 
@@ -144,7 +145,7 @@ def convertStatesToString(listOfStates, variableSet):
 		else:
 			output.write(state.stateName + "(" + state.tapeName + "):\n")
 			setOfStates[state.stateName] = None
-			print state.stateName
+#			print state.stateName
 		
 		for symbol in alphabetTurdToTM():			
 			output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + "; " + \
@@ -231,6 +232,11 @@ def fillTheGangs(gangDictionary):
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
 					convertStackTraceTupleToName(gang.stackTraceTuple)))
 
+			elif gang.lineSplit[4] == "index":
+				listOfStates.extend(index(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))				
+
 			else:
 				raise
 					
@@ -242,6 +248,10 @@ def fillTheGangs(gangDictionary):
 			elif gang.lineSplit[3] == "sub_small_const":
 				listOfStates.extend(subSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[3] == "append":
+				listOfStates.extend(append(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
 			else:
 				raise

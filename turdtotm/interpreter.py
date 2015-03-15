@@ -44,6 +44,8 @@ def evaluate(value1, value2, operation, lineNumber):
 	if operation == "-" or operation == "sub_small_const":
 		return value1 - value2
 	if operation == "append":
+		if value1 == 0:
+			return [value2]
 		return value1 + [value2]
 	if operation == "concat":
 		return value1 + value2
@@ -216,6 +218,13 @@ while stepCounter < float(numSteps):
 		variableName = lineSplit[1]
 		homeName = currentMapping[variableName]
 		variableValue = variableDictionary[homeName]
+	
+		try:
+			assert variableValue == 0
+		except:
+			print "Variable", variableName, "in function", stack[-1].functionName, \
+				"had non-zero value before assign on line", lineNumber
+			raise
 		
 		if len(lineSplit) == 4:
 			variableDictionary[homeName] = parseValue(lineSplit[3], currentMapping, variableDictionary)

@@ -156,3 +156,27 @@ def findE_(state, nextState, listOfStates, name):
 	foundUnderscoreState.setAllHeadMoves("L")
 
 	listOfStates.append(foundUnderscoreState)
+
+# The one above is going left, this one's going right;
+# also, it has a name module better-suited to level 1
+
+# ugh it's basically single-use at this point, it has so
+# much hard-coded shit in it
+def findE_Right(state, nextState, listOfStates, name, tapeName=None):
+	foundEndState = State(name, tapeName, alphabetMTToST())
+	
+	state.setAllNextStates(state)
+	state.setNextState("E", foundEndState)
+	
+	state.setAllHeadMoves("R")
+
+	foundEndState.setAllNextStates(state)
+	foundEndState.setNextState("E", foundEndState)
+	foundEndState.setNextState("_", nextState)
+
+	foundEndState.setAllHeadMoves("R")
+	foundEndState.setHeadMove("_", "-")
+
+	foundEndState.setWrite("_", "E")
+
+	listOfStates.append(foundEndState)

@@ -1,33 +1,31 @@
 var list
-assign list to []
 var listLength 
 var powerOfTwo
-assign powerOfTwo to 1
+modify powerOfTwo with add_small_const 1
 var isListNotOfSize10
 var two
-var ten
-assign two to itself + 1
-assign two to itself + 1
-assign ten to itself + 1
-assign ten to itself + 1
-assign ten to itself + 1
-assign ten to itself + 1
-assign ten to itself + 1
-assign ten to itself * two
+var four
+var holder
+modify two with add_small_const 2
+modify four with add_small_const 4
 label APPEND_LOOP
-assign list to itself append powerOfTwo
-assign powerOfTwo to itself * two
-assign listLength to itself + 1 
-assign isListNotOfSize10 to listLength
-assign isListNotOfSize10 to itself != ten
+modify list with append powerOfTwo
+clear holder
+assign holder to powerOfTwo
+clear powerOfTwo
+assign powerOfTwo to holder * two
+modify listLength with add_small_const 1 
+clear isListNotOfSize10
+assign isListNotOfSize10 to listLength != four
 if isListNotOfSize10 then goto APPEND_LOOP
-assign listLength to 0
+clear listLength
 label PRINT_LOOP
-assign powerOfTwo to list
-assign powerOfTwo to itself index listLength
+clear powerOfTwo
+assign powerOfTwo to list index listLength
 print powerOfTwo
-assign listLength to itself + 1
-assign isListNotOfSize10 to listLength
-assign isListNotOfSize10 to itself != ten
+print listLength
+modify listLength with add_small_const 1
+clear isListNotOfSize10
+assign isListNotOfSize10 to listLength != four
 if isListNotOfSize10 then goto PRINT_LOOP
 accept
