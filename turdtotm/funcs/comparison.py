@@ -37,7 +37,7 @@ def assignEquals(inState, outState, x, y, z, lineNumber):
 	getBackToStart(getBackToStartYState, outState)
 	
 	return [inState, moveAlongZState, checkForEndZState, writeTrueState, getBackToStartZState, getBackToStartYState]
-	
+
 # assign x to y != z
 def assignNotEquals(inState, outState, x, y, z, lineNumber):
 	
@@ -74,3 +74,65 @@ def assignNotEquals(inState, outState, x, y, z, lineNumber):
 	getBackToStart(getBackToStartYState, outState)
 	
 	return [inState, moveAlongZState, checkForEndZState, writeTrueState, getBackToStartZState, getBackToStartYState]
+
+# assign x to y > z
+def assignGreaterThan(inState, outState, x, y, z, name):
+	# inState might have been called moveAlongYState
+	inState.tapeName = y
+	moveAlongZState = State(name + ".1", z)
+	writeTrueState = State(name + ".2", x)
+	getBackToStartZState = State(name + ".3", z)
+	getBackToStartYState = State(name + ".4", y)
+	
+	# inState
+	inState.setNextState("1", moveAlongZState)
+	inState.setNextState("E", getBackToStartYState) # return false
+	
+	inState.setHeadMove("1", "R")
+	# inState
+	
+	# moveAlongZState
+	moveAlongZState.setNextState("1", inState)
+	moveAlongZState.setNextState("E", writeTrueState) # return true
+	
+	moveAlongZState.setHeadMove("1", "R")
+	# moveAlongZState
+	
+	write1over0(writeTrueState, getBackToStartYState)
+	
+	getBackToStart(getBackToStartYState, getBackToStartZState)
+	getBackToStart(getBackToStartZState, outState)
+	
+	return [inState, moveAlongZState, writeTrueState, getBackToStartZState, getBackToStartYState]	
+
+# assign x to y < z
+def assignLessThan(inState, outState, x, y, z, name):
+	# inState might have been called moveAlongZState
+	inState.tapeName = z
+	moveAlongYState = State(name + ".1", y)
+	writeTrueState = State(name + ".2", x)
+	getBackToStartZState = State(name + ".3", z)
+	getBackToStartYState = State(name + ".4", y)
+	
+	# inState
+	inState.setNextState("1", moveAlongYState)
+	inState.setNextState("E", getBackToStartZState) # return false
+	
+	inState.setHeadMove("1", "R")
+	# inState
+	
+	# moveAlongZState
+	moveAlongYState.setNextState("1", inState)
+	moveAlongYState.setNextState("E", writeTrueState) # return true
+	
+	moveAlongYState.setHeadMove("1", "R")
+	# moveAlongZState
+	
+	write1over0(writeTrueState, getBackToStartZState)
+	
+	getBackToStart(getBackToStartZState, getBackToStartYState)
+	getBackToStart(getBackToStartYState, outState)
+	
+	return [inState, moveAlongYState, writeTrueState, getBackToStartZState, getBackToStartYState]	
+
+

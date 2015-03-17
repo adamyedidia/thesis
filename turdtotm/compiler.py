@@ -10,6 +10,7 @@ from constantsTurdToTM import *
 from assign import *
 from function import *
 from listOper import *
+from comparisonConst import *
 
 path = sys.argv[1]
 
@@ -40,6 +41,9 @@ def scanForVariablesAndLabels():
 	
 	for line in inpLines:
 		lineSplit = string.split(line)
+		if len(lineSplit) == 0:
+			continue
+
 		if lineSplit[0] == "var":
 			variableName = lineSplit[1]
 			
@@ -78,6 +82,9 @@ def getLabelDictionary(functionName):
 
 	for line in codeLines:
 		lineSplit = string.split(line)
+		
+		if len(lineSplit) == 0:
+			continue
 	
 		if lineSplit[0] == "label":
 			labelName = lineSplit[1]
@@ -143,6 +150,8 @@ def convertStatesToString(listOfStates, variableSet):
 			print "duplicate state " + state.stateName
 			raise
 		else:
+#			print type(state.tapeName)
+
 			output.write(state.stateName + "(" + state.tapeName + "):\n")
 			setOfStates[state.stateName] = None
 #			print state.stateName
@@ -214,11 +223,16 @@ def fillTheGangs(gangDictionary):
 	
 		if gang.lineType == "assign":
 			if len(gang.lineSplit) == 4:
-				listOfStates.extend(simpleAssign(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+				listOfStates.extend(assign(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
 					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
 			elif gang.lineSplit[4] == "*":
-				listOfStates.extend(assignMult(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+				listOfStates.extend(multiply(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[4] == "/":
+				listOfStates.extend(divide(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
 					convertStackTraceTupleToName(gang.stackTraceTuple)))
 					
@@ -237,14 +251,39 @@ def fillTheGangs(gangDictionary):
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
 					convertStackTraceTupleToName(gang.stackTraceTuple)))				
 
+			elif gang.lineSplit[4] == "equals_small_const":
+#				print gang.mapping[gang.lineSplit[1]], gang.mapping[gang.lineSplit[3]], int(gang.lineSplit[5])
+				listOfStates.extend(equalsSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], int(gang.lineSplit[5]), 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))		
+		
+			elif gang.lineSplit[4] == ">":
+				listOfStates.extend(assignGreaterThan(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))	
+
+			elif gang.lineSplit[4] == "<":
+				listOfStates.extend(assignLessThan(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))							
+
 			else:
+				print "Error on line", gang.lineNumber
 				raise
 					
 		if gang.lineType == "modify":
-			if gang.lineSplit[3] == "add_small_const":
+			if gang.lineSplit[3] == "+":
+				listOfStates.extend(add(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[3] == "-":
+				listOfStates.extend(subtract(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))		
+
+			elif gang.lineSplit[3] == "add_small_const":
 				listOfStates.extend(addSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
-					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))
-			
+					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))	
+
 			elif gang.lineSplit[3] == "sub_small_const":
 				listOfStates.extend(subSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))

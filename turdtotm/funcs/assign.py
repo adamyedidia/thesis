@@ -3,7 +3,7 @@ from state import *
 
 # assign x to y
 # x must be empty
-def simpleAssign(inState, outState, x, y, lineNumber, names=[".1", ".2", ".3"]):
+def assign(inState, outState, x, y, lineNumber, names=[".1", ".2", ".3"]):
 	# inState might have been called moveAlongYState
 	inState.tapeName = y	
 

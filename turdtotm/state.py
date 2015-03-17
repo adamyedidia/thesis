@@ -14,7 +14,11 @@ def convertStackTraceTupleToName(stackTraceTuple):
 class Gang:
 	def __init__(self, line, lineNumber, functionName, stackTraceTuple, mapping, labelDictionary):
 		lineSplit = string.split(line)
-		lineType = lineSplit[0]
+
+		if len(lineSplit) == 0:
+			lineType = "empty"
+		else:
+			lineType = lineSplit[0]
 	
 		self.lineNumber = lineNumber
 		self.lineSplit = lineSplit
@@ -23,7 +27,7 @@ class Gang:
 		self.labelDictionary = labelDictionary		
 		self.stackTraceTuple = (lineNumber, functionName, stackTraceTuple)
 
-		if lineType == "var" or lineType == "label" or lineType == "print" or lineType == "input":
+		if lineType == "var" or lineType == "label" or lineType == "print" or lineType == "input" or lineType == "empty":
 			self.inState = None
 			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
 			self.secondOutStateStackTrace = None
@@ -43,7 +47,15 @@ class Gang:
 		elif lineType == "if":
 			inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]])
 			self.inState = inState
-			self.firstOutStateStackTrace = (int(labelDictionary[lineSplit[4]]), functionName, stackTraceTuple)
+
+			# Both valid:
+			# if x then goto LABEL 
+			# if x goto LABEL
+			if len(lineSplit) == 5:
+				self.firstOutStateStackTrace = (int(labelDictionary[lineSplit[4]]), functionName, stackTraceTuple)
+			elif len(lineSplit) == 4:
+				self.firstOutStateStackTrace = (int(labelDictionary[lineSplit[3]]), functionName, stackTraceTuple)
+
 			self.secondOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
 		
 		elif lineType == "function":

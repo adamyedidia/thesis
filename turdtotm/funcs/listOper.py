@@ -50,13 +50,14 @@ def index(inState, outState, x, y, z, name):
 	
 	getBackToStart(getBackToStartZState, assignState)
 	
-	returnList.extend(simpleAssign(assignState, outState, x, y, name, [".4", ".5", ".6"]))
+	returnList.extend(assign(assignState, outState, x, y, name, [".4", ".5", ".6"]))
 
 	return returnList
 
 # list_assign x to y
 # x must be empty
-#def listAssign(inState, outState, x, y, name):
+def listAssign(inState, outState, x, y, name):
 	
-#	inState.tapeName
+	inState.tapeName = y
+	
 
