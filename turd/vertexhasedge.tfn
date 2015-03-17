@@ -1,0 +1,42 @@
+input k vertex1 vertex2 pattern counter1 counter2 holder1 holder2 one two hasEdge?
+clear two
+modify two with add_small_const 2
+clear one 
+modify one with add_small_const 1
+label MAIN_LOOP
+clear holder1
+assign holder1 to counter1 = k
+if holder1 goto COUNTER_1_FULL_LOOP
+clear holder1
+assign holder1 to counter2 = k
+if holder2 goto COUNTER_2_FULL_LOOP
+
+label COUNTER_1_FULL_LOOP
+clear holder1 
+assign holder1 to counter2 = k
+if holder1 goto RETURN_TRUE
+clear holder1
+assign holder2 to pattern index counter2
+assign holder1 to holder2 = two
+modify counter2 with add_small_const 1
+if holder1 goto COUNTER_1_FULL_LOOP
+goto RETURN_FALSE
+
+label COUNTER_2_FULL_LOOP
+clear holder1
+assign holder1 to counter1 = k
+if holder1 goto RETURN_TRUE
+
+
+
+
+label RETURN_TRUE
+clear hasEdge?
+modify hasEdge? with add_small_const 1
+return
+
+label RETURN_FALSE
+clear hasEdge?
+return
+
+ 

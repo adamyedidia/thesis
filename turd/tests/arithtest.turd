@@ -1,0 +1,21 @@
+var a
+var b
+var c
+var d
+modify a with add_small_const 2
+modify b with add_small_const 3
+modify c with add_small_const 7
+assign d to a * c
+clear a
+assign a to d / b
+modify a with - b
+modify b with + c
+print a
+print b
+print c
+print d
+label a should be 1
+label b should be 10
+label c should be 7
+label d sould be 14
+accept

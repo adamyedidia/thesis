@@ -1,0 +1,10 @@
+input i j neg? knr8facfac pospart negpart
+assign negpart to i * knr8facfac
+assign pospart to pospart / j
+clear negpart
+if neg? then goto SWITCH_PARTS
+return
+label SWITCH_PARTS
+assign negpart to pospart
+clear pospart
+return
