@@ -1,0 +1,23 @@
+input k vertexpospart vertexnegpart vertexlistpospart vertexlistnegpart index_counter vertex2pospart vertex2negpart holder1 holder2 holder3 holder4 holder5 holder6 holder7 contained?
+
+label This function tests whether an input vertex y is contained in some set of vertices X.
+label inputs: k (int), a vertex (list) y, a set of vertices (list2) X.
+label internal variables: 10. index_counter vertex2pospart vertex2negpart holder1 holder2 holder3 holder4 holder5 holder6 holder7
+label output: contained?, a boolean value encoding whether or not y \in X.
+
+clear index_counter
+label MAIN_LOOP
+clear vertex2pospart 
+assign vertex2pospart to vertexlistpospart index2 index_counter
+clear vertex2negpart
+assign vertex2negpart to vertexlistnegpart index2 index_counter
+function vertexequals vertexpospart vertexnegpart vertex2pospart vertex2negpart holder1 holder2 holder3 holder4 holder5 holder6 holder7 contained?
+if contained? goto RETURN_TRUE
+modify index_counter with add_small_const 1
+clear holder1 
+assign holder1 to index_counter != k
+if holder1 goto MAIN_LOOP
+return 
+
+label RETURN_TRUE
+return

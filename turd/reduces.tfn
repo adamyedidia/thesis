@@ -1,0 +1,27 @@
+input k pattern vertexYpospartList vertexYnegpartList vertexXpospartList vertexXnegpartList yPos yNeg Yindex holder1 holder2 holder3 holder4 holder5 holder6 holder7 holder8 holder9 holder10 reduces?
+
+label This is the reduces? function. It tests the definition from the top of page 2: "A set of vertices X reduces a set of vertices Y if and only if for all y \in Y, either y \in X or there is an x \in X such that (x E y and max(x) \le max(y)). Here we take max(\empty) = 0."
+label inputs: k (int), pattern (list), a set of vertices (list2) Y = (vertexYpospartList, vertexYnegpartList), a set of vertices (list2) X = (vertexXpospartList vertexXnegpartList)
+label internal variables: 13. yPos yNeg Yindex holder1 holder2 holder3 holder4 holder5 holder6 holder7 holder8 holder9 holder10
+label outputs: the boolean reduces?, which encodes whether it is the case that for all y \in Y, either y \in X or there is an x \in X such that (x E y and max(x) \le max(y)).
+
+clear Yindex
+label FORALL_Y_IN_Y
+clear yPos 
+assign yPos to vertexYpospartList index2 Yindex 
+clear yNeg
+assign yNeg to vertexYnegpartList index2 Yindex
+function vertexcontainedin k yPos yNeg vertexXpospartList vertexXnegpartList holder1 holder2 holder3 holder4 holder5 holder6 holder7 holder8 holder9 holder10 reduces? red
+if reduces? goto INCREMENT_YINDEX
+function isedgeandmaxisless k pattern yPos yNeg vertexXpospartList vertexXnegpartList holder1 holder2 holder3 holder4 holder5 holder6 holder7 holder8 holder9 reduces?
+if reduces? goto INCREMENT_YINDEX
+return
+
+label INCREMENT_YINDEX
+modify Yindex with add_small_const 1
+clear holder1
+assign holder1 to Yindex != k
+if holder1 then goto FORALL_Y_IN_Y
+clear reduces?
+modify reduces? with add_small_const 1
+return

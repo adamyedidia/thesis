@@ -1,0 +1,40 @@
+input k pattern vertexpospart vertexnegpart vertexlistpospart vertexlistnegpart index_counter vertex2pospart vertex2negpart holder1 holder2 holder3 holder4 holder5 holder6 contained?
+
+
+label This is a helper function for the reduces? function. It tests part of the definition from the top of page 2: "...for [some y], x \in X such that (x E y and max(x) \le max(y))."
+label inputs: k (int), pattern (list), some vertex (list) y = (vertexpospart, vertexnegpart), some vertex set (list2) X = (vertexlistpospart, vertexlistnegpart)
+label internal variables: 9. index_counter vertex2pospart vertex2negpart holder1 holder2 holder3 holder4 holder5 holder6
+label outputs: contained? This boolean encodes whether for the given y, there exists some x \in X such that (x E y and max(x) \le max(y)).
+
+
+clear index_counter
+label MAIN_LOOP
+clear vertex2pospart
+assign vertex2pospart to vertexlistpospart index2 index_counter
+clear vertex2negpart
+assign vertex2negpart to vertexlistnegpart index2 index_counter
+function vertexhasedge k vertexpospart vertexnegpart vertex2pospart vertex2negpart pattern holder1 holder2 holder3 holder4 holder5 holder6 contained?
+if contained? then goto COMPARE_MAXES
+modify index_counter with add_small_const 1
+clear holder1
+assign holder1 to index_counter != k
+if holder1 then goto MAIN_LOOP
+return 
+
+label COMPARE_MAXES
+clear holder1
+assign holder1 to k
+modify holder1 with sub_small_const 1
+clear holder2
+assign holder2 to vertexpospart index holder1
+clear holder3
+assign holder3 to vertexnegpart index holder1
+clear holder4
+assign holder4 to vertex2pospart index holder1
+clear holder5
+assign holder5 to vertex2pospart index holder1
+function signedgreaterthan holder2 holder3 holder4 holder5 holder1 holder6 contained?
+if contained? then goto MAIN_LOOP
+modify contained? with add_small_const 1
+return
+

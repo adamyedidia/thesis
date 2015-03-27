@@ -116,6 +116,10 @@ class TuringMachine:
 			tape = self.tapeDictionary[self.state.tapeName]
 			symbol = tape.readSymbol()
 
+			if not self.state.getHeadMove(symbol) in ["L", "R", "-"]:
+				print "bad head move", self.state.getHeadMove(symbol), "in state", self.state.stateName
+				raise
+
 			tape.writeSymbol(self.state.getWrite(symbol))
 			tape.moveHead(self.state.getHeadMove(symbol))  
 			self.state = self.state.getNextState(symbol)    
@@ -232,6 +236,10 @@ class SingleTapeTuringMachine:
 
 			symbol = self.tape.readSymbol()
 
+			if not self.state.getHeadMove(symbol) in ["L", "R", "-"]:
+				print "bad head move", self.state.getHeadMove(symbol), "in state", self.state.stateName
+				raise
+
 			self.tape.writeSymbol(self.state.getWrite(symbol))
 			self.tape.moveHead(self.state.getHeadMove(symbol))  
 			self.state = self.state.getNextState(symbol)     
@@ -278,6 +286,7 @@ class Tape:
 		elif direction == "-":
 			pass
 		else:
+			print direction
 			raise
 
 	def continueTape(self):

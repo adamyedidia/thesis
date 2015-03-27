@@ -24,5 +24,3 @@ def assign(inState, outState, x, y, lineNumber, names=[".1", ".2", ".3"]):
 	getBackToStart(getBackToStartYState, outState)
 
 	return [inState, incrementXState, getBackToStartXState, getBackToStartYState]
-
-

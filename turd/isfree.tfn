@@ -1,0 +1,42 @@
+input k poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 isFree?
+
+clear c1
+
+label C1_LOOP
+clear h1
+assign h1 to poslistofvertices index2 c1
+clear h2 
+assign h2 to neglistofvertices index2 c1 
+clear c2
+label C2_LOOP
+clear h3
+assign h3 to poslistofvertices index2 c2
+clear h4 
+assign h4 to neglistofvertices index2 c2
+clear isFree?
+assign isFree? to c1 != c2
+if isFree? goto CHECK_FOR_EDGE
+label DONE_CHECKING_FOR_EDGE
+modify c2 with add_small_const 1
+clear isFree?
+assign isFree? to c2 != listsize
+if isFree? then goto C2_LOOP
+modify c1 with add_small_const 1
+clear isFree?
+assign isFree? to c1 != listsize
+if isFree? then goto C1_LOOP
+goto RETURN_TRUE
+
+
+label CHECK_FOR_EDGE
+function vertexhasedge k h1 h2 h3 h4 pattern i1 i2 i3 i4 i5 isFree?
+if isFree? then goto RETURN_FALSE
+goto DONE_CHECKING_FOR_EDGE
+
+label RETURN_FALSE
+clear isFree?
+return
+
+label RETURN_TRUE
+modify isFree? with add_small_const 1
+return 

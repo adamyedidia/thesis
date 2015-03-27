@@ -46,7 +46,7 @@ def index(inState, outState, x, y, z, name):
 	moveAlongZState.setHeadMove("1", "R")
 	moveAlongZState.setHeadMove("E", "L")
 
-	findSymbol(inState, "E", "R", "R", moveAlongZState)
+	findEndNo_(inState, moveAlongZState, "R")
 	
 	getBackToStart(getBackToStartZState, assignState)
 	
@@ -54,10 +54,133 @@ def index(inState, outState, x, y, z, name):
 
 	return returnList
 
-# list_assign x to y
-# x must be empty
-def listAssign(inState, outState, x, y, name):
-	
+# assign x to y list_equals z
+def listEquals(inState, outState, x, y, z, name):
+
+	# inState might have been called moveAlongYState
 	inState.tapeName = y
+	checkFor1State = State(str(lineNumber) + ".1", z)
+	checkForEState = State(str(lineNumber) + ".2", z)
+	checkFor_State = State(str(lineNumber) + ".3", z)
+	writeTrueState = State(str(lineNumber) + ".4", x)
+	getBackToStartZState = State(str(lineNumber) + ".5", z)
+	getBackToStartYState = State(str(lineNumber) + ".6", y)
 	
+	# inState
+	inState.setNextState("1", checkfor1ZState)
+	inState.setNextState("E", checkForEZState)
+	inState.setNextState("_", checkFor_ZState)
+	
+	inState.setHeadMove("1", "R")
+	inState.setHeadMove("E", "R")
+	inState.setHeadMove("_", "L")
+	# inState
+	
+	# moveAlongZState
+	checkFor1State.setNextState("1", inState)
+	checkFor1State.setNextState("E", getBackToStartZState) # must be false if this happens
+	checkFor1State.setNextState("_", getBackToStartZState)
+	
+	checkFor1State.setHeadMove("1", "R")
+	checkFor1State.setHeadMove("E", "L")
+	checkFor1State.setHeadMove("_", "L")
+	# moveAlongZState
+	
+	# checkForEZState
+	checkForEState.setNextState("1", getBackToStartZState)
+	checkForEState.setNextState("E", inState)
+	checkForEState.setNextState("_", getBackToStartZState)
+
+	checkForEState.setHeadMove("1", "L")
+	checkForEState.setHeadMove("E", "R")
+	checkForEState.setHeadMove("_", "L")
+	# checkForEZState
+
+	# checkFor_ZState
+	checkFor_State.setNextState("1", getBackToStartZState)
+	checkFor_State.setNextState("E", getBackToStartZState)
+	checkFor_State.setNextState("_", writeTrueState)
+
+	checkFor_ZState.setAllHeadMoves("L")
+	
+	write1over0(writeTrueState, getBackToStartZState)
+	
+	getBackToStart(getBackToStartZState, getBackToStartYState)
+	getBackToStart(getBackToStartYState, outState)
+	
+	return [inState, checkFor1State, checkForEState, checkFor_State, writeTrueState, getBackToStartZState, getBackToStartYState]
+
+# assign x to y list
+# x must be empty
+def listAssign(inState, outState, x, y, name, numbers=[".1", ".2", ".3", ".4", ".5", ".6"]):
+	
+	# inState might have been called moveAlongYState
+	inState.tapeName = y
+	incrementXState = State(str(lineNumber) + numbers[0], x)
+	moveRightXState = State(str(lineNumber) + numbers[1], x)
+	writeEXState = State(str(lineNumber) + numbers[2], x)
+	deleteEXState = State(str(lineNumber) + numbers[3], x)
+	getBackToStartXState = State(str(lineNumber) + numbers[4], x)
+	getBackToStartYState = State(str(lineNumber) + numbers[5], y)
+
+	inState.setNextState("1", incrementXState)
+	inState.setNextState("E", moveRightXState)
+	inState.setNextState("_", getBackToStartXState)
+
+	inState.setHeadMove("1", "R")
+	inState.setHeadMove("E", "R")
+	inState.setHeadMove("_", "L")
+	
+	increment(incrementXState, inState)
+	
+	moveRightXState.setNextState("E", writeEXState)
+	moveRightXState.setHeadMove("E", "R")
+
+	writeEXState.setNextState("_", inState)
+	writeEXState.setWrite("_", "E")
+
+	getBackToStart(getBackToStartXState, getBackToStartYState)
+	getBackToStart(getBackToStartYState, outState)
+
+	return [inState, incrementXState, moveRightXState, writeEXState, getBackToStartXState, getBackToStartYState]
+
+# modify x with concat y
+def concat(inState, outState, x, y, name):
+	
+	returnList = [inState]
+
+	# inState might have been called findE_YState
+	inState.tapeName = x
+	findE_Right(inState, listAssignState, returnList, name + ".1", x, False)
+
+	returnList.extend(listAssign(listAssignState, outState, x, y, name, [".2", ".3", ".4", ".5", ".6", ".7"]))
+
+	return returnList
+
+# assign x to y length
+
+def length(inState, outState, x, y, name):
+	
+	# inState might have been called moveAlongYState
+	inState.tapeName = y
+	incrementXState = State(name + ".1", x)
+	decrementXState = State(name + ".2", x)
+	getBackToStartXState = State(name + ".3", x)
+	getBackToStartYState = State(name + ".4", y)
+
+	inState.setNextState("1", inState)
+	inState.setNextState("E", incrementXState)
+	inState.setNextState("_", decrementXState)
+
+	inState.setHeadMove("1", "R")
+	inState.setHeadMove("E", "R")
+	inState.setHeadMove("_", "L")
+
+	increment(incrementXState, inState)
+	decrement(decrementXState, getBackToStartXState)
+	getBackToStart(getBackToStartXState, getBackToStartYState)
+	getBackToStart(getBackToStartYState, outSTart)
+	
+	return [inState, incrementXState, decrementXState, getBackToStartXState, getBackToStartYState]
+
 

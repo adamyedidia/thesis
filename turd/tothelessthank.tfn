@@ -1,0 +1,69 @@
+input k universe size h1 c1 one_count future_one_count maplist indic future_indic listofvertices
+
+clear one_count
+clear future_one_count
+clear listofvertices
+clear c1
+
+label one_count tracks the number of 1's in indic/new_indic
+label this loop treats indic as a size-bit binary number
+label SIZE MUST NOT BE ZERO!!
+
+label INIT_INDIC_LOOP
+modify indic with append_small_const 0
+clear h1
+modify c1 with add_small_const 1
+assign h1 to c1 != size
+if h1 then goto INIT_INDIC_LOOP
+goto FIND_EMPTY_SLOT_LOOP
+
+label FIND_EMPTY_SLOT_LOOP
+clear h1
+assign h1 to indic index c1
+modify c1 with add_small_const 1
+if h1 then goto DEAL_WITH_ONE
+goto DEAL_WITH_ZERO
+
+label DEAL_WITH_ZERO
+modify future_indic with append_small_const 1
+modify future_one_count with add_small_const 0
+goto COPY_REMAINING_ENTRIES_LOOP
+
+label DEAL_WITH_ONE
+modify future_indic with append_small_const 0
+modify future_one_count with sub_small_const 1
+clear h1 
+assign h1 to c1 = size
+if h1 goto RETURN
+goto FIND_EMPTY_SLOT_LOOP
+
+label COPY_REMAINING_ENTRIES_LOOP
+clear h1
+assign h1 to indic index c1
+modify future_indic with append h1
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != size
+if h1 then goto COPY_REMAINING_ENTRIES_LOOP
+goto HANDLE_END_WORK
+
+label HANDLE_END_WORK
+clear h1
+assign h1 to one_count = k
+if h1 then goto DO_MAPPING
+label MAPPING_COMPLETE
+clear one_count
+assign one_count to future_one_count
+clear indic
+assign indic to future_indic list
+clear new_indic
+clear c1
+goto FIND_EMPTY_SLOT_LOOP
+
+label DO_MAPPING
+function map universe indic size h1 c1 one_count maplist
+modify listofvertices with append2 maplist
+goto MAPPING_COMPLETE
+
+label RETURN
+return

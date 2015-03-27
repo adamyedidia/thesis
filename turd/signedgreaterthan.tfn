@@ -1,0 +1,10 @@
+input number1pospart number1negpart number2pospart number2negpart holder1 holder2 greaterThan?
+clear holder1
+clear holder2
+modify holder1 with + number1pospart
+modify holder1 with + number2negpart
+modify holder2 with + number2pospart
+modify holder2 with + number1negpart
+clear greaterThan?
+assign greaterThan? to holder1 > holder2
+return

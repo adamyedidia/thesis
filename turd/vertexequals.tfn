@@ -1,0 +1,22 @@
+input k vertex1pospart vertex1negpart vertex2pospart vertex2negpart index_counter number1pospart number1negpart number2pospart number2negpart holder1 holder2 equal?
+
+clear index_counter
+label MAIN_LOOP
+clear number1pospart
+assign number1pospart to vertex1pospart index index_counter
+clear number1negpart
+assign number1negpart to vertex1negpart index index_counter
+clear number2pospart 
+assign number2pospart to vertex2pospart index index_counter
+clear number2negpart
+assign number2negpart to vertex2negpart index index_counter
+function signedequals number1pospart number1negpart number2pospart number2negpart holder1 holder2 equal?
+modify index_counter with add_small_const 1
+clear holder1
+assign holder1 to index_counter = k
+if holder1 then goto RETURN_TRUE
+if equal? then goto MAIN_LOOP
+return
+
+label RETURN_TRUE
+return

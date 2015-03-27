@@ -1,0 +1,24 @@
+input universe indic size c1 h1 h2 maplist
+
+label Takes as input some list universe of size size, and for each entry, if the correspondingly-indexed entry of indic is a 1, then it's appended to maplist; otherwise, it's a 0.
+
+clear c1
+clear maplist
+label MAIN_LOOP
+clear h1
+assign h1 to universe index c1
+clear h2
+assign h2 to indic index c1
+if h2 then goto APPEND
+goto INCR
+
+label APPEND
+modify maplist with append h1
+goto INCR
+
+label INCR
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != size
+if h1 then goto MAIN_LOOP
+return

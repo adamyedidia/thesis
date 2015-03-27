@@ -11,6 +11,7 @@ Invariants:
 -In the multi-tape abstraction, there may be no underscores except before the expression of the number and after the expression of the number
 -In the multi-tape abstraction, position 0 may never be occupied by an underscore.
 -In the multi-tape abstraction, you may not switch variables unless there is exactly one E_ pattern per variable.
+-In no TURD program can a list2 contain empty lists.
 
 Possible optimizations:
 
@@ -20,5 +21,20 @@ Possible optimizations:
 -At bottom level, at least make it ignore the impossible symbol
 -Could make the variable labels use base |a| instead of base 1
 -Make sure we never move right on top of underscores when we don't need to
+-The vertexhasedge function was coded super inefficiently; if I had been cleverer I could have reduced it by a factor of four
+-Can merge greater than + equals call in sort.tfn
+-Maybe sort.tfn should use a merge sort??
 
+Usability concerns:
 
+-Make actual comments?
+-Could allow "if [simple expression] then goto LABEL"
+
+General sources of possible bugs in the finished program:
+
+-Functions only actually work if 0's are passed into the internal variables
+-Functions can't handle inputs of 0 or [empty]
+
+The list2 problem:
+
+Best current sol'n: make EE the meta-delineator; add 1 to every entry of the mini-list. Fucking disgusting, I know.

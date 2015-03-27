@@ -60,3 +60,5 @@ def equalsSmallConst(inState, outState, x, y, smallConstant, name):
 		
 		write1over0(writeTrueState, getBackToStartState)
 		getBackToStart(getBackToStartState, outState)
+
+		return [inState] + listOfMoveByOneStates + [writeTrueState, getBackToStartState]

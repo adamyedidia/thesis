@@ -1,2 +1,18 @@
-input iList jList neg?List knr8facfac pospartList negpartList
-assign 
+input iList jList neg?List k knr8facfac counter1 i j neg? pospart negpart pospartList negpartList
+clear pospartList
+clear negpartList
+label MAIN_LOOP
+clear i 
+assign i to iList index counter1
+clear j
+assign j to jList index counter1
+clear neg?
+assign neg? to neg?List index counter1
+function numbergen i j neg? knr8facfac pospart negpart
+modify pospartList with append pospart
+modify negpartList with append negpart
+modify counter1 with add_small_const 1
+clear i
+assign i to counter1 != k
+if i then goto MAIN_LOOP
+return

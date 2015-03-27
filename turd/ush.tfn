@@ -1,0 +1,21 @@
+input k knr8facfac invertexpospart invertexnegpart counter_nextnumber holder1 holder2 holder3 current_min outvertexpospart outvertexnegpart
+clear outvertexpospart
+clear outvertexnegpart
+
+label GET_TO_NEXT_NUMBER_LOOP
+clear holder1
+assign holder1 to invertexpospart index counter_nextnumber
+clear holder2
+assign holder2 to invertexnegpart index counter_nextnumber
+clear holder3
+assign holder3 to holder1 < holder2
+if holder3 goto SKIP_SHIFT
+modify holder1 with + knr8facfac
+label SKIP_SHIFT
+modify outvertexpospart with append holder1
+modify outvertexnegpart with append holder2
+modify counter_nextnumber with add_small_const 1
+clear holder3
+assign holder3 to counter_nextnumber != k
+if holder3 goto GET_TO_NEXT_NUMBER_LOOP
+return

@@ -1,23 +1,42 @@
-input k vertex1 vertex2 pattern counter1 counter2 holder1 holder2 one two hasEdge?
-clear two
-modify two with add_small_const 2
-clear one 
-modify one with add_small_const 1
+input k vertex1pospart vertex1negpart vertex2pospart vertex2negpart pattern counter1 counter2 pattern_counter holder1 holder2 hasEdge?
+
+clear counter1
+clear counter2
+clear pattern_counter
+
 label MAIN_LOOP
 clear holder1
 assign holder1 to counter1 = k
 if holder1 goto COUNTER_1_FULL_LOOP
 clear holder1
 assign holder1 to counter2 = k
-if holder2 goto COUNTER_2_FULL_LOOP
+if holder1 goto COUNTER_2_FULL_LOOP
+clear holder1
+assign holder1 to vertex1pospart index counter1
+clear holder2
+assign holder2 to vertex2negpart index counter2
+modify holder1 with + holder2
+clear holder2
+assign holder2 to vertex2pospart index counter2
+clear hasEdge?
+assign hasEdge? to vertex1negpart index counter1
+modify holder2 with + hasEdge?
+clear hasEdge?
+assign hasEdge? to holder1 > holder2
+if hasEdge? goto GREATER_THAN_EFFECTS
+clear hasEdge?
+assign hasEdge? to holder1 < holder2
+if hasEdge? goto LESS_THAN_EFFECTS
+goto EQUALS_EFFECTS
 
 label COUNTER_1_FULL_LOOP
 clear holder1 
 assign holder1 to counter2 = k
 if holder1 goto RETURN_TRUE
+clear holder2
+assign holder2 to pattern index pattern_counter
 clear holder1
-assign holder2 to pattern index counter2
-assign holder1 to holder2 = two
+assign holder1 to holder2 equals_small_const 2
 modify counter2 with add_small_const 1
 if holder1 goto COUNTER_1_FULL_LOOP
 goto RETURN_FALSE
@@ -26,17 +45,53 @@ label COUNTER_2_FULL_LOOP
 clear holder1
 assign holder1 to counter1 = k
 if holder1 goto RETURN_TRUE
+clear holder2
+assign holder2 to pattern index pattern_counter
+clear holder1
+assign holder1 to holder2 equals_small_const 1
+modify counter1 with add_small_const 1
+if holder1 goto COUNTER_2_FULL_LOOP
+goto RETURN_FALSE
 
+label GREATER_THAN_EFFECTS
+clear holder2
+assign holder2 to pattern index pattern_counter
+clear holder1
+assign holder1 to holder2 equals_small_const 2
+modify counter2 with add_small_const 1
+if holder1 goto INCREMENT_PATTERN_COUNTER
+goto RETURN_FALSE
 
+label LESS_THAN_EFFECTS
+clear holder2
+assign holder2 to pattern index pattern_counter
+clear holder1
+assign holder1 to holder2 equals_small_const 1
+modify counter1 with add_small_const 1
+if holder1 goto INCREMENT_PATTERN_COUNTER
+goto RETURN_FALSE
 
+label EQUALS_EFFECTS
+clear holder2
+assign holder2 to pattern index pattern_counter
+clear holder1
+assign holder1 to holder2 equals_small_const 0
+modify counter1 with add_small_const 1
+modify counter2 with add_small_const 1
+if holder1 goto INCREMENT_PATTERN_COUNTER
+goto RETURN_FALSE
+
+label INCREMENT_PATTERN_COUNTER
+modify pattern_counter with add_small_const 1
+goto MAIN_LOOP
 
 label RETURN_TRUE
 clear hasEdge?
 modify hasEdge? with add_small_const 1
+print hasEdge?
 return
 
 label RETURN_FALSE
 clear hasEdge?
-return
-
- 
+print hasEdge?
+return 

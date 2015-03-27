@@ -48,6 +48,8 @@ assign c to a > b
 if c goto CONTINUE4
 reject
 label CONTINUE4
+
+
 modify a with sub_small_const 2
 clear c
 assign c to a < b
@@ -56,6 +58,7 @@ reject
 label CONTINUE5
 modify a with add_small_const 1
 clear c
+
 assign c to a < b
 if c goto REJECT
 modify a with add_small_const 1
@@ -67,6 +70,10 @@ clear c
 assign c to a equals_small_const 0
 if c goto CONTINUE6
 reject
+
+
+
+
 label CONTINUE6
 clear c
 assign c to a equals_small_const 1

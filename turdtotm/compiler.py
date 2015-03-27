@@ -11,6 +11,8 @@ from assign import *
 from function import *
 from listOper import *
 from comparisonConst import *
+from listOperConst import *
+from list2Oper import *
 
 path = sys.argv[1]
 
@@ -42,6 +44,7 @@ def scanForVariablesAndLabels():
 	for line in inpLines:
 		lineSplit = string.split(line)
 		if len(lineSplit) == 0:
+			lineNumber += 1
 			continue
 
 		if lineSplit[0] == "var":
@@ -53,7 +56,18 @@ def scanForVariablesAndLabels():
 			
 			else:
 				variableSet[variableName] = None
-				
+
+		if lineSplit[0] == "vars":
+			listOfVariableNames = lineSplit[1:]
+		
+			for variableName in listOfVariableNames:
+				if variableName in variableSet:
+					print "duplicate declaration of variable", variableName, "on line", lineNumber
+					raise
+			
+				else:
+					variableSet[variableName] = None
+
 		if lineSplit[0] == "label":
 			labelName = lineSplit[1]
 			
@@ -78,12 +92,14 @@ def getLabelDictionary(functionName):
 	if functionName == "main":
 		codeLines = open(path, "r").readlines()
 	else:
+#		print functionName
 		codeLines = open(directory + functionName + ".tfn", "r").readlines()
 
 	for line in codeLines:
 		lineSplit = string.split(line)
 		
 		if len(lineSplit) == 0:
+			lineNumber += 1
 			continue
 	
 		if lineSplit[0] == "label":
@@ -187,6 +203,8 @@ def createTheGangDictionary(functionName, stackTraceTuple, labelDictionary, mapp
 		lineSplit = string.split(line)
 	
 		if "function" in line:
+#			print lineNumber
+
 			gangDictionary = dict(gangDictionary, **createTheGangDictionary(lineSplit[1], 
 				(lineNumber + 1, functionName, 
 				stackTraceTuple), getLabelDictionary(lineSplit[1]), 
@@ -205,9 +223,11 @@ def createTheGangDictionary(functionName, stackTraceTuple, labelDictionary, mapp
 	
 def fillTheGangs(gangDictionary):
 	global listOfStates
-	
+
 	for gang in gangDictionary.values():	
 		
+		assert gang != None
+
 		if gang.lineType != "accept" and gang.lineType != "reject":
 			outState = getInState(gang.firstOutStateStackTrace, gangDictionary)
 	
@@ -251,6 +271,17 @@ def fillTheGangs(gangDictionary):
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
 					convertStackTraceTupleToName(gang.stackTraceTuple)))				
 
+			elif gang.lineSplit[4] == "index2":
+				try:
+					listOfStates.extend(index2(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+						gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+						convertStackTraceTupleToName(gang.stackTraceTuple)))	
+				except:
+					print "error on line", gang.lineNumber
+					listOfStates.extend(index2(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+						gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+						convertStackTraceTupleToName(gang.stackTraceTuple)))	
+
 			elif gang.lineSplit[4] == "equals_small_const":
 #				print gang.mapping[gang.lineSplit[1]], gang.mapping[gang.lineSplit[3]], int(gang.lineSplit[5])
 				listOfStates.extend(equalsSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
@@ -265,10 +296,23 @@ def fillTheGangs(gangDictionary):
 			elif gang.lineSplit[4] == "<":
 				listOfStates.extend(assignLessThan(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
-					convertStackTraceTupleToName(gang.stackTraceTuple)))							
+					convertStackTraceTupleToName(gang.stackTraceTuple)))	
+
+			elif gang.lineSplit[4] == "list_equals":
+				listOfStates.extend(listEquals(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))	
+
+			elif gang.lineSplit[4] == "list":
+				listOfStates.extend(listAssign(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))									
+
+			elif gang.lineSplit[4] == "length":
+				listOfStates.extend(length(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
 			else:
-				print "Error on line", gang.lineNumber
+				print "Error on line", gang.lineNumber, "illegal operation", gang.lineSplit[4]
 				raise
 					
 		if gang.lineType == "modify":
@@ -292,7 +336,16 @@ def fillTheGangs(gangDictionary):
 				listOfStates.extend(append(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
+			elif gang.lineSplit[3] == "append_small_const":
+				listOfStates.extend(appendSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					int(gang.lineSplit[4]), convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[3] == "append2":
+				listOfStates.extend(append2(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))				
+
 			else:
+				print "Error on line", gang.lineNumber, "illegal operation", gang.lineSplit[3]
 				raise
 	
 		

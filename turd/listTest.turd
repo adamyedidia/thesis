@@ -1,0 +1,32 @@
+var a
+var b
+var c
+var d
+var e
+var f
+modify a with append_small_const 2
+modify a with append_small_const 3
+modify b with append2 a
+modify c with append_small_const 0
+modify c with append_small_const 0
+modify b with append2 c
+clear a
+assign d to b index2 a
+modify a with add_small_const 1
+assign e to b index2 a
+clear a
+assign f to d index a
+print f
+clear f
+modify a with add_small_const 1
+assign f to d index a
+print f
+clear f
+clear a
+assign f to e index a
+print f
+clear f
+modify a with add_small_const 1
+assign f to e index a
+print f
+accept

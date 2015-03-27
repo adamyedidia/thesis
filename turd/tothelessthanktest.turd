@@ -1,0 +1,7 @@
+vars k universe size h1 c1 one_count future_one_count maplist indic future_indic listofvertices
+
+label the input is supposed to be k = 2, and the universe is [1, 2, 3, 4]
+label the output is supposed to be [[1,2,3], [1,2,4], 
+
+modify k with add_small_const 2
+

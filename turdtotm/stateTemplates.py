@@ -101,11 +101,19 @@ def moveBy(state, name, amount, direction, nextState, alphabet=alphabetTurdToTM(
 
 	return returnList
 
+def findEndNo_(state, nextState, lastDirection):
+	state.setNextState("1", state)
+	state.setNextState("E", nextState)
+
+	state.setHeadMove("1", "R")
+	state.setHeadMove("E", lastDirection)
+
 def findEnd(state, nextState):
 	findSymbol(state, "E", "R", "-", nextState)
 
 def findSymbol(state, symbol, direction, lastDirection, nextState):
 	findSymbolW(state, symbol, direction, lastDirection, symbol, nextState)
+	
 
 def findSymbolW(state, symbol, direction, lastDirection, lastWrite, nextState):
 
@@ -162,21 +170,23 @@ def findE_(state, nextState, listOfStates, name):
 
 # ugh it's basically single-use at this point, it has so
 # much hard-coded shit in it
-def findE_Right(state, nextState, listOfStates, name, tapeName=None):
+def findE_Right(state, nextState, listOfStates, name, tapeName=None, extraE=True):
 	foundEndState = State(name, tapeName, alphabetMTToST())
 	
-	state.setAllNextStates(state)
-	state.setNextState("E", foundEndState)
-	
-	state.setAllHeadMoves("R")
+	findEndNo_(state, foundEndState, "R")
 
 	foundEndState.setAllNextStates(state)
 	foundEndState.setNextState("E", foundEndState)
 	foundEndState.setNextState("_", nextState)
 
 	foundEndState.setAllHeadMoves("R")
-	foundEndState.setHeadMove("_", "-")
 
-	foundEndState.setWrite("_", "E")
+	if not extraE:
+		foundEndState.setHeadMove("_", "L")
+	else:
+		foundEndState.setHeadMove("_", "-")
+
+	if extraE:
+		foundEndState.setWrite("_", "E")
 
 	listOfStates.append(foundEndState)

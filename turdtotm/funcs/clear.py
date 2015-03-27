@@ -38,8 +38,7 @@ def clear(inState, outState, x, lineNumber):
 	leftState = State(str(lineNumber) + ".2", x)
 	checkState = State(str(lineNumber) + ".3", x)
 
-	findSymbol(inState, "E", "R", "-", leftState)
-	inState.setNextState("_", SimpleState("ERROR"))
+	findSymbol(inState, "_", "R", "L", leftState)
 
 	clearState.setAllNextStates(leftState)
 	clearState.setNextState("_", SimpleState("ERROR"))

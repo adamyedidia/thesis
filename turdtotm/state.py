@@ -27,13 +27,16 @@ class Gang:
 		self.labelDictionary = labelDictionary		
 		self.stackTraceTuple = (lineNumber, functionName, stackTraceTuple)
 
-		if lineType == "var" or lineType == "label" or lineType == "print" or lineType == "input" or lineType == "empty":
+		if lineType == "var" or lineType == "vars" or lineType == "label" or lineType == "print" or lineType == "input" or lineType == "empty":
 			self.inState = None
 			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
 			self.secondOutStateStackTrace = None
 		
 		elif lineType == "assign" or lineType == "modify" or lineType == "clear":
 			# possibly there is an optimization possible here
+#			print mapping
+#			print lineNumber
+#			print functionName
 			inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]]) 
 			self.inState = inState
 			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
