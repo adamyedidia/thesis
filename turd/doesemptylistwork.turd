@@ -1,0 +1,26 @@
+vars list2 list index
+
+label should be [[3,0], [], [1]]
+
+modify list with append_small_const 3 
+modify list with append_small_const 0
+modify list2 with append2 list
+
+clear list
+modify list2 with append2 list
+
+modify list with append_small_const 1
+modify list2 with append2 list
+
+clear list
+assign list to list2 index2 index
+modify index with add_small_const 1
+
+clear list
+assign list to list2 index2 index
+modify index with add_small_const 1
+
+clear list 
+assign list to list2 index2 index
+
+accept

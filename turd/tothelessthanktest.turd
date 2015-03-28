@@ -1,7 +1,26 @@
 vars k universe size h1 c1 one_count future_one_count maplist indic future_indic listofvertices
 
-label the input is supposed to be k = 2, and the universe is [1, 2, 3, 4]
-label the output is supposed to be [[1,2,3], [1,2,4], 
+label input is supposed to be k = 2, and the universe is [1, 2, 3, 4]
+label output is supposed to be [[], [1], [2], [1,2], [3], [1,3], [2,3], [4], [1,4], [2,4], [3,4]] 
 
 modify k with add_small_const 2
 
+modify universe with append_small_const 1
+modify universe with append_small_const 2
+modify universe with append_small_const 3
+modify universe with append_small_const 4
+
+modify size with add_small_const 4
+
+modify one_count with add_small_const 2
+modify future_one_count with add_small_const 2
+modify maplist with add_small_const 2
+modify indic with add_small_const 2
+modify future_indic with add_small_const 2
+modify listofvertices with add_small_const 2
+
+function tothelessthank k universe size h1 c1 one_count future_one_count maplist indic future_indic listofvertices
+
+print listofvertices
+
+accept

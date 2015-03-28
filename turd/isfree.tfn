@@ -1,4 +1,4 @@
-input k poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 isFree?
+input poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 isFree?
 
 clear c1
 
@@ -29,7 +29,7 @@ goto RETURN_TRUE
 
 
 label CHECK_FOR_EDGE
-function vertexhasedge k h1 h2 h3 h4 pattern i1 i2 i3 i4 i5 isFree?
+function vertexhasedge h1 h2 h3 h4 pattern i1 i2 i3 i4 i5 i6 i7 isFree?
 if isFree? then goto RETURN_FALSE
 goto DONE_CHECKING_FOR_EDGE
 

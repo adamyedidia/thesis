@@ -116,12 +116,12 @@ def listAssign(inState, outState, x, y, name, numbers=[".1", ".2", ".3", ".4", "
 	
 	# inState might have been called moveAlongYState
 	inState.tapeName = y
-	incrementXState = State(str(lineNumber) + numbers[0], x)
-	moveRightXState = State(str(lineNumber) + numbers[1], x)
-	writeEXState = State(str(lineNumber) + numbers[2], x)
-	deleteEXState = State(str(lineNumber) + numbers[3], x)
-	getBackToStartXState = State(str(lineNumber) + numbers[4], x)
-	getBackToStartYState = State(str(lineNumber) + numbers[5], y)
+	incrementXState = State(str(name) + numbers[0], x)
+	moveRightXState = State(str(name) + numbers[1], x)
+	writeEXState = State(str(name) + numbers[2], x)
+	deleteEXState = State(str(name) + numbers[3], x)
+	getBackToStartXState = State(str(name) + numbers[4], x)
+	getBackToStartYState = State(str(name) + numbers[5], y)
 
 	inState.setNextState("1", incrementXState)
 	inState.setNextState("E", moveRightXState)
@@ -179,7 +179,7 @@ def length(inState, outState, x, y, name):
 	increment(incrementXState, inState)
 	decrement(decrementXState, getBackToStartXState)
 	getBackToStart(getBackToStartXState, getBackToStartYState)
-	getBackToStart(getBackToStartYState, outSTart)
+	getBackToStart(getBackToStartYState, outState)
 	
 	return [inState, incrementXState, decrementXState, getBackToStartXState, getBackToStartYState]
 

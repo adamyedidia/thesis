@@ -4,6 +4,8 @@ clear one_count
 clear future_one_count
 clear listofvertices
 clear c1
+clear indic
+clear future_indic
 
 label one_count tracks the number of 1's in indic/new_indic
 label this loop treats indic as a size-bit binary number
@@ -15,6 +17,7 @@ clear h1
 modify c1 with add_small_const 1
 assign h1 to c1 != size
 if h1 then goto INIT_INDIC_LOOP
+clear c1
 goto FIND_EMPTY_SLOT_LOOP
 
 label FIND_EMPTY_SLOT_LOOP
@@ -26,12 +29,16 @@ goto DEAL_WITH_ZERO
 
 label DEAL_WITH_ZERO
 modify future_indic with append_small_const 1
-modify future_one_count with add_small_const 0
+modify future_one_count with add_small_const 1
+print future_one_count
+print future_indic
 goto COPY_REMAINING_ENTRIES_LOOP
 
 label DEAL_WITH_ONE
 modify future_indic with append_small_const 0
 modify future_one_count with sub_small_const 1
+print future_one_count
+print future_indic
 clear h1 
 assign h1 to c1 = size
 if h1 goto RETURN
@@ -39,24 +46,25 @@ goto FIND_EMPTY_SLOT_LOOP
 
 label COPY_REMAINING_ENTRIES_LOOP
 clear h1
+assign h1 to c1 = size
+if h1 then goto HANDLE_END_WORK
+clear h1
 assign h1 to indic index c1
 modify future_indic with append h1
 modify c1 with add_small_const 1
-clear h1
-assign h1 to c1 != size
-if h1 then goto COPY_REMAINING_ENTRIES_LOOP
-goto HANDLE_END_WORK
+goto COPY_REMAINING_ENTRIES_LOOP
 
 label HANDLE_END_WORK
 clear h1
-assign h1 to one_count = k
-if h1 then goto DO_MAPPING
+assign h1 to one_count > k
+if h1 then goto MAPPING_COMPLETE
+goto DO_MAPPING
 label MAPPING_COMPLETE
 clear one_count
 assign one_count to future_one_count
 clear indic
 assign indic to future_indic list
-clear new_indic
+clear future_indic
 clear c1
 goto FIND_EMPTY_SLOT_LOOP
 

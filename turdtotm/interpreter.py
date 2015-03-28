@@ -46,6 +46,11 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		return value1 * value2
 
 	elif operation == "-" or operation == "sub_small_const":
+		try:
+			assert value1 >= value2
+		except:
+			print "Number is going negative on line", lineNumber
+			raise
 		return value1 - value2
 
 	elif operation == "/":
@@ -66,22 +71,25 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			assert type(value1[0]) == type(0)
 
 	elif operation == "append2":
+		if value2 == 0:
+			value2 = []
 		try:
+			# might be empty list, and empty list looks the same as 0 :P
 			assert type(value2) == type([])
-			assert type(value2[0]) == type(0)
+			assert value2 == [] or type(value2[0]) == type(0)
 			if value1 == 0:
 				return [value2]
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert type(value1[0][0]) == type(0)
+			assert value1[0] == [] or type(value1[0][0]) == type(0)
 			return value1 + [value2]
 		except:
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value2) == type([])
-			assert type(value2[0]) == type(0)
+			assert value2 == [] or type(value2[0]) == type(0)
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert type(value1[0][0]) == type(0)
+			assert value1[0] == [] or type(value1[0][0]) == type(0)
 
 	elif operation == "concat":
 		return value1 + value2
@@ -101,13 +109,13 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		try:
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert type(value1[0][0]) == type(0)
+			assert value1[0] == [] or type(value1[0][0]) == type(0)
 			return value1[value2]
 		except:
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert type(value1[0][0]) == type(0)
+			assert value[0] == [] or type(value1[0][0]) == type(0)
 			print value1[value2]
 
 	elif operation == "and":
@@ -208,7 +216,7 @@ def getLabelDictionary(functionLines):
 			labelName = lineSplit[1]
 
 			if labelName in labelDictionary:
-				print "duplicate declaration of label", label, "on line", lineNumber, "of", functionName
+				print "duplicate declaration of label", labelName, "on line", lineNumber, "of", functionName
 				raise
 
 			else:

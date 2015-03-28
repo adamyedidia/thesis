@@ -63,7 +63,7 @@ def index2(inState, outState, x, y, z, name):
 	inState.setHeadMove("1", "R")
 	inState.setHeadMove("E", "R")
 	
-	moveAlongZState.setNextState("1", findEState)
+	moveAlongZState.setNextState("1", inState)
 	moveAlongZState.setNextState("E", getBackToStartZState)
 
 	moveAlongZState.setHeadMove("1", "R")
