@@ -1,0 +1,44 @@
+input n i poslist2 neglist2 oldposunion oldnegunion h1 h2 h3 c1 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 posunion negunion
+
+label inputs are n i poslist2 neglist2
+label 4 inputs 22 internals 2 outputs
+
+clear h1
+clear c1
+clear oldposunion
+clear oldnegunion
+
+label MAIN_LOOP
+clear h1
+assign h1 to c1 = i
+if h1 then goto LOAD_RANGEN
+clear h1 
+assign h1 to c1 > i
+if h1 then goto RETURN
+goto LOAD_INDEX
+
+label LOAD_INDEX
+clear h1
+clear h2
+assign h1 to poslist2 index2 c1
+assign h2 to neglist2 index2 c1
+goto COMPUTE_UNION
+
+label LOAD_RANGEN
+clear h3
+assign h3 to n
+modify h3 with add_small_const 1
+function signedrange h3 i1 i2 h1 h2
+goto COMPUTE_UNION
+
+label COMPUTE_UNION
+function union oldposunion oldnegunion h1 h2 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 posunion negunion
+clear oldposunion
+clear oldnegunion
+assign oldposunion to posunion list
+assign oldnegunion to negunion list 
+modify c1 with add_small_const 1
+goto MAIN_LOOP
+
+label RETURN
+return

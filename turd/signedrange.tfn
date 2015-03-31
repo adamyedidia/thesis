@@ -1,0 +1,14 @@
+input n h1 c1 posrangen negrangen
+
+clear c1
+clear posrangen
+clear negrangen
+
+label MAIN_LOOP
+modify posrangen with append c1
+modify negrangen with append_small_const 0
+modify c1 with add_small_const 1
+clear h1 
+assign h1 to c1 != n
+if h1 then goto MAIN_LOOP
+return

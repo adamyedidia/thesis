@@ -8,6 +8,8 @@ clear c1
 clear poslowball
 clear neglowball
 clear lowball_activated?
+clear possorted
+clear negsorted
 
 clear posmax
 assign posmax to poslist index c1
@@ -25,12 +27,11 @@ clear h1
 assign h1 to poslist index c2
 clear h3 
 assign h3 to neglist index c2
+if lowball_activated? then goto MAYBE_INCR_C1
+label DONE_MAYBE_INCR_C1
 function signedgreaterthan h1 h3 posmax negmax h4 h5 h2
 if h2 then goto UPDATE_MAX
 label DONE_UPDATING_MAX
-function signedequals posmin negmin h1 h3 h4 h5 h2
-if h2 then goto INCR_C1
-label DONE_INCR_C1
 function signedgreaterthan posmin negmin h1 h3 h4 h5 h2
 if h2 then goto CHECK_LOWBALL_ACTIVATED
 goto INCR_C2
@@ -50,8 +51,13 @@ label CHECK_LOWBALL_ACTIVATED
 if lowball_activated? then goto CHECK_LOWBALL
 goto UPDATE_MIN
 
+label MAYBE_INCR_C1
+function signedequals poslowball neglowball h1 h3 h4 h5 h2
+if h2 then goto INCR_C1
+label DONE_INCR_C1
+goto DONE_MAYBE_INCR_C1
+
 label CHECK_LOWBALL
-clear h2
 function signedgreaterthan h1 h3 poslowball neglowball h4 h5 h2
 if h2 then goto UPDATE_MIN
 goto INCR_C2
@@ -71,14 +77,17 @@ assign negmin to h3
 goto INCR_C2
 
 label APPEND_MIN
-modify lowball_activated? with add_small_const 1
-modify possorted with append posmin
-modify negsorted with append negmin 
 clear poslowball
 assign poslowball to posmin
 clear neglowball
 assign neglowball to negmin
 clear h1
 assign h1 to c1 != inputlength
-if h1 then goto MAIN_LOOP
+if h1 then goto ACTUALLY_APPEND_MIN
 return
+
+label ACTUALLY_APPEND_MIN
+modify lowball_activated? with add_small_const 1
+modify possorted with append posmin
+modify negsorted with append negmin
+goto MAIN_LOOP

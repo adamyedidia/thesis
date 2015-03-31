@@ -1,0 +1,18 @@
+input vertex1pos vertex1neg vertex2pos vertex2neg i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 unionpos unionneg
+
+clear i1
+clear i2
+assign i1 to vertex1pos list
+assign i2 to vertex1neg list
+modify i1 with concat vertex2pos
+modify i2 with concat vertex2neg
+
+clear i3
+assign i3 to i1 length
+
+function sort i3 i1 i2 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 unionpos unionneg
+print i1
+print i2
+print unionpos
+print unionneg
+return

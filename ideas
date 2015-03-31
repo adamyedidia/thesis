@@ -34,6 +34,11 @@ General sources of possible bugs in the finished program:
 
 -Functions only actually work if 0's are passed into the internal variables
 -Functions can't handle inputs of 0 or [empty]
+-The sort function is a hot mess and needs more testing
+
+Missing error messages:
+
+-No messages for the most part for undefined variables
 
 The list2 problem:
 

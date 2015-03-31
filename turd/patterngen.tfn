@@ -1,0 +1,96 @@
+input maxlengthofpatternplus1 c1 c2 h1 h2 pattern new_pattern listofpatterns
+
+clear c1
+clear listofpatterns
+modify c1 with add_small_const 1
+
+label INCR_C1_LOOP
+
+	clear c2
+	clear pattern
+
+	label INITIALIZE_PATTERN_LOOP
+		label this is just [0]*c1
+	
+		modify pattern with append_small_const 0
+		modify c2 with add_small_const 1
+		clear h1
+		assign h1 to c2 != c1
+		if h1 then goto INITIALIZE_PATTERN_LOOP
+	goto INCR_PATTERN_LOOP
+
+	label INCR_PATTERN_LOOP
+
+		clear c2
+
+		print pattern
+
+		label FIND_NON_TWO_VALUE_LOOP
+			clear h1
+			assign h1 to pattern index c2
+
+			print c2
+			print h1			
+
+			clear h2
+			assign h2 to h1 equals_small_const 2
+			if h2 then goto HANDLE_TWO
+			
+		modify h1 with add_small_const 1
+		modify new_pattern with append h1
+
+		label COPY_REMAINING_LOOP
+			print new_pattern
+			modify c2 with add_small_const 1
+			clear h1
+			assign h1 to c2 = c1
+			
+			if h1 then goto DONE_COPY_REMAINING_LOOP
+				
+			clear h1 
+			assign h1 to pattern index c2
+			modify new_pattern with append h1
+	
+			goto COPY_REMAINING_LOOP
+
+		label DONE_COPY_REMAINING_LOOP
+		
+		modify listofpatterns with append2 pattern
+
+		clear pattern
+		assign pattern to new_pattern list
+		clear new_pattern
+		
+		goto INCR_PATTERN_LOOP
+
+	label DONE_INCR_PATTERN
+
+	modify listofpatterns with append2 pattern
+
+	clear pattern
+	assign pattern to new_pattern list
+	clear new_pattern
+
+	modify c1 with add_small_const 1
+	clear h1
+	assign h1 to c1 != maxlengthofpatternplus1
+	
+	if h1 then goto INCR_C1_LOOP
+
+return
+
+
+
+
+
+
+					label HANDLE_TWO
+
+					modify c2 with add_small_const 1
+					modify new_pattern with append_small_const 0
+
+					clear h1 
+					assign h1 to c2 = c1
+					if h1 then goto DONE_INCR_PATTERN
+
+					goto FIND_NON_TWO_VALUE_LOOP

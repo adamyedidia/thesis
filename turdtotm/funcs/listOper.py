@@ -125,7 +125,7 @@ def listAssign(inState, outState, x, y, name, numbers=[".1", ".2", ".3", ".4", "
 
 	inState.setNextState("1", incrementXState)
 	inState.setNextState("E", moveRightXState)
-	inState.setNextState("_", getBackToStartXState)
+	inState.setNextState("_", deleteEXState)
 
 	inState.setHeadMove("1", "R")
 	inState.setHeadMove("E", "R")
@@ -139,10 +139,14 @@ def listAssign(inState, outState, x, y, name, numbers=[".1", ".2", ".3", ".4", "
 	writeEXState.setNextState("_", inState)
 	writeEXState.setWrite("_", "E")
 
+	deleteEXState.setNextState("E", getBackToStartXState)
+	deleteEXState.setHeadMove("E", "L")
+	deleteEXState.setWrite("E", "_")
+
 	getBackToStart(getBackToStartXState, getBackToStartYState)
 	getBackToStart(getBackToStartYState, outState)
 
-	return [inState, incrementXState, moveRightXState, writeEXState, getBackToStartXState, getBackToStartYState]
+	return [inState, incrementXState, moveRightXState, writeEXState, deleteEXState, getBackToStartXState, getBackToStartYState]
 
 # modify x with concat y
 def concat(inState, outState, x, y, name):
@@ -151,9 +155,11 @@ def concat(inState, outState, x, y, name):
 
 	# inState might have been called findE_YState
 	inState.tapeName = x
-	findE_Right(inState, listAssignState, returnList, name + ".1", x, False)
+	listAssignState = State(name + ".1", x)
 
-	returnList.extend(listAssign(listAssignState, outState, x, y, name, [".2", ".3", ".4", ".5", ".6", ".7"]))
+	findE_Right(inState, listAssignState, returnList, name + ".2", x, False)
+
+	returnList.extend(listAssign(listAssignState, outState, x, y, name, [".3", ".4", ".5", ".6", ".7", ".8"]))
 
 	return returnList
 

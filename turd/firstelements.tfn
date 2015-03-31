@@ -1,0 +1,19 @@
+input poslist2 neglist2 m c1 h1 firstmposlist2 firstmneglist2
+
+label finds the first m elements of a list2 of vertices
+
+clear c1
+clear firstmlist2
+
+label MAIN_LOOP
+clear h1
+assign h1 to poslist2 index2 c1
+modify firstmposlist2 with append2 h1
+clear h1
+assign h1 to neglist2 index2 c1
+modify firstmneglist2 with append2 h1
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != m
+if h1 then goto MAIN_LOOP
+return

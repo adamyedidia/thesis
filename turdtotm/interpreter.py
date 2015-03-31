@@ -36,7 +36,8 @@ def parseValue(string, currentMapping, variableDictionary):
 		else:
 #			print "string", string
 #			print "currentMapping[string]", currentMapping[string]
-			return variableDictionary[currentMapping[string]]
+			homeName = currentMapping[string]
+			return variableDictionary[homeName]
 			
 def evaluate(value1, value2, operation, lineNumber, functionName):
 	if operation == "+" or operation == "add_small_const":
@@ -92,7 +93,18 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			assert value1[0] == [] or type(value1[0][0]) == type(0)
 
 	elif operation == "concat":
-		return value1 + value2
+		if value1 == 0:
+			value1 = []
+		if value2 == 0:
+			value2 = []		
+
+		try:
+			assert type(value1) == type([])
+			assert type(value2) == type([])
+			return value1 + value2
+		except:
+			print "attempted concatenation of value", value1, "and value", value2, "on line", lineNumber, "of", functionName
+			raise
 
 	elif operation == "index":
 		try:
@@ -115,7 +127,7 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert value[0] == [] or type(value1[0][0]) == type(0)
+			assert value1[0] == [] or type(value1[0][0]) == type(0)
 			print value1[value2]
 
 	elif operation == "and":
@@ -177,8 +189,16 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		return 0
 
 	elif operation == "list":
-		assert type(value1) == type([])
-		if type(value1[0]) == type([]):
+		try:
+			assert value1 == 0 or type(value1) == type([])
+		except:
+			print "Bad list on line", lineNumber, "of", functionName, "which had value", value1
+			raise
+
+		if value1 == 0:
+			return 0
+
+		elif type(value1[0]) == type([]):
 			# do a deep copy
 			returnList = []
 			for item in value1:
@@ -189,8 +209,14 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			return value1[:]
 
 	elif operation == "length":
-		return len(value1)
-	
+		if value1 == 0:
+			value1 = []
+		try:
+			return len(value1)
+		except: 
+			print "error trying to find the length of variable of value", value1, "on line", lineNumber, "of", functionName	
+			raise
+
 	elif operation == "not":
 		if ((value1 != 0) and (value1 != 1)):
 			print "non-boolean value", value1, "in boolean expression: line", lineNumber, "of", functionName
@@ -287,7 +313,7 @@ while stepCounter < float(numSteps):
 	currentMapping = stack[-1].variableMapping	
 	currentLabelDictionary = stack[-1].labelDictionary
 
-#	print lineNumber
+#s	print lineNumber
 
 	if lineNumber == len(currentFunction) + 1:
 		if currentFunction == inpLines:
@@ -297,7 +323,11 @@ while stepCounter < float(numSteps):
 #			continue
 
 	# those stupid 1-indexed lines again
-	line = currentFunction[lineNumber - 1]
+	try:
+		line = currentFunction[lineNumber - 1]
+	except:
+		print "no return or halt statement in function", stack[-1].functionName
+		raise
 
 	lineSplit = string.split(line)
 	
@@ -322,7 +352,8 @@ while stepCounter < float(numSteps):
 
 	elif lineSplit[0] == "clear":
 		variableName = lineSplit[1]
-		variableDictionary[currentMapping[variableName]] = 0
+		homeName = currentMapping[variableName]
+		variableDictionary[homeName] = 0
 		lineNumber += 1
 
 	elif lineSplit[0] == "modify":
@@ -388,7 +419,12 @@ while stepCounter < float(numSteps):
 		lineNumber = 1
 
 	elif lineSplit[0] == "goto":
-		lineNumber = int(currentLabelDictionary[lineSplit[1]])
+		label = lineSplit[1]
+		try:
+			lineNumber = int(currentLabelDictionary[label])
+		except:
+			print "No label called", label, "in function", stack[-1].functionName
+			raise
 
 	elif lineSplit[0] == "var":
 		lineNumber += 1
@@ -424,7 +460,7 @@ while stepCounter < float(numSteps):
 		break 
 
 	else:
-		print "Error on line", lineNumber, "unrecognized first word", lineSplit[0]
+		print "Error on line", lineNumber, "of function", stack[-1].functionName, "unrecognized first word", lineSplit[0]
 		raise	
 	
 	stepCounter += 1

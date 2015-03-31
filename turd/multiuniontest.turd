@@ -1,0 +1,54 @@
+vars n i poslist2 neglist2 oldposunion oldnegunion h1 h2 h3 c1 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 posunion negunion
+
+label The input list of vertices is supposed to be [[1,5], [-3,3]]. The expected output is [-3, 0, 1, 2, 3, 5].
+
+modify n with add_small_const 3
+modify i with add_small_const 2
+
+modify h1 with append_small_const 2
+modify h1 with append_small_const 5
+
+modify poslist2 with append2 h1
+
+modify h2 with append_small_const 1
+modify h2 with append_small_const 0
+
+modify neglist2 with append2 h2
+
+modify h3 with append_small_const 2
+modify h3 with append_small_const 8
+
+modify poslist2 with append2 h3
+
+modify i1 with append_small_const 5
+modify i1 with append_small_const 5
+
+modify neglist2 with append2 i1
+
+modify i2 with add_small_const 2
+modify i3 with add_small_const 2
+modify i4 with add_small_const 2
+modify i5 with add_small_const 2
+modify i6 with add_small_const 2
+modify i7 with add_small_const 2
+modify i8 with add_small_const 2
+modify i9 with add_small_const 2
+modify i10 with add_small_const 2
+modify i11 with add_small_const 2
+modify i12 with add_small_const 2
+modify i13 with add_small_const 2
+modify i14 with add_small_const 2
+modify i15 with add_small_const 2
+modify i16 with add_small_const 2
+modify i17 with add_small_const 2
+modify posunion with add_small_const 2
+modify negunion with add_small_const 2
+modify oldposunion with add_small_const 2
+modify oldnegunion with add_small_const 2
+
+function multiunion n i poslist2 neglist2 oldposunion oldnegunion h1 h2 h3 c1 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 posunion negunion
+
+print posunion
+print negunion
+
+accept

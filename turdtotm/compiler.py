@@ -342,10 +342,14 @@ def fillTheGangs(gangDictionary):
 
 			elif gang.lineSplit[3] == "append2":
 				listOfStates.extend(append2(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
-					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))				
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))
+
+			elif gang.lineSplit[3] == "concat":
+				listOfStates.extend(concat(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))			
 
 			else:
-				print "Error on line", gang.lineNumber, "illegal operation", gang.lineSplit[3]
+				print "Error on line", gang.lineNumber, "of function", gang.stackTraceTuple[1], "illegal operation", gang.lineSplit[3]
 				raise
 	
 		

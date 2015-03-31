@@ -1,0 +1,60 @@
+input k n r posxlist negxlist pattern i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 kni8fac subsetsreduce?
+
+clear i
+modify i with add_small_const 1
+
+clear MAIN_LOOP
+
+function eightknr k n i i1 i2 kni8fac
+clear h1
+assign h1 to kni8fac > r
+if h1 then goto RETURN_TRUE
+function firstelements posxlist negxlist kni8fac i1 i2 h1 h2 
+function firstelements posxlist negxlist i i1 i2 h3 h4
+function multiunion n i h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 h5 h6
+
+label i21 is 0 if it's the first, 1 if it's the second
+clear i21
+
+label DO_TOTHELESSTHANK_TWICE
+clear i22
+if i21 goto LOAD_H6
+goto LOAD_H5
+
+label LOAD_H5
+assign i22 to h5
+goto RUN_FUNCTION
+
+label LOAD_H6
+assign i22 to h6
+goto RUN_FUNCTION
+
+label RUN_FUNCTION
+clear i20
+assign i20 to i22 length
+function tothelessthank k i22 i20 i1 i2 i3 i4 i5 i6 i7 i19
+if i21 goto UNLOAD_H4
+goto UNLOAD_H3
+
+label UNLOAD_H3
+clear h3
+assign h3 to i19
+modify i21 with add_small_const 1
+goto DO_TOTHELESSTHANK_TWICE
+
+label UNLOAD_H4
+clear h4
+assign h4 to i19
+function reduces k pattern h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 subsetsreduce?
+if subsetsreduce? goto INCR_I
+return
+
+label INCR_I
+modify i with add_small_const 1
+goto MAIN_LOOP
+
+label RETURN_TRUE
+clear subsetsreduce?
+modify subsetsreduce? with add_small_const 1
+return 
+
