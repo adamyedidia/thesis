@@ -128,7 +128,7 @@ def modulus(inState, outState, x, y, z, name):
 	getBackToStartXState = State(name + ".9", x)
 	finalGetBackToStartZState = State(name + ".10", z)
 
-	returnList = [inState, moveAlongZState, incrementXState, getBackToStartZState]
+	returnList = [inState, moveAlongYState, incrementXState, getBackToStartZState]
 
 	inState.setNextState("1", moveAlongYState)
 	inState.setNextState("E", getBackToStartZState)
@@ -146,7 +146,8 @@ def modulus(inState, outState, x, y, z, name):
 	getBackToStart(getBackToStartZState, clearXState)
 	returnList += clear(clearXState, inState, x, name, [".5", ".6", ".7"])
 	getBackToStart(getBackToStartYState, getBackToStartXState)
-	getBackToStart(getBackToStartXState, getBackToStartZState)
+	getBackToStart(getBackToStartXState, finalGetBackToStartZState)
+	getBackToStart(finalGetBackToStartZState, outState)
 
 	returnList += [getBackToStartYState, getBackToStartXState, finalGetBackToStartZState]
 

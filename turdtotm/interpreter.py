@@ -37,6 +37,7 @@ def parseValue(string, currentMapping, variableDictionary):
 #			print "string", string
 #			print "currentMapping[string]", currentMapping[string]
 			homeName = currentMapping[string]
+
 			return variableDictionary[homeName]
 			
 def evaluate(value1, value2, operation, lineNumber, functionName):

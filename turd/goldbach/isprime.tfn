@@ -1,7 +1,12 @@
-vars x c1 isPrime?
+input x c1 isPrime?
+
+label this Function can't handle having 1 get passed in
+label isPrime? is the boolean that gets set to whether or not x is prime
 
 clear c1
-modify c1 with add_small_const 2
+modify c1 with add_small_const 1
+
+goto INCR_C1
 
 label MAIN_LOOP
 clear isPrime?

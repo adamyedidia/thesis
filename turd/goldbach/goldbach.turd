@@ -1,0 +1,50 @@
+vars even_number c1 h1 h2 h3 isPrime?
+
+modify even_number with add_small_const 4
+
+label EVEN_NUMBER_LOOP
+
+	clear c1
+	modify c1 with add_small_const 2
+
+	label C1_LOOP
+
+		clear h3		
+
+		label LOAD_C1
+		clear h1
+		assign h1 to c1
+		print h1
+		goto RUN_ISPRIME
+
+		label LOAD_C2
+		modify h3 with add_small_const 1
+		clear h1
+		assign h1 to even_number
+		modify h1 with - c1
+		print h1
+		clear h2
+		assign h2 to h1 equals_small_const 1
+		if h2 then goto REJECT
+		goto RUN_ISPRIME
+		
+		label RUN_ISPRIME
+		function isprime h1 h2 isPrime?
+		if isPrime? then goto CHECK_H3
+		goto INCR_C1
+
+		label CHECK_H3
+		if h3 then goto INCR_EVEN_NUMBER
+		goto LOAD_C2
+		
+		label INCR_C1
+		modify c1 with add_small_const 1
+		goto C1_LOOP
+
+	label INCR_EVEN_NUMBER
+	modify even_number with add_small_const 2
+	print even_number
+	goto EVEN_NUMBER_LOOP
+		
+label REJECT
+reject		
