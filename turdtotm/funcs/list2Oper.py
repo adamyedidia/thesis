@@ -105,4 +105,29 @@ def index2(inState, outState, x, y, z, name):
 		moveRightXState, writeEXState, maybe1State, readOffYState, incrementXState, \
 		deleteLastEXState, getBackToStartXState, getBackToStartYState]
 	
+# assign x to y length2
+def length2(inState, outState, x, y, name):
+	
+	# inState might have been called seenEState
+	inState.tapeName = y
+	findEState = State(name + ".1", y)
+	incrementXState = State(name + ".2", x)
+	getBackToStartYState = State(name + ".3", y)
+	getBackToStartXState = State(name + ".4", x)	
 
+	inState.setNextState("1", findEState)
+	inState.setNextState("E", incrementXState)
+	inState.setNextState("_", getBackToStartYState)
+
+	inState.setHeadMove("1", "R")
+	inState.setHeadMove("E", "R")
+	inState.setHeadMove("_", "L")
+
+	findEndNo_(findEState, inState, "R")
+
+	increment(incrementXState, inState)
+
+	getBackToStart(getBackToStartYState, getBackToStartXState)
+	getBackToStart(getBackToStartXState, outState)
+
+	return [inState, findEState, incrementXState, getBackToStartYState, getBackToStartXState]

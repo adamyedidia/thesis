@@ -1,9 +1,14 @@
-input k n r posxlist negxlist pattern i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 kni8fac subsetsreduce?
+input k n r posxlist negxlist pattern i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 kni8fac subsetsreduce?
+
+label 6 inputs: k n r posxlist negxlist pattern
+label 30 internals holy crap
+
+label UNTESTED
 
 clear i
 modify i with add_small_const 1
 
-clear MAIN_LOOP
+label MAIN_LOOP
 
 function eightknr k n i i1 i2 kni8fac
 clear h1
@@ -11,7 +16,7 @@ assign h1 to kni8fac > r
 if h1 then goto RETURN_TRUE
 function firstelements posxlist negxlist kni8fac i1 i2 h1 h2 
 function firstelements posxlist negxlist i i1 i2 h3 h4
-function multiunion n i h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 h5 h6
+function multiunion n i h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 h5 h6
 
 label i21 is 0 if it's the first, 1 if it's the second
 clear i21
@@ -57,4 +62,3 @@ label RETURN_TRUE
 clear subsetsreduce?
 modify subsetsreduce? with add_small_const 1
 return 
-

@@ -1,0 +1,24 @@
+input k knr8facfac poslistofvertices neglistofvertices length h1 h2 h3 h4 c1 i1 i2 i3 i4 i5 outposlist2 outneglist2
+
+label inputs: k knr8facfac poslistofvertices neglistofvertices length
+label internals: 10 (h1 h2 h3 h4 c1 i1 i2 i3 i4 i5)
+label outputs: outposlist2 outneglist2
+
+clear outposlist2
+clear outneglist2
+
+label MAIN_LOOP
+clear h1 
+clear h2
+assign h1 to poslistofvertices index2 c1
+assign h2 to neglistofvertices index2 c1
+function ush k knr8facfac h1 h2 i1 i2 i3 i4 i5 h3 h4 
+modify outposlist2 with append h3
+modify outneglist2 with append h4
+
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != length
+if h1 then goto MAIN_LOOP
+
+return

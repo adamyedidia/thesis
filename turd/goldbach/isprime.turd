@@ -1,0 +1,18 @@
+vars x c1 isPrime?
+
+clear c1
+modify c1 with add_small_const 2
+
+label MAIN_LOOP
+clear isPrime?
+assign isPrime? to x % c1
+if isPrime? then goto INCR_C1
+return
+
+label INCR_C1
+modify c1 with add_small_const 1
+clear isPrime?
+assign isPrime? to c1 != x
+if isPrime? then goto MAIN_LOOP
+modify isPrime? with add_small_const 1
+return

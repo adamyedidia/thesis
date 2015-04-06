@@ -1,10 +1,12 @@
-inputs n h1 c1 rangen
+input n h1 c1 rangen
+
+label UNTESTED
 
 clear c1
 clear rangen
 
 label MAIN_LOOP
-modify rangen with append c2
+modify rangen with append c1
 modify c1 with add_small_const 1
 clear h1 
 assign h1 to c1 != n

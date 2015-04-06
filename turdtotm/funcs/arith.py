@@ -1,5 +1,6 @@
 from stateTemplates import *
 from state import *
+from clear import *
 
 # modify x with + y
 def add(inState, outState, x, y, name):
@@ -84,7 +85,7 @@ def multiply(inState, outState, x, y, z, lineNumber):
 # assign x to y / z
 def divide(inState, outState, x, y, z, name):
 
-	#inState might have been called moveAlongYState
+	# inState might have been called moveAlongYState
 	inState.tapeName = y
 	moveAlongZState = State(name + ".1", z)
 	getBackToStartZState = State(name + ".2", z)
@@ -114,4 +115,39 @@ def divide(inState, outState, x, y, z, name):
 	return [inState, moveAlongZState, getBackToStartZState, incrementXState, \
 		getBackToStartYState, finalGetBackToStartZState, getBackToStartXState]
 
-	
+# assign x to y % z
+def modulus(inState, outState, x, y, z, name):
+
+	# inState might have been called moveAlongZState
+	inState.tapeName = z
+	moveAlongYState = State(name + ".1", y)
+	incrementXState = State(name + ".2", x)
+	getBackToStartZState = State(name + ".3", z)
+	clearXState = State(name + ".4", x)
+	getBackToStartYState = State(name + ".8", y)
+	getBackToStartXState = State(name + ".9", x)
+	finalGetBackToStartZState = State(name + ".10", z)
+
+	returnList = [inState, moveAlongZState, incrementXState, getBackToStartZState]
+
+	inState.setNextState("1", moveAlongYState)
+	inState.setNextState("E", getBackToStartZState)
+
+	inState.setHeadMove("1", "R")
+	inState.setHeadMove("E", "L")
+
+	moveAlongYState.setNextState("1", incrementXState)
+	moveAlongYState.setNextState("E", getBackToStartYState)
+
+	moveAlongYState.setHeadMove("1", "R")
+	moveAlongYState.setHeadMove("E", "L")
+
+	increment(incrementXState, inState)
+	getBackToStart(getBackToStartZState, clearXState)
+	returnList += clear(clearXState, inState, x, name, [".5", ".6", ".7"])
+	getBackToStart(getBackToStartYState, getBackToStartXState)
+	getBackToStart(getBackToStartXState, getBackToStartZState)
+
+	returnList += [getBackToStartYState, getBackToStartXState, finalGetBackToStartZState]
+
+	return returnList

@@ -1,0 +1,100 @@
+input m permutation new_permutation h1 h2 c1 c2 listofpermutations lengthlist
+
+label outputs a list of all the permutations of range(m). So permutations(3) is [[0,1,2], [0,2,1], [1,0,2], [1,2,0], [2,0,1], [2,1,0]]. Also outputs m! to boot.
+
+clear c2
+clear listofpermutations
+clear permutation
+clear new_permutation
+clear lengthlist
+
+label INITIALIZE_PERMUTATION_LOOP
+	label this is just [0]*m
+
+	modify permutation with append_small_const 0
+	modify c2 with add_small_const 1
+	clear h1
+	assign h1 to c2 != m
+	if h1 then goto INITIALIZE_PERMUTATION_LOOP
+	goto INCR_PERMUTATION_LOOP
+
+label INCR_PERMUTATION_LOOP
+	clear c2
+
+	label FIND_NON_M_MINUS_ONE_VALUE_LOOP
+		clear h1
+		assign h1 to permutation index c2
+		modify h1 with add_small_const 1
+
+		clear h2
+		assign h2 to h1 = m
+
+		if h2 then goto HANDLE_M_MINUS_ONE
+
+	modify new_permutation with append h1
+
+	label COPY_REMAINING_LOOP
+		modify c2 with add_small_const 1
+		clear h1
+		assign h1 to c2 = m
+		
+		if h1 then goto DONE_COPY_REMAINING_LOOP
+
+		clear h1
+		assign h1 to permutation index c2
+		modify new_permutation with append h1
+
+		goto COPY_REMAINING_LOOP
+
+	label DONE_COPY_REMAINING_LOOP
+
+	clear c1
+
+	label CHECK_VALID_PERMUTATION_LOOP
+		label for each value, make sure the value is in the permutation
+		clear c2
+		label DOES_CONTAIN_C1_LOOP
+			clear h1
+			assign h1 to permutation index c2
+		
+			clear h2
+			assign h2 to h1 = c1
+			
+			if h2 then goto INCR_C1
+		
+			modify c2 with add_small_const 1
+			clear h1
+			assign h1 to c2 != m
+
+			if h1 then goto DOES_CONTAIN_C1_LOOP
+			label otherwise the permutation is garbage
+			goto FINAL_PROCESSING
+
+		label INCR_C1
+		modify c1 with add_small_const 1
+		clear h1
+		assign h1 to c1 != m
+		if h1 then goto CHECK_VALID_PERMUTATION_LOOP
+
+		modify listofpermutations with append2 permutation
+		modify lengthlist with add_small_const 1
+		goto FINAL_PROCESSING
+
+	label FINAL_PROCESSING
+	
+	clear permutation
+	assign permutation to new_permutation list
+	clear new_permutation
+	
+	goto INCR_PERMUTATION_LOOP
+
+label HANDLE_M_MINUS_ONE
+
+modify c2 with add_small_const 1
+modify new_permutation with append_small_const 0
+
+clear h1
+assign h1 to c2 != m
+
+if h1 then goto FIND_NON_M_MINUS_ONE_VALUE_LOOP
+return

@@ -31,12 +31,12 @@ def clearOld(inState, outState, x, lineNumber):
 	
 	return [inState, clearState, writeEndState]
 
-def clear(inState, outState, x, lineNumber):
+def clear(inState, outState, x, lineNumber, names=[".1", ".2", ".3"]):
 	inState.tapeName = x
 
-	clearState = State(str(lineNumber) + ".1", x)
-	leftState = State(str(lineNumber) + ".2", x)
-	checkState = State(str(lineNumber) + ".3", x)
+	clearState = State(str(lineNumber) + names[0], x)
+	leftState = State(str(lineNumber) + names[1], x)
+	checkState = State(str(lineNumber) + names[2], x)
 
 	findSymbol(inState, "_", "R", "L", leftState)
 

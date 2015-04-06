@@ -5,7 +5,12 @@ var r
 var knr8
 var notEqual
 var holder1
-modify knr_limit with add_small_const 1
+
+modify k with add_small_const 1
+modify n with add_small_const 1
+modify r with add_small_const 1
+
+modify knr_limit with add_small_const 2
 label MAKE_LIMIT_INCREASE
 	clear k
 	label I need to change this later

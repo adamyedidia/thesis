@@ -3,7 +3,8 @@ input poslist2 neglist2 m c1 h1 firstmposlist2 firstmneglist2
 label finds the first m elements of a list2 of vertices
 
 clear c1
-clear firstmlist2
+clear firstmposlist2
+clear firstmneglist2
 
 label MAIN_LOOP
 clear h1

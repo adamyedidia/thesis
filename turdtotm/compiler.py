@@ -82,7 +82,7 @@ def scanForVariablesAndLabels():
 		
 	return variableSet, labelDictionary
 
-def getLabelDictionary(functionName):
+def getLabelDictionary(functionName, lineNumber, outerFunction):
 	labelDictionary = {}
 	
 	# stupid 1-indexed line numbers
@@ -93,7 +93,11 @@ def getLabelDictionary(functionName):
 		codeLines = open(path, "r").readlines()
 	else:
 #		print functionName
-		codeLines = open(directory + functionName + ".tfn", "r").readlines()
+		try:
+			codeLines = open(directory + functionName + ".tfn", "r").readlines()
+		except:
+			print "Bad function call on line", lineNumber, "of function", outerFunction, "no such function as", functionName
+			raise
 
 	for line in codeLines:
 		lineSplit = string.split(line)
@@ -178,11 +182,18 @@ def convertStatesToString(listOfStates, variableSet):
 		
 		output.write("\n")
 		
-def getMapping(functionName, lineSplit, oldMapping):
+def getMapping(functionName, lineSplit, oldMapping, lineNumber, outerFunction):
 	firstLineSplit = string.split(open(directory + functionName + ".tfn", "r").readlines()[0])
 
 	mapping = {}
 	
+	try:
+		assert len(firstLineSplit[1:]) == len(lineSplit[2:])
+	except:
+		print "Mismatched input lengths on line", lineNumber, "of function", outerFunction, \
+			"function call has", len(lineSplit[2:]), "function declaration has", len(firstLineSplit[1:])
+		raise
+
 	for i, variableName in enumerate(firstLineSplit[1:]):
 		mapping[variableName] = oldMapping[lineSplit[2 + i]]
 
@@ -207,8 +218,8 @@ def createTheGangDictionary(functionName, stackTraceTuple, labelDictionary, mapp
 
 			gangDictionary = dict(gangDictionary, **createTheGangDictionary(lineSplit[1], 
 				(lineNumber + 1, functionName, 
-				stackTraceTuple), getLabelDictionary(lineSplit[1]), 
-				getMapping(lineSplit[1], lineSplit, mapping)))
+				stackTraceTuple), getLabelDictionary(lineSplit[1], lineNumber, functionName), 
+				getMapping(lineSplit[1], lineSplit, mapping, lineNumber, functionName)))
 
 	#	print (lineNumber, functionName, stackTraceTuple)
 		gangDictionary[(lineNumber, functionName, stackTraceTuple)] = Gang(line, lineNumber, 
@@ -256,6 +267,11 @@ def fillTheGangs(gangDictionary):
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
 					convertStackTraceTupleToName(gang.stackTraceTuple)))
 					
+			elif gang.lineSplit[4] == "%":
+				listOfStates.extend(modulus(gang.inState, outState, gang.mapping[gang.lineSplit[1]], 
+					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
+					convertStackTraceTupleToName(gang.stackTraceTuple)))
+
 			elif gang.lineSplit[4] == "=":
 				listOfStates.extend(assignEquals(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					gang.mapping[gang.lineSplit[3]], gang.mapping[gang.lineSplit[5]], 
@@ -311,6 +327,10 @@ def fillTheGangs(gangDictionary):
 				listOfStates.extend(length(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
 					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))
 
+			elif gang.lineSplit[4] == "length2":
+				listOfStates.extend(length(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
+					gang.mapping[gang.lineSplit[3]], convertStackTraceTupleToName(gang.stackTraceTuple)))				
+
 			else:
 				print "Error on line", gang.lineNumber, "illegal operation", gang.lineSplit[4]
 				raise
@@ -334,7 +354,7 @@ def fillTheGangs(gangDictionary):
 
 			elif gang.lineSplit[3] == "append":
 				listOfStates.extend(append(gang.inState, outState, gang.mapping[gang.lineSplit[1]],
-					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))
+					gang.mapping[gang.lineSplit[4]], convertStackTraceTupleToName(gang.stackTraceTuple)))		
 
 			elif gang.lineSplit[3] == "append_small_const":
 				listOfStates.extend(appendSmallConst(gang.inState, outState, gang.mapping[gang.lineSplit[1]],

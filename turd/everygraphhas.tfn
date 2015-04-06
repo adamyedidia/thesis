@@ -1,0 +1,94 @@
+input k n r listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 
+
+label inputs: k, n, r
+label no outputs. Just halts if something fails to happen.
+
+clear i1
+label setting i1 to 2k+1
+assign i1 to k
+modify i1 with + k
+modify i1 with add_small_const 1
+
+function patterngen i1 i2 i3 i4 i5 i6 i7 listofpatterns
+clear numpatterns
+assign numpatterns to listofpatterns length
+
+function eightknr k n r i1 i2 knr8fac
+function factorial knr8fac i1 knr8facfac
+
+label assembling iList and jList
+function range knr8fac i2 i3 i1
+clear i2
+assign i2 to i1
+modify i1 with concat i2
+clear i2
+assign i2 to i1
+
+label Assembling neg? = [0]*8knr! + [1]*8knr!
+clear c1
+clear i4
+clear i3
+label ASSEMBLING_NEG_LOOP
+	modify i3 with append i4
+	clear i5 
+	assign i5 to c1 != knr8fac
+	if i5 then goto ASSEMBLING_NEG_LOOP
+	modify i4 with add_small_const 1
+	clear c1
+	clear i5
+	assign i5 to i4 equals_small_const 1
+	if i5 then goto ASSEMBLING_NEG_LOOP	
+
+function vertexgen i1 i2 i3 k knr8facfac i4 i5 i6 i7 i8 i9 poslist neglist
+
+clear i1
+assign i1 to poslist length
+
+function sort i1 poslist neglist i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17
+
+label ok time to do the tothelessthank for each of the positive and negative parts with the awkward loading method
+
+clear i11
+
+label LOAD_POS
+clear i2
+assign i2 to i16
+goto DO_TOTHELESSTHANK
+
+label LOAD_NEG
+clear i2
+assign i2 to i17
+goto DO_TOTHELESSTHANK
+
+label DO_TOTHELESSTHANK
+function tothelessthank k i2 i1 i3 i4 i5 i6 i7 i8 i9 i10
+if i11 then goto UNLOAD_NEG
+goto UNLOAD_POS
+
+label UNLOAD_POS
+clear posgraph
+assign posgraph to i10
+modify i11 with add_small_const 1
+goto LOAD_NEG
+
+label UNLOAD_NEG
+clear neggraph
+assign neggraph to i10
+
+clear graphsize 
+assign graphsize to posgraph length2
+
+clear c1
+label PATTERN_LOOP
+	clear pattern 
+	assign pattern to listofpatterns index c1
+	
+	function hasafree k n r knr8facfac posgraph neggraph pattern graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+
+	modify c1 with add_small_const 1
+	clear i1 
+	assign i1 to c1 != numpatterns
+	
+	if i1 then goto PATTERN_LOOP
+
+return

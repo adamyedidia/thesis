@@ -1,7 +1,8 @@
 input k n r holder1 holder2 holder3
 clear holder1
 clear holder2
-modify holder1 with add_small_const 8
+modify holder1 with add_small_const 1
+label REMEMBER TO CHANGE THIS BACK TO AN 8!!
 assign holder2 to k * holder1
 clear holder1
 assign holder1 to n * holder2

@@ -1,0 +1,16 @@
+vars m permutation new_permutation h1 h2 c1 c2 listofpermutations
+
+modify m with add_small_const 3
+modify permutation with add_small_const 2
+modify new_permutation with add_small_const 2
+modify h1 with add_small_const 2
+modify h2 with add_small_const 2
+modify c1 with add_small_const 2
+modify c2 with add_small_const 2
+modify listofpermutations with add_small_const 2
+
+function permutations m permutation new_permutation h1 h2 c1 c2 listofpermutations
+
+print listofpermutations
+
+accept

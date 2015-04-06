@@ -2,6 +2,7 @@ input maxlengthofpatternplus1 c1 c2 h1 h2 pattern new_pattern listofpatterns
 
 clear c1
 clear listofpatterns
+clear new_pattern
 modify c1 with add_small_const 1
 
 label INCR_C1_LOOP
@@ -23,14 +24,9 @@ label INCR_C1_LOOP
 
 		clear c2
 
-		print pattern
-
 		label FIND_NON_TWO_VALUE_LOOP
 			clear h1
-			assign h1 to pattern index c2
-
-			print c2
-			print h1			
+			assign h1 to pattern index c2			
 
 			clear h2
 			assign h2 to h1 equals_small_const 2
@@ -40,7 +36,6 @@ label INCR_C1_LOOP
 		modify new_pattern with append h1
 
 		label COPY_REMAINING_LOOP
-			print new_pattern
 			modify c2 with add_small_const 1
 			clear h1
 			assign h1 to c2 = c1

@@ -37,7 +37,12 @@ class Gang:
 #			print mapping
 #			print lineNumber
 #			print functionName
-			inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]]) 
+		
+			try:	
+				inState = State(convertStackTraceTupleToName(self.stackTraceTuple) + ".0", mapping[lineSplit[1]]) 
+			except:
+				print "Error: unrecognized variable", lineSplit[1], "on line", lineNumber, "of function", functionName
+				raise
 			self.inState = inState
 			self.firstOutStateStackTrace = (lineNumber + 1, functionName, stackTraceTuple)
 			self.secondOutStateStackTrace = None
@@ -84,6 +89,7 @@ class Gang:
 			self.secondOutStateStackTrace = None
 
 		else:
+			print "Error on line", lineNumber, "of function", functionName, "unrecognized first word", lineType
 			raise
 			
 class SimpleState:

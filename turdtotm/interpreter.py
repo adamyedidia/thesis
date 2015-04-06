@@ -57,6 +57,9 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 	elif operation == "/":
 		return value1 / value2
 
+	elif operation == "%":
+		return value1 % value2
+
 	elif operation == "append" or operation == "append_small_const":
 		try:
 			assert type(value2) == type(0)
@@ -211,6 +214,19 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 	elif operation == "length":
 		if value1 == 0:
 			value1 = []
+		assert type(value1) == type([])
+		assert value1 == [] or type(value1[0]) == type(0)
+		try:
+			return len(value1)
+		except: 
+			print "error trying to find the length of variable of value", value1, "on line", lineNumber, "of", functionName	
+			raise
+
+	elif operation == "length2":
+		if value1 == 0:
+			value1 = []
+		assert type(value1) == type([])
+		assert value1 == [] or type(value1[0]) == type([])
 		try:
 			return len(value1)
 		except: 
@@ -231,7 +247,7 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		print "Error on line", lineNumber, "illegal operation", operation
 		raise
 
-def getLabelDictionary(functionLines):
+def getLabelDictionary(functionLines, functionName):
 	labelDictionary = {}
 	lineNumber = 1
 
@@ -253,7 +269,7 @@ def getLabelDictionary(functionLines):
 	return labelDictionary
 
 # maps from labels to line numbers
-homeLabelDictionary = getLabelDictionary(inpLines)
+homeLabelDictionary = getLabelDictionary(inpLines, "main")
 
 # figure out what the variables and functions are 
 for line in inpLines:
@@ -398,7 +414,7 @@ while stepCounter < float(numSteps):
 	elif lineSplit[0] == "function":
 #		print lineSplit
 		functionLines = open(directory + lineSplit[1] + ".tfn", "r").readlines()
-		labelDictionary = getLabelDictionary(functionLines)
+		labelDictionary = getLabelDictionary(functionLines, lineSplit[1])
 		firstLine = string.split(functionLines[0])
 		variableMapping = {}
 		for i, variableName in enumerate(firstLine[1:]):

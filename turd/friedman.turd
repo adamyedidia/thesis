@@ -1,0 +1,37 @@
+var knr_limit
+var k
+var n
+var r
+vars listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+
+label this is the top level program
+label it has no inputs, no outputs, and uses 56 variables. Damn!
+modify k with add_small_const 1
+modify n with add_small_const 1
+modify r with add_small_const 1
+
+modify knr_limit with add_small_const 2
+label MAKE_LIMIT_INCREASE
+	clear k
+	label I need to change this later
+	label MAKE_K_BIGGER
+		clear n
+		label MAKE_N_BIGGER
+			clear r
+			label MAKE_R_BIGGER
+				function everygraphhas k n r listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+				
+				modify r with add_small_const 1
+				clear i1
+				assign i1 to r != knr_limit
+				if i1 then goto MAKE_R_BIGGER
+			modify n with add_small_const 1
+			clear i1
+			assign i1 to n != knr_limit
+			if i1 then goto MAKE_N_BIGGER
+		modify k with add_small_const 1
+		clear i1
+		assign i1 to k != knr_limit
+		if i1 then goto MAKE_K_BIGGER
+	modify knr_limit with add_small_const 1
+	goto MAKE_LIMIT_INCREASE

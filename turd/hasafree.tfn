@@ -1,0 +1,121 @@
+input k n r knr8facfac posgraph neggraph pattern size h1 h2 h3 h4 h5 c1 one_count future_one_count posrvertices negrvertices indic future_indic i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29
+
+label takes as input a graph, and rejects if that graph doesn't contain a proper thingy. THIS IS THE FUNCTION WITH A HALT STATEMENT!
+label inputs are k n r knr8facfac posgraph neggraph pattern size
+label 40 internals
+label no outputs
+
+clear one_count
+clear future_one_count
+clear c1
+clear indic
+clear future_indic
+
+label one_count tracks the number of 1's in indic/new_indic
+label this loop treats indic as a size-bit binary number
+label SIZE MUST NOT BE ZERO!!
+
+label INIT_INDIC_LOOP
+modify indic with append_small_const 0
+clear h1
+modify c1 with add_small_const 1
+assign h1 to c1 != size
+if h1 then goto INIT_INDIC_LOOP
+clear c1
+goto FIND_EMPTY_SLOT_LOOP
+
+label FIND_EMPTY_SLOT_LOOP
+clear h1
+assign h1 to indic index c1
+modify c1 with add_small_const 1
+if h1 then goto DEAL_WITH_ONE
+goto DEAL_WITH_ZERO
+
+label DEAL_WITH_ZERO
+modify future_indic with append_small_const 1
+modify future_one_count with add_small_const 1
+print future_one_count
+print future_indic
+goto COPY_REMAINING_ENTRIES_LOOP
+
+label DEAL_WITH_ONE
+modify future_indic with append_small_const 0
+modify future_one_count with sub_small_const 1
+print future_one_count
+print future_indic
+clear h1 
+assign h1 to c1 = size
+if h1 goto REJECT
+goto FIND_EMPTY_SLOT_LOOP
+
+label COPY_REMAINING_ENTRIES_LOOP
+clear h1
+assign h1 to c1 = size
+if h1 then goto HANDLE_END_WORK
+clear h1
+assign h1 to indic index c1
+modify future_indic with append h1
+modify c1 with add_small_const 1
+goto COPY_REMAINING_ENTRIES_LOOP
+
+label HANDLE_END_WORK
+clear h1
+assign h1 to one_count != r
+if h1 then goto MAPPING_COMPLETE
+goto DO_MAPPING
+label MAPPING_COMPLETE
+clear one_count
+assign one_count to future_one_count
+clear indic
+assign indic to future_indic list
+clear future_indic
+clear c1
+goto FIND_EMPTY_SLOT_LOOP
+
+label DO_MAPPING
+function map2 posgraph indic size h1 c1 one_count posrvertices
+function map2 neggraph indic size h1 c1 one_count negrvertices
+
+function permutations r i1 i2 i3 i4 i5 i6 h1 h2
+
+
+clear c1
+label TRY_ALL_PERMUTATIONS_LOOP
+
+	clear i1
+	assign i1 to h1 index c1
+	label i1 here is a single permutation		
+
+	function indexmap r i1 posrvertices negrvertices i2 i3 i4 h3 h4
+	function subsetsreduce k n r h3 h4 pattern i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 c1 one_count i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 h5
+
+	if h5 then goto SEE_IF_ITS_INDEPENDENT
+	goto TRY_NEXT_PERMUTATION
+	label SEE_IF_ITS_INDEPENDENT
+
+	function ush2 k knr8facfac posrvertices negrvertices r i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 h3 h4
+	modify posrvertices with concat h3
+	modify negrvertices with concat h4
+	clear h3
+	assign h3 to r
+	modify h3 with + r
+	label h3 = 2r
+
+	function isfree posrvertices negrvertices pattern h3 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 h5
+	if h5 then goto RETURN
+	label we've found one!
+	goto TRY_NEXT_PERMUTATION
+	
+	label TRY_NEXT_PERMUTATION
+	modify c1 with add_small_const 1
+	clear h3
+	assign h3 to c1 != h2
+	if h3 then goto TRY_ALL_PERMUTATIONS_LOOP
+
+	goto MAPPING_COMPLETE
+
+label RETURN
+return
+
+label REJECT
+reject
