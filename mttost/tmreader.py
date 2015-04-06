@@ -4,6 +4,49 @@ from tmsim import *
 from stateTemplates import *
 from constantsTurdToTM import *
 
+def convertNumberToBarCode(number):
+	barCode = ""	
+	newBarCode = ""
+	barCodeIndexCounter = 0
+
+	overallCounter = 0
+	
+	incrementing = True
+
+	while overallCounter < number:
+		if incrementing:
+			if barCodeIndexCounter == len(barCode):
+				newBarCode += "H"
+				barCodeIndexCounter = 0
+				overallCounter += 1
+				barCode = newBarCode
+				newBarCode = ""
+				incrementing = True	
+
+			elif barCode[barCodeIndexCounter] == "H":
+				newBarCode += "1"
+				barCodeIndexCounter += 1
+				incrementing = False
+			
+			elif barCode[barCodeIndexCounter] == "1":	
+				newBarCode += "H"
+				barCodeIndexCounter += 1
+
+		else:
+			if barCodeIndexCounter == len(barCode):
+				barCodeIndexCounter = 0
+				overallCounter += 1
+				barCode = newBarCode
+				newBarCode = ""
+				incrementing = True
+
+			else:
+				newBarCode += barCode[barCodeIndexCounter]
+				barCodeIndexCounter += 1
+
+	return barCode
+				
+
 def convertStatesToString(listOfStates, output):
 
 	numberOfStates = len(listOfStates)
@@ -49,8 +92,11 @@ def initializeTape(variableSet, listOfStates):
 		# Write the variable name value
 		prevState = processInitState(variable + "_init_name.0", "_", prevState, listOfStates)
 		prevState = processInitState(variable + "_init_name.1", "_", prevState, listOfStates)
-		for i in range(variableCounter):
-			prevState = processInitState(variable + "_init_name." + str(i+2), "1", prevState, listOfStates)
+
+		variableBarCode = convertNumberToBarCode(variableCounter)
+
+		for i, char in enumerate(variableBarCode):
+			prevState = processInitState(variable + "_init_name." + str(i+2), char, prevState, listOfStates)
 		prevState = processInitState(variable + "_init_name." + str(variableCounter+2), "E", prevState, listOfStates)
 
 		# Write the variable head location (1)
@@ -137,9 +183,11 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	decisionState.setNextState("_", outState)
 	listOfStates.append(decisionState)
 
+	barCode = convertNumberToBarCode(outerStateTapeNumber)
+
 	# initialize the countin' states (make sure the variable's the right one!
-	for i in range(outerStateTapeNumber+1):
-		if not i == outerStateTapeNumber:
+	for i in range(len(barCode)+1):
+		if not i == len(barCode):
 			listOfCountOnesStates.append(State(name + "_return_var_count_" + str(i), None, alphabetMTToST()))
 #			print "Adding", listOfCountOnesStates[i].stateName
 			listOfStates.append(listOfCountOnesStates[i])
@@ -149,12 +197,13 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 
 	# startCountState is a the state that gets pointed to once we see the right number of E's
 
-	listOfCountOnesStates[outerStateTapeNumber] = decisionState
+	listOfCountOnesStates[len(barCode)] = decisionState
 	startCountState = listOfCountOnesStates[0]
-	for i in range(outerStateTapeNumber):
+	for i in range(len(barCode)):
 #			print "Connecting to", listOfCountOnesStates[i+1]
-		listOfCountOnesStates[i].setNextState("1", listOfCountOnesStates[i+1])
-		listOfCountOnesStates[i].setNextState("_", branchState)
+		listOfCountOnesStates[i].setAllNextStates(branchState)
+		listOfCountOnesStates[i].setNextState("E", SimpleState("ERROR"))
+		listOfCountOnesStates[i].setNextState(barCode[i], listOfCountOnesStates[i+1])
 		listOfCountOnesStates[i].setAllHeadMoves("L")
 	
 	# first we need to get to the point where we're reading a variable number
@@ -307,8 +356,11 @@ def moveHeadLeft(name, branchState, readSymbol, writtenSymbol, listOfStates, out
 	return outState
 	
 def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
-	findSymbol(branchState, "H", "R", "R", outState)
+	seenEState = State(name + "_go_to_tape_head_seen_E", None, alphabetMTToST())
+	findSymbol(branchState, "E", "R", "R", seenEState)
+	findSymbol(seenEState, "H", "R", "R", outState)
 	listOfStates.append(branchState)
+	listOfStates.append(seenEState)
 
 # This is the most confusing function in this file. A lot of weird 
 # stuff needs to happen in order to rewrite the stuff that was on the tape.
