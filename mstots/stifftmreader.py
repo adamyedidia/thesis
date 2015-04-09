@@ -99,7 +99,7 @@ def makeStateReadTree(name, inState, listSize, reverseSymbolMapping, listOfState
 			stateList.insert(indexCounter, currentState)
 
 			previousState.setNextState(symbol, currentState)
-			
+		
 			previousState.setHeadMove(symbol, "R")
 
 			indexCounter += 1
@@ -202,9 +202,16 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
 
 		# at this point, I'm at position 0.
 		if outerHeadMove == "-":
-			# Then I'm exactly where I want to be! Whoo!
-			currentState.setAllNextStates(coreStateDictionary[nextOuterState.stateName])
-			currentState.setAllHeadMoves("-")
+			# Then I need to go back and forth so I can read the stuff I'm writing T_T
+			backAndForthState = State(name + "_back_and_forth", None, alphabetMSToTS())
+
+			currentState.setAllNextStates(backAndForthState)
+			currentState.setAllHeadMoves("R")
+
+			backAndForthState.setAllNextStates(coreStateDictionary[nextOuterState.stateName])
+			backAndForthState.setAllHeadMoves("L")
+
+			listOfStates.append(backAndForthState)
 			
 		elif outerHeadMove == "L":
 
@@ -230,17 +237,17 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
 			raise
 
 	else:
-		# no symbol was written! 
+		# no symbol was written!
 		if outerHeadMove == "-":
 			# We need to get back to the start of the symbol.
-			moveState = State(name + "_move.1", None, alphabetMSToTS())
 			
+			# THIS IS BREAKING GENERALITY; ASSUMPTION IS THAT WORDSIZE = 2.
+			# SHOULD I LATER CHANGE MY MIND ABOUT THIS, I WILL WANT TO SWITCH
+			# BACK TO STANDARD TMREADER.PY
+
 			for symbol in conditions:
-				inState.setNextState(symbol, moveState)
+				inState.setNextState(symbol, coreStateDictionary[nextOuterState.stateName])
 				inState.setHeadMove(symbol, "L")
-			
-			listOfStates.extend(moveBy(moveState, name,
-				wordLength - 2, "L", coreStateDictionary[nextOuterState.stateName], alphabetMSToTS()))
 
 		elif outerHeadMove == "L":
 			moveState = State(name + "_move.1", None, alphabetMSToTS())
@@ -270,6 +277,7 @@ if __name__ == "__main__":
 	outerStartState = sttm.startState
 
 	symbolMapping, reverseSymbolMapping = getSymbolMapping()
+#	print symbolMapping
 	wordLength = len(symbolMapping["_"])
 
 	for outerState in sttm.listOfRealStates:

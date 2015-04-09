@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
 	if runType == "all" or intRunType >= 3:
 		print "Transforming the single-tape, multi-symbol Turing machine into a single-tape, two-symbol Turing machine..."
-		os.system("python ../mstots/tmreader.py stmstm.txt sttstm.txt")
+		os.system("python ../mstots/stifftmreader.py stmstm.txt sttstm.txt")
 
 	if runType == "all" or intRunType == 3:
 		print "Simulating the single-tape, two-symbol Turing machine..."
