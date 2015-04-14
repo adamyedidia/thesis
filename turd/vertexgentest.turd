@@ -1,0 +1,34 @@
+vars iList jList neg?List k knr8facfac counter1 i j neg? pospart negpart pospartList negpartList
+
+modify iList with append_small_const 3 
+modify iList with append_small_const 5
+modify iList with append_small_const 2
+
+modify jList with append_small_const 2
+modify jList with append_small_const 3
+modify jList with append_small_const 3
+
+modify neg?List with append_small_const 0
+modify neg?List with append_small_const 1
+modify neg?List with append_small_const 0 
+
+modify k with add_small_const 3
+
+modify knr8facfac with add_small_const 6
+
+modify counter1 with append_small_const 3
+modify i with append_small_const 3
+modify j with append_small_const 3
+modify neg? with append_small_const 3
+modify pospart with append_small_const 3
+modify negpart with append_small_const 3
+modify pospartList with add_small_const 3
+modify negpartList with add_small_const 3
+
+function vertexgen iList jList neg?List k knr8facfac counter1 i j neg? pospart negpart pospartList negpartList
+
+print pospartList
+label I expect this to output [9, 0, 4]
+print negpartList
+label i expect this to output [0, 10, 0]
+

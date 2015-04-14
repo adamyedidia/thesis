@@ -63,17 +63,17 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 
 	elif operation == "append" or operation == "append_small_const":
 		try:
-			assert type(value2) == type(0)
+			assert isinstance(value2, ( int, long ) )
 			if value1 == 0:
 				return [value2]
 			assert type(value1) == type([])
-			assert type(value1[0]) == type(0)
+			assert isinstance(value1[0], ( int, long ) )
 			return value1 + [value2]
 		except:
 			print "bad list on line", lineNumber, "of", functionName
-			assert type(value2) == type(0)
+			assert isinstance(value2, ( int, long ) )
 			assert type(value1) == type([])
-			assert type(value1[0]) == type(0)
+			assert isinstance(value1[0], ( int, long ) )
 
 	elif operation == "append2":
 		if value2 == 0:
@@ -81,20 +81,20 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		try:
 			# might be empty list, and empty list looks the same as 0 :P
 			assert type(value2) == type([])
-			assert value2 == [] or type(value2[0]) == type(0)
+			assert value2 == [] or isinstance(value2[0], ( int, long ) )
 			if value1 == 0:
 				return [value2]
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert value1[0] == [] or type(value1[0][0]) == type(0)
+			assert value1[0] == [] or isinstance(value1[0][0], ( int, long ) )
 			return value1 + [value2]
 		except:
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value2) == type([])
-			assert value2 == [] or type(value2[0]) == type(0)
+			assert value2 == [] or isinstance(value2[0], ( int, long ) )
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert value1[0] == [] or type(value1[0][0]) == type(0)
+			assert value1[0] == [] or isinstance(value1[0][0], ( int, long ) )
 
 	elif operation == "concat":
 		if value1 == 0:
@@ -113,25 +113,25 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 	elif operation == "index":
 		try:
 			assert type(value1) == type([])
-			assert type(value1[0]) == type(0)
+			assert isinstance(value1[0], ( int, long ) )
 			return value1[value2]
 		except:
 			print "bad list on line", lineNumber, "of", functionName
 			assert type(value1) == type([])
-			assert type(value1[0]) == type(0)
+			assert isinstance(value1[0], ( int, long ) )
 			print value2, value1, value1[value2]	
 
 	elif operation == "index2":
 		try:
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert value1[0] == [] or type(value1[0][0]) == type(0)
+			assert value1[0] == [] or isinstance(value1[0][0], ( int, long ) )
 			return value1[value2]
 		except:
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
-			assert value1[0] == [] or type(value1[0][0]) == type(0)
+			assert value1[0] == [] or isinstance(value1[0][0], ( int, long ) )
 			print value1[value2]
 
 	elif operation == "and":
@@ -171,8 +171,11 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		return 0
 	
 	elif operation == "=" or operation == "equals_small_const":
+#		print value1
+#		print value2
+
 		try:
-			assert type(value1) == type(0)
+			assert isinstance(value1, ( int, long ) )
 		except:
 			print "Error: attempted use of = on two lists on line", lineNumber, "of", functionName
 			raise
@@ -215,9 +218,9 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 	elif operation == "length":
 		if value1 == 0:
 			value1 = []
-		assert type(value1) == type([])
-		assert value1 == [] or type(value1[0]) == type(0)
 		try:
+			assert type(value1) == type([])
+			assert value1 == [] or isinstance(value1[0], ( int, long ) )
 			return len(value1)
 		except: 
 			print "error trying to find the length of variable of value", value1, "on line", lineNumber, "of", functionName	
@@ -226,12 +229,12 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 	elif operation == "length2":
 		if value1 == 0:
 			value1 = []
-		assert type(value1) == type([])
-		assert value1 == [] or type(value1[0]) == type([])
 		try:
+			assert type(value1) == type([])
+			assert value1 == [] or isinstance(value1[0], (list) )
 			return len(value1)
 		except: 
-			print "error trying to find the length of variable of value", value1, "on line", lineNumber, "of", functionName	
+			print "error trying to find the length2 of variable of value", value1, "on line", lineNumber, "of", functionName	
 			raise
 
 	elif operation == "not":
@@ -423,13 +426,14 @@ while stepCounter < float(numSteps):
 			try:
 				assert len(firstLine[1:]) == len(lineSplit[2:])
 			except:
-				print "Bad number of arguments in function", lineSplit[1], "on line", lineNumber
+				print "Bad number of arguments in function", lineSplit[1], "on line", lineNumber, "of function", stack[-1].functionName, \
+					"function call has", len(lineSplit[2:]), "arguments whereas function declaration has", len(firstLine[1:]), "arguments"
 				raise
 
 			try:
 				variableMapping[variableName] = currentMapping[lineSplit[2 + i]]
 			except:
-				print "Undeclared variable", variableName, "on line", lineNumber
+				print "Undeclared variable", variableName, "on line", lineNumber, "of functon", stack[-1].functionName
 				raise	
 
 		stack.append(FunctionCall(lineSplit[1], functionLines, lineNumber + 1, variableMapping, labelDictionary))

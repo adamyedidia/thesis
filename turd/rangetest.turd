@@ -1,0 +1,12 @@
+vars n h1 c1 rangen
+
+modify n with add_small_const 1
+modify h1 with add_small_const 1
+modify c1 with add_small_const 1
+modify rangen with add_small_const 1
+
+function range n h1 c1 rangen
+
+print rangen
+
+accept

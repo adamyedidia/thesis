@@ -1,5 +1,7 @@
-input x holder product
+input unchangedx x holder product
 clear product
+clear x
+assign x to unchangedx
 modify product with add_small_const 1
 if x then goto MULTIPLY_LOOP
 return

@@ -1,0 +1,25 @@
+vars universe indic size c1 c2 h1 maplist
+
+label like map but allows duplicates
+label example: multimap([1,5,3],[0,4,2]) = [5,5,5,5,3,3]
+
+modify universe with append_small_const 1
+modify universe with append_small_const 5
+modify universe with append_small_const 3
+
+modify indic with append_small_const 0
+modify indic with append_small_const 4
+modify indic with append_small_const 2
+
+modify size with add_small_const 3
+
+modify c1 with append_small_const 3
+modify c2 with append_small_const 3
+modify h1 with append_small_const 3
+modify maplist with add_small_const 3
+
+function multimap universe indic size c1 c2 h1 maplist
+
+print maplist
+
+accept

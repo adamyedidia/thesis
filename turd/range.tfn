@@ -1,6 +1,7 @@
 input n h1 c1 rangen
 
 label UNTESTED
+label can't handle range(0)
 
 clear c1
 clear rangen

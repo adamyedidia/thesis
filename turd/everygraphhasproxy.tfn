@@ -9,13 +9,17 @@ assign i1 to k
 modify i1 with + k
 modify i1 with add_small_const 1
 
+print i1
+
 function patterngen i1 i2 i3 i4 i5 i6 i7 listofpatterns
 clear numpatterns
 assign numpatterns to listofpatterns length2
+print listofpatterns
 
-function eightknr k n r i1 i3 i2 knr8fac
+function eightknrproxy k n r i1 i3 i2 knr8fac
 function factorial knr8fac i1 i3 knr8facfac
-
+print knr8facfac
+print knr8fac
 label assembling iList and jList
 function range knr8fac i2 i3 i1
 clear i2
@@ -23,6 +27,9 @@ assign i2 to i1
 modify i1 with concat i2
 clear i2
 assign i2 to i1
+
+print knr8fac
+print knr8facfac
 
 label Assembling neg? = [0]*8knr! + [1]*8knr!
 clear c1
@@ -40,7 +47,16 @@ label ASSEMBLING_NEG_LOOP
 	assign i5 to i4 equals_small_const 1
 	if i5 then goto ASSEMBLING_NEG_LOOP	
 
+print i1
+print i2
+print i3
+print k
+print knr8facfac
+
 function vertexgen i1 i2 i3 k knr8facfac i4 i5 i6 i7 i8 i9 poslist neglist
+
+print poslist 
+print neglist
 
 clear i1
 assign i1 to poslist length
@@ -82,8 +98,17 @@ assign graphsize to posgraph length2
 clear c1
 label PATTERN_LOOP
 	clear pattern 
-	assign pattern to listofpatterns index c1
+	assign pattern to listofpatterns index2 c1
 	
+	print k
+	print n
+	print r
+	print knr8facfac
+	print posgraph
+	print neggraph
+	print pattern
+	print graphsize
+
 	function hasafree k n r knr8facfac posgraph neggraph pattern graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
 
 	modify c1 with add_small_const 1

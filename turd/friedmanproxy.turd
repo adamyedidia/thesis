@@ -7,6 +7,8 @@ vars listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist po
 label this is the top level program
 label it has no inputs, no outputs, and uses 56 variables. Damn!
 
+label THIS IS THE TEST FUNCTION, it should be an identical copy of friedman.turd except that in the center of the loop we print what's being fed into the function instead of running the function.
+
 modify knr_limit with add_small_const 2
 label MAKE_LIMIT_INCREASE
 	clear k
@@ -19,8 +21,12 @@ label MAKE_LIMIT_INCREASE
 			clear r
 			modify r with add_small_const 1
 			label MAKE_R_BIGGER
-				function everygraphhas k n r listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+				print k
+				print n
+				print r
 				
+				function everygraphhasproxy k n r listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+
 				modify r with add_small_const 1
 				clear i1
 				assign i1 to r != knr_limit

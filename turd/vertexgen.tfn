@@ -1,4 +1,8 @@
 input iList jList neg?List k knr8facfac counter1 i j neg? pospart negpart pospartList negpartList
+
+label assembles (i, j, neg?) tuples into numbers by computing -1^neg? * i * ((8knr)!)! / j, which should be an integer
+
+clear counter1
 clear pospartList
 clear negpartList
 label MAIN_LOOP

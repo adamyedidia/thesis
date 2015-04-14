@@ -1,6 +1,15 @@
 input i j neg? knr8facfac pospart negpart
+
+label computes -1^neg? * i * knr8facfac / j
+label if j = 0 returns 0
+
+clear negpart
+clear pospart
+if j then goto CONTINUE
+return
+label CONTINUE
 assign negpart to i * knr8facfac
-assign pospart to pospart / j
+assign pospart to negpart / j
 clear negpart
 if neg? then goto SWITCH_PARTS
 return
