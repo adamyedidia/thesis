@@ -1,6 +1,8 @@
 input k indexlist poslist2 neglist2 c1 h1 h2 posoutputlist2 negoutputlist2
 
-label outputs the two input lists permuted according to indexlist
+label UNTESTED
+
+label outputs the two input list2's permuted according to indexlist
 label k should be the length of indexlist
 label size should be the length of poslist2 and neglist2 EDIT: removed because unused
 
@@ -13,11 +15,11 @@ clear h1
 assign h1 to indexlist index c1
 
 clear h2
-assign h2 to poslist2 index h1
-modify posoutputlist2 with append h2
+assign h2 to poslist2 index2 h1
+modify posoutputlist2 with append2 h2
 clear h2 
-assign h2 to neglist2 index h1
-modify negoutputlist2 with append h2
+assign h2 to neglist2 index2 h1
+modify negoutputlist2 with append2 h2
 
 modify c1 with add_small_const 1
 clear h1

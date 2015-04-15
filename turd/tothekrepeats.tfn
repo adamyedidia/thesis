@@ -1,0 +1,81 @@
+input k posuniverse neguniverse size c1 h1 h2 h3 h4 h5 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 done? indexlist future_indexlist poslistofvertices neglistofvertices
+
+clear c1
+clear indexlist
+clear poslistofvertices
+clear neglistofvertices
+clear done?
+clear future_indexlist
+
+if k then goto NORMAL
+label otherwise return [[]]
+modify poslistofvertices with append2 indexlist
+modify neglistofvertices with append2 indexlist
+return
+
+
+label NORMAL
+
+label INIT_INDEX_LIST
+label indexlist <- [0]*k
+modify indexlist with append_small_const 0
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != k
+if h1 then goto INIT_INDEX_LIST
+
+clear c1
+
+label FIND_LESS_THAN_SIZE_SPOT_LOOP
+clear h1
+assign h1 to indexlist index c1
+modify h1 with add_small_const 1
+clear h2 
+assign h2 to h1 = size
+label testing indexlist[c1] = size - 1
+if h2 then goto HANDLE_SIZE_MINUS_ONE
+goto HANDLE_SMALL
+
+label HANDLE_SIZE_MINUS_ONE
+modify future_indexlist with append_small_const 0
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 = k
+if h1 then goto HANDLE_END_WORK
+goto FIND_LESS_THAN_SIZE_SPOT_LOOP
+
+label HANDLE_SMALL
+modify future_indexlist with append h1
+label recall that h1 has already been incremented, so no mistake here
+goto COPY_REMAINING_ENTRIES_LOOP
+
+label COPY_REMAINING_ENTRIES_LOOP
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 = k
+if h1 then goto DO_INDEXMAP
+clear h1
+assign h1 to indexlist index c1
+modify future_indexlist with append h1
+goto COPY_REMAINING_ENTRIES_LOOP
+
+label DO_INDEXMAP
+function indexmap k indexlist posuniverse neguniverse c1 h1 h2 h3 h4
+clear h5
+assign h5 to h3 length
+function sortrepeats h5 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 c1 indexlist i9 i10 i11 i12 h1 h2
+modify poslistofvertices with append2 h1
+modify neglistofvertices with append2 h2
+clear c1
+clear indexlist
+assign indexlist to future_indexlist list
+clear future_indexlist
+if done? then goto RETURN
+goto FIND_LESS_THAN_SIZE_SPOT_LOOP
+
+label HANDLE_END_WORK
+modify done? with add_small_const 1
+goto DO_INDEXMAP
+
+label RETURN
+return 

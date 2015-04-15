@@ -1,0 +1,33 @@
+vars k posuniverse neguniverse size c1 h1 h2 h3 h4 h5 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 done? indexlist future_indexlist poslistofvertices neglistofvertices
+
+label tothekrepeats(2, [3,6,2] [0,1,4]) = [[3,3],[3,6],[3,2],[6,3],[6,6],[6,2],[2,3],[2,6],[2,2]], [[0,0],[0,1],[0,4],[1,0],[1,1],[1,4],[4,0],[4,1],[4,4]]
+
+modify k with add_small_const 2
+
+modify posuniverse with append_small_const 3
+modify posuniverse with append_small_const 6
+modify posuniverse with append_small_const 2
+
+modify neguniverse with append_small_const 0
+modify neguniverse with append_small_const 1
+modify neguniverse with append_small_const 4
+
+modify size with add_small_const 3
+
+modify c1 with append_small_const 4
+modify h1 with append_small_const 4
+modify h2 with append_small_const 4
+modify h3 with append_small_const 4
+modify h4 with append_small_const 4
+modify done? with append_small_const 4
+modify indexlist with add_small_const 4
+modify future_indexlist with add_small_const 4
+modify poslistofvertices with add_small_const 4
+modify neglistofvertices with add_small_const 4
+
+function tothekrepeats k posuniverse neguniverse size c1 h1 h2 h3 h4 h5 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 done? indexlist future_indexlist poslistofvertices neglistofvertices
+
+print poslistofvertices
+print neglistofvertices
+
+accept

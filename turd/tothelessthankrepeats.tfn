@@ -1,0 +1,20 @@
+input k posuniverse neguniverse size c1 h1 h2 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 poslistofvertices neglistofvertices
+
+clear c1
+clear poslistofvertices
+clear neglistofvertices
+
+label MAIN_LOOP
+
+function tothekrepeats c1 posuniverse neguniverse size i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 h1 h2 
+modify poslistofvertices with concat2 h1
+modify neglistofvertices with concat2 h2
+
+clear h1
+assign h1 to c1 = k
+if h1 then goto RETURN
+modify c1 with add_small_const 1
+goto MAIN_LOOP
+
+label RETURN
+return

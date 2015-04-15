@@ -1,0 +1,90 @@
+input inputlength poslist neglist posmin negmin poslowball neglowball posmax negmax lowball_activated? c1 c2 h1 h2 h3 h4 h5 possorted negsorted
+
+label This Function sorts the input: a list of signed ints (poslist, neglist). poslist and neglist are the only inputs. possorted and negsorted are the only outputs. Their types are the obvious.
+label *warning*: sortrepeats DOES NOT remove duplicate values!!
+label #internal variables: 13
+
+clear c1
+clear poslowball
+clear neglowball
+clear lowball_activated?
+clear possorted
+clear negsorted
+
+clear posmax
+assign posmax to poslist index c1
+clear negmax
+assign negmax to neglist index c1
+
+label MAIN_LOOP 
+clear c2
+clear posmin
+assign posmin to posmax
+clear negmin
+assign negmin to negmax
+label INNER_LOOP
+clear h1
+assign h1 to poslist index c2
+clear h3 
+assign h3 to neglist index c2
+if lowball_activated? then goto MAYBE_INCR_C1
+label DONE_MAYBE_INCR_C1
+function signedgreaterthan h1 h3 posmax negmax h4 h5 h2
+if h2 then goto UPDATE_MAX
+label DONE_UPDATING_MAX
+function signedgreaterthan posmin negmin h1 h3 h4 h5 h2
+if h2 then goto CHECK_LOWBALL_ACTIVATED
+goto INCR_C2
+
+label INCR_C2
+modify c2 with add_small_const 1
+clear h1
+assign h1 to c2 = inputlength
+if h1 then goto UPDATE_LOWBALL
+goto INNER_LOOP
+
+label INCR_C1_AND_APPEND_LOWBALL
+modify c1 with add_small_const 1
+modify possorted with append poslowball
+modify negsorted with append neglowball
+goto DONE_INCR_C1
+
+label CHECK_LOWBALL_ACTIVATED
+if lowball_activated? then goto CHECK_LOWBALL
+goto UPDATE_MIN
+
+label MAYBE_INCR_C1
+function signedequals poslowball neglowball h1 h3 h4 h5 h2
+if h2 then goto INCR_C1_AND_APPEND_LOWBALL
+label DONE_INCR_C1
+goto DONE_MAYBE_INCR_C1
+
+label CHECK_LOWBALL
+function signedgreaterthan h1 h3 poslowball neglowball h4 h5 h2
+if h2 then goto UPDATE_MIN
+goto INCR_C2
+
+label UPDATE_MAX
+clear posmax
+assign posmax to h1
+clear negmax
+assign negmax to h3
+goto DONE_UPDATING_MAX
+
+label UPDATE_MIN
+clear posmin
+assign posmin to h1
+clear negmin
+assign negmin to h3
+goto INCR_C2
+
+label UPDATE_LOWBALL
+modify lowball_activated? with add_small_const 1
+clear poslowball
+assign poslowball to posmin
+clear neglowball
+assign neglowball to negmin
+clear h1
+assign h1 to c1 != inputlength
+if h1 then goto MAIN_LOOP
+return

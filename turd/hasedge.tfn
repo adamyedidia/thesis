@@ -1,0 +1,53 @@
+input v1pos v1neg v2pos v2neg iindexlist jindexlist c1 i j h1 h2 h3 h4 v1length v2length indexlistlength hasedge?
+
+label warning: hasedge(v1, v2) may be true even if hasedge(v2, v1) is false! Need to check both.
+
+clear v1length 
+assign v1length to v1pos length
+
+clear v2length
+assign v2length to v2pos length
+
+clear indexlistlength
+assign indexlistlength to iindexlist length
+
+clear c1
+clear hasedge?
+
+label MAIN_LOOP
+clear i
+assign i to iindexlist index c1
+clear j
+assign j to jindexlist index c1
+
+clear h1
+assign h1 to i < v1length
+if h1 then goto CONTINUE_I
+return
+label CONTINUE_I
+
+clear h1
+assign h1 to j < v2length
+if h1 then goto CONTINUE_J
+return
+label CONTINUE_J
+
+clear h1
+assign h1 to v1pos index i
+clear h2
+assign h2 to v1neg index i
+clear h3
+assign h3 to v2pos index j
+clear h4
+assign h4 to v2neg index j
+
+function signedgreaterthan h3 h4 h1 h2 i j hasedge?
+
+if hasedge? goto INCR_C1
+return
+
+label INCR_C1
+modify c1 with add_small_const 1
+clear h1
+assign h1 to c1 != indexlistlength
+return

@@ -1,0 +1,36 @@
+vars k posuniverse neguniverse size c1 h1 h2 i1 i2 i3 i4 i5 i6 i7 i8 poslistofvertices neglistofvertices
+
+label tothelessthankrepeats(2, [3,6,2] [0,1,4]) = [[],[3],[6],[1],[3,3],[3,6],[3,2],[6,3],[6,6],[6,2],[2,3],[2,6],[2,2]], [[],[0],[1],[4],[0,0],[0,1],[0,4],[1,0],[1,1],[1,4],[4,0],[4,1],[4,4]]
+
+modify k with add_small_const 2
+
+modify posuniverse with append_small_const 3
+modify posuniverse with append_small_const 6
+modify posuniverse with append_small_const 2
+
+modify neguniverse with append_small_const 0
+modify neguniverse with append_small_const 1
+modify neguniverse with append_small_const 4
+
+modify size with add_small_const 3
+
+modify c1 with append_small_const 4
+modify h1 with append_small_const 4
+modify h2 with append_small_const 4
+modify i1 with append_small_const 4
+modify i2 with append_small_const 4
+modify i3 with append_small_const 4
+modify i4 with add_small_const 4
+modify i5 with add_small_const 4
+modify i6 with add_small_const 4
+modify i7 with add_small_const 4
+modify i8 with add_small_const 4
+modify poslistofvertices with add_small_const 4
+modify neglistofvertices with add_small_const 4
+
+function tothelessthankrepeats k posuniverse neguniverse size c1 h1 h2 i1 i2 i3 i4 i5 i6 i7 i8 poslistofvertices neglistofvertices
+
+print poslistofvertices
+print neglistofvertices
+
+accept

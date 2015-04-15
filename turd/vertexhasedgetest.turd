@@ -1,0 +1,50 @@
+var vertex1pospart
+var vertex1negpart
+var vertex2pospart
+var vertex2negpart
+var pattern
+var vertex1length
+var vertex2length
+var counter1
+var counter2
+var pattern_counter
+var holder1
+var holder2
+var holder3
+var hasEdge?
+
+label I intend the vertices to be [-5, -2, 3] and [-1, 3, 5]
+
+modify vertex1pospart with append_small_const 4
+modify vertex1negpart with append_small_const 10
+
+modify vertex1pospart with append_small_const 0
+modify vertex1negpart with append_small_const 2
+
+modify vertex1pospart with append_small_const 8
+modify vertex1negpart with append_small_const 5
+
+
+modify vertex2pospart with append_small_const 3
+modify vertex2negpart with append_small_const 4
+
+modify vertex2pospart with append_small_const 7
+modify vertex2negpart with append_small_const 4
+
+modify vertex2pospart with append_small_const 10
+modify vertex2negpart with append_small_const 5
+
+
+modify pattern with append_small_const 1
+modify pattern with append_small_const 1
+modify pattern with append_small_const 2
+modify pattern with append_small_const 0
+modify pattern with append_small_const 2
+
+
+function vertexhasedge vertex1pospart vertex1negpart vertex2pospart vertex2negpart pattern vertex1length vertex2length counter1 counter2 pattern_counter holder1 holder2 hasEdge?
+
+if hasEdge? goto ACCEPT
+reject
+label ACCEPT
+accept

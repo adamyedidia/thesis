@@ -1,0 +1,28 @@
+vars inputlength poslist neglist posmin negmin poslowball neglowball posmax negmax lowball_activated? c1 c2 h1 h2 h3 h4 h5 possorted negsorted
+
+label input is supposed to be [5, -4, 2, 0, -4]
+label output is supposed to be [-4, -4, 0, 2, 5]
+
+modify poslist with append_small_const 5
+modify neglist with append_small_const 0
+
+modify poslist with append_small_const 2
+modify neglist with append_small_const 6
+
+modify poslist with append_small_const 3
+modify neglist with append_small_const 1
+
+modify poslist with append_small_const 4
+modify neglist with append_small_const 4
+
+modify poslist with append_small_const 4
+modify neglist with append_small_const 8
+
+modify inputlength with add_small_const 5
+
+function sortrepeats inputlength poslist neglist posmin negmin poslowball neglowball posmax negmax lowball_activated? c1 c2 h1 h2 h3 h4 h5 possorted negsorted
+
+print possorted
+print negsorted 
+
+accept

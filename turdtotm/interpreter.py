@@ -105,10 +105,28 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		try:
 			assert type(value1) == type([])
 			assert type(value2) == type([])
+			assert value1 == [] or isinstance(value1[0], (int, long))
+			assert value2 == [] or isinstance(value2[0], (int, long))
 			return value1 + value2
 		except:
-			print "attempted concatenation of value", value1, "and value", value2, "on line", lineNumber, "of", functionName
+			print "attempted concat of value", value1, "and value", value2, "on line", lineNumber, "of", functionName
 			raise
+
+	elif operation == "concat2":
+		if value1 == 0:
+			value1 = []
+		if value2 == 0:
+			value2 = []
+
+		try:
+			assert type(value1) == type([])
+			assert type(value2) == type([])
+			assert value1 == [] or isinstance(value1[0], (list))
+			assert value2 == [] or isinstance(value2[0], (list))
+			return value1 + value2
+		except:
+			print "attempted concat2 of value", value1, "and value", value2, "on line", lineNumber, "of", functionName
+			raise			
 
 	elif operation == "index":
 		try:
@@ -365,7 +383,7 @@ while stepCounter < float(numSteps):
 			elif len(lineSplit) == 4:
 				lineNumber = int(currentLabelDictionary[lineSplit[3]])
 			else:
-				print "Bad if statement on line", lineNumber, "of", functionName
+				print "Bad if statement on line", lineNumber, "of", stack[-1].functionName
 				raise
 		else:
 			lineNumber += 1
