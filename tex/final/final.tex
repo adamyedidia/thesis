@@ -86,7 +86,11 @@ Main files may not reach the end of the program without accepting or rejecting.
 
 Function files contain the description of a function. They cannot be run alone; instead, they are called from within a main file or another function file. \\
   
-Variables may not be declared in a function file
+New variables may not be declared from within a function file; instead, any variables needed to perform the computation in the function file are passed in from the file that calls it. Any variables passed into a function file may be modified freely, including integers; that means that there is \emph{no} built-in guarantee that inputs to your function will retain their values after the function runs. \\
+
+Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they take effect by modifying the inputs to take on the desired value.
+
+Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). This is because the compiler effectively inlines every function when compiling a TMD program to a Turing machine description; no description of a function stack is stored on the tape proper, 
 
 \begin{figure} 
 \begin{center} 
