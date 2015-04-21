@@ -277,7 +277,8 @@ if __name__ == "__main__":
 	outerStartState = sttm.startState
 
 	symbolMapping, reverseSymbolMapping = getSymbolMapping()
-#	print symbolMapping
+
+	print symbolMapping
 	wordLength = len(symbolMapping["_"])
 
 	for outerState in sttm.listOfRealStates:

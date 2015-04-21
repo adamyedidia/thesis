@@ -1,0 +1,233 @@
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2015.1.24)  20 APR 2015 20:06
+entering extended mode
+ %&-line parsing enabled.
+**final.tex
+(./final.tex
+LaTeX2e <2005/12/01>
+Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, arabic, basque, bulgarian, coptic, welsh, czech, slovak, german, ng
+erman, danish, esperanto, spanish, catalan, galician, estonian, farsi, finnish,
+ french, greek, monogreek, ancientgreek, croatian, hungarian, interlingua, ibyc
+us, indonesian, icelandic, italian, latin, mongolian, dutch, norsk, polish, por
+tuguese, pinyin, romanian, russian, slovenian, uppersorbian, serbian, swedish, 
+turkish, ukenglish, ukrainian, loaded.
+(/usr/share/texmf/tex/latex/base/report.cls
+Document Class: report 2005/09/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf/tex/latex/base/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@chapter=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texmf/tex/latex/graphics/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/share/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 90.
+
+(/usr/share/texmf/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
+\Gread@gobject=\count88
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+) (./final.aux)
+\openout1 = `final.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 9.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 9.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 9.
+ [1
+
+{/usr/share/texmf/fonts/map/pdftex/updmap/pdftex.map}] [1] [1]
+Chapter 1.
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--27
+
+ []
+
+<figs/process.png, id=16, 932.48375pt x 594.22pt>
+File: figs/process.png Graphic file (type png)
+ <use figs/process.png>
+Overfull \hbox (16.34795pt too wide) in paragraph at lines 32--33
+ [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--44
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 47--48
+
+ []
+
+[2
+
+] [3 <./figs/process.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 49--52
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--52
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--52
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--56
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--56
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--56
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--69
+
+ []
+
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 72--73
+
+ []
+
+<figs/goldbach.png, id=28, 365.365pt x 698.61pt>
+File: figs/goldbach.png Graphic file (type png)
+ <use figs/goldbach.png>
+
+LaTeX Warning: Float too large for page by 43.90065pt on input line 81.
+
+<figs/isprime.png, id=29, 538.01pt x 401.5pt>
+File: figs/isprime.png Graphic file (type png)
+ <use figs/isprime.png>
+Overfull \hbox (58.5065pt too wide) in paragraph at lines 89--90
+ [] 
+ []
+
+[5] [6 <./figs/goldbach.png (PNG copy)>] [7 <./figs/isprime.png (PNG copy)>]
+(./final.aux) ) 
+Here is how much of TeX's memory you used:
+ 630 strings out of 256216
+ 7410 string characters out of 1917072
+ 56793 words of memory out of 1500000
+ 3961 multiletter control sequences out of 10000+200000
+ 9322 words of font info for 33 fonts, out of 1200000 for 2000
+ 645 hyphenation exceptions out of 8191
+ 25i,7n,19p,707b,259s stack positions out of 5000i,500n,6000p,200000b,15000s
+</usr/share/texmf/fonts/type1/bluesky/cm/cmbx10.pfb></usr/share/
+texmf/fonts/type1/bluesky/cm/cmbx12.pfb></usr/share/texmf/fonts/type1/bluesky/c
+m/cmr10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texm
+f/fonts/type1/bluesky/cm/cmr17.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmt
+i10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmtt10.pfb>
+Output written on final.pdf (9 pages, 206450 bytes).
+PDF statistics:
+ 63 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 131072)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+

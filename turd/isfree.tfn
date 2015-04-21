@@ -1,4 +1,6 @@
-input poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 isFree?
+input poslistofvertices neglistofvertices iindexlist jindexlist listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 isFree?
+
+label listsize of the length of poslistofvertices
 
 clear c1
 
@@ -29,7 +31,7 @@ goto RETURN_TRUE
 
 
 label CHECK_FOR_EDGE
-function vertexhasedge h1 h2 h3 h4 pattern i1 i2 i3 i4 i5 i6 i7 isFree?
+function hasedge h1 h2 h3 h4 iindexlist jindexlist i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 isFree?
 if isFree? then goto RETURN_FALSE
 goto DONE_CHECKING_FOR_EDGE
 

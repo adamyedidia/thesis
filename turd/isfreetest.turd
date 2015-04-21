@@ -1,16 +1,11 @@
-vars poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 isFree?
+vars poslistofvertices neglistofvertices iindexlist jindexlist listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 isFree?
 
-label the list of vertices is [[-3, 1, 5], [-2, 4, 5], [-4, 0, 6], [-5, 2, 4]], and the pattern is [>, =, <, >, <]. I expect the Function to return true, as none of the vertices follow this pattern.
+label the list of vertices is [[-3, 1, 5], [-2, 4, 5], [-4, 0, 6], [-5, 2, 4]], and iindexlist is [1] and jindexlist is [0]. I expect the Function to return true, as none of the vertices follow this pattern.
 
 modify listsize with add_small_const 4
 
-modify pattern with append_small_const 2
-modify pattern with append_small_const 1
-modify pattern with append_small_const 1
-modify pattern with append_small_const 2
-modify pattern with append_small_const 2
-modify pattern with append_small_const 1
-
+modify iindexlist with append_small_const 1
+modify jindexlist with append_small_const 0
 
 modify h1 with append_small_const 2
 modify h1 with append_small_const 5
@@ -67,7 +62,7 @@ modify i6 with append_small_const 1
 modify i7 with append_small_const 5
 modify isFree? with add_small_const 3
 
-function isfree poslistofvertices neglistofvertices pattern listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 isFree?
+function isfree poslistofvertices neglistofvertices iindexlist jindexlist listsize c1 c2 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 isFree?
 
 if isFree? goto ACCEPT
 reject

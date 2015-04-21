@@ -41,7 +41,7 @@ assign h3 to v2pos index j
 clear h4
 assign h4 to v2neg index j
 
-function signedgreaterthan h3 h4 h1 h2 i j hasedge?
+function signedgreaterthan h3 h4 h1 h2 j i hasedge?
 
 if hasedge? goto INCR_C1
 return
