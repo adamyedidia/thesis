@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2015.1.24)  20 APR 2015 20:06
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2015.1.24)  21 APR 2015 17:21
 entering extended mode
  %&-line parsing enabled.
 **final.tex
@@ -197,16 +197,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 72--73
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+ []
+
 <figs/goldbach.png, id=28, 365.365pt x 698.61pt>
 File: figs/goldbach.png Graphic file (type png)
  <use figs/goldbach.png>
 
-LaTeX Warning: Float too large for page by 43.90065pt on input line 81.
+LaTeX Warning: Float too large for page by 43.90065pt on input line 83.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
+
+ []
 
 <figs/isprime.png, id=29, 538.01pt x 401.5pt>
 File: figs/isprime.png Graphic file (type png)
  <use figs/isprime.png>
-Overfull \hbox (58.5065pt too wide) in paragraph at lines 89--90
+Overfull \hbox (58.5065pt too wide) in paragraph at lines 97--98
  [] 
  []
 
@@ -215,7 +240,7 @@ Overfull \hbox (58.5065pt too wide) in paragraph at lines 89--90
 Here is how much of TeX's memory you used:
  630 strings out of 256216
  7410 string characters out of 1917072
- 56793 words of memory out of 1500000
+ 57793 words of memory out of 1500000
  3961 multiletter control sequences out of 10000+200000
  9322 words of font info for 33 fonts, out of 1200000 for 2000
  645 hyphenation exceptions out of 8191
@@ -225,7 +250,7 @@ texmf/fonts/type1/bluesky/cm/cmbx12.pfb></usr/share/texmf/fonts/type1/bluesky/c
 m/cmr10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr12.pfb></usr/share/texm
 f/fonts/type1/bluesky/cm/cmr17.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmt
 i10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmtt10.pfb>
-Output written on final.pdf (9 pages, 206450 bytes).
+Output written on final.pdf (9 pages, 208072 bytes).
 PDF statistics:
  63 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)

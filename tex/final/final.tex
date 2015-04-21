@@ -15,13 +15,17 @@ For my thesis, I propose to write a general-purpose compiler from a programming 
 \end{abstract}
 
 \section{Introduction}
+My thesis is split into two chapters. The first chapter relates to the concept of what was done: the substance and importance of what was proven, background on Zermelo-Fraenkel set theory and the Busy Beaver sequence, the exact definition of the Turing machine 
+
 The work of my thesis would not have been possible without first splitting it into two parts: the construction of the compiler, and the 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% TODO %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{The Compiler}
+\chapter{Concept}
+
+\chapter{Implementation}
 
 The compiler used and referenced in this paper has as its goal to convert a program written in TMD into a description of Turing machine running on a single tape and using a 2-symbol alphabet. In between, the code is passed through two intermediate stages: a description of a Turing machine running on multiple tapes using a 3-symbol alphabet, and a description of a Turing machine running on a single tape using a 4-symbol alphabet. A detailed diagram illustrating this process is visible in Figure~\ref{fig:process}. \\
 
@@ -88,9 +92,9 @@ Function files contain the description of a function. They cannot be run alone; 
   
 New variables may not be declared from within a function file; instead, any variables needed to perform the computation in the function file are passed in from the file that calls it. Any variables passed into a function file may be modified freely, including integers; that means that there is \emph{no} built-in guarantee that inputs to your function will retain their values after the function runs. \\
 
-Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they take effect by modifying the inputs to take on the desired value.
+Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they take effect by modifying the inputs to take on the desired value. \\
 
-Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). This is because the compiler effectively inlines every function when compiling a TMD program to a Turing machine description; no description of a function stack is stored on the tape proper, 
+Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). This is because the compiler effectively inlines every function when compiling a TMD program to a Turing machine description; no description of a function stack is stored on the tape proper, so a recursive function would cause the compiler to enter an infinite loop. \\
 
 \begin{figure} 
 \begin{center} 
