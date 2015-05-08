@@ -1,0 +1,36 @@
+vars counter x y z
+modify z with add_small_const 2
+label INCR_COUNTER_LOOP
+	modify counter with add_small_const 1
+	clear x
+	assign x to counter
+	label CHANGE_X_LOOP
+	
+		print x
+		
+		clear y 
+		assign y to x equals_small_const 1
+		if y goto INCR_COUNTER_LOOP
+		
+		assign y to x % z
+		if y goto 3X_PLUS_ONE
+	
+		label X_OVER_TWO
+		assign y to x
+		clear x
+		assign x to y / z
+		goto CHANGE_X_LOOP
+		
+		label 3X_PLUS_ONE
+		modify z with add_small_const 1
+		clear y
+		assign y to x
+		clear x 
+		assign x to y * z
+		modify z with sub_small_const 1
+		modify x with add_small_const 1
+		goto CHANGE_X_LOOP
+		
+		
+		 
+
