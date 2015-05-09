@@ -1,36 +1,45 @@
-vars counter x y z
+vars nt_limit n t counter x y z
 modify z with add_small_const 2
-label INCR_COUNTER_LOOP
-	modify counter with add_small_const 1
-	clear x
-	assign x to counter
-	label CHANGE_X_LOOP
-	
-		print x
+vars INCR_LIMIT_LOOP
+	label INCR_N_LOOP
+		label INCR_T_LOOP
+			clear x
+			assign x to n
+			label CHANGE_X_LOOP
+				print x
+				modify counter with add_small_const 1
+				clear y 
+				assign y to counter = t
+				if y goto CHECK_FOR_CYCLE
+				assign y to x % z
+				if y goto 3X_PLUS_ONE
+				label X_OVER_TWO
+				assign y to x
+				clear x
+				assign x to y / z
+				goto CHANGE_X_LOOP
+				label 3X_PLUS_ONE
+				modify z with add_small_const 1
+				clear y
+				assign y to x
+				clear x 
+				assign x to y * z
+				modify z with sub_small_const 1
+				modify x with add_small_const 1
+				goto CHANGE_X_LOOP
+			label CHECK_FOR_CYCLE
+			clear y
+			assign y to n = x
+			if y goto REJECT
+			modify t with add_small_const 1
+			assign y to t = nt_limit
+			if y goto INCR_N
+			goto INCR_T_LOOP
+		label INCR_N
+		clear t
+		modify t with add_small_const 4
+		modify n with add_small_const 1
 		
-		clear y 
-		assign y to x equals_small_const 1
-		if y goto INCR_COUNTER_LOOP
-		
-		assign y to x % z
-		if y goto 3X_PLUS_ONE
-	
-		label X_OVER_TWO
-		assign y to x
-		clear x
-		assign x to y / z
-		goto CHANGE_X_LOOP
-		
-		label 3X_PLUS_ONE
-		modify z with add_small_const 1
-		clear y
-		assign y to x
-		clear x 
-		assign x to y * z
-		modify z with sub_small_const 1
-		modify x with add_small_const 1
-		goto CHANGE_X_LOOP
-		
-		
-		 
+label REJECT
+reject
 

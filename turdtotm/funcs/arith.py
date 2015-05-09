@@ -124,11 +124,10 @@ def modulus(inState, outState, x, y, z, name):
 	incrementXState = State(name + ".2", x)
 	getBackToStartZState = State(name + ".3", z)
 	clearXState = State(name + ".4", x)
-	getBackToStartYState = State(name + ".8", y)
-	getBackToStartXState = State(name + ".9", x)
-	finalGetBackToStartZState = State(name + ".10", z)
-
-	returnList = [inState, moveAlongYState, incrementXState, getBackToStartZState]
+	writeEXState = State(name + ".5", x)
+	getBackToStartYState = State(name + ".6", y)
+	getBackToStartXState = State(name + ".7", x)
+	finalGetBackToStartZState = State(name + ".8", z)
 
 	inState.setNextState("1", moveAlongYState)
 	inState.setNextState("E", getBackToStartZState)
@@ -144,11 +143,24 @@ def modulus(inState, outState, x, y, z, name):
 
 	increment(incrementXState, inState)
 	getBackToStart(getBackToStartZState, clearXState)
-	returnList += clear(clearXState, inState, x, name, [".5", ".6", ".7"])
+
+  clearXState.setNextState("_", writeEXState)
+  clearXState.setNextState("1", clearXState)
+  clearXState.setNextState("E", clearXState)
+  
+  clearXState.setHeadMove("_", "R")
+  clearXState.setHeadMove("1", "L")
+  clearXState.setHeadMove("E", "L")
+  
+  clearState.setAllWrites("_")
+  
+  writeEXState.setNextState("_", inState)
+  
+  writeEXState.setWrite("E")
+
 	getBackToStart(getBackToStartYState, getBackToStartXState)
 	getBackToStart(getBackToStartXState, finalGetBackToStartZState)
 	getBackToStart(finalGetBackToStartZState, outState)
 
-	returnList += [getBackToStartYState, getBackToStartXState, finalGetBackToStartZState]
-
-	return returnList
+	return [inState, moveAlongYState, incrementXState, getBackToStartZState, 
+	  clearXState, writeEXState, getBackToStartYState, getBackToStartXState, finalGetBackToStartZState]

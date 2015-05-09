@@ -5,8 +5,8 @@ from arith import *
 from comparison import *
 from clear import *
 from arithConst import *
-from state import *
 from constantsTurdToTM import *
+from state import *
 from assign import *
 from function import *
 from listOper import *
