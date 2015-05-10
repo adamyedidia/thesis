@@ -196,6 +196,7 @@ class State:
 
 	def getNextStateName(self, symbol):
 		try:
+#			print self.nextStateDict[symbol]
 			return self.nextStateDict[symbol].stateName
 		except KeyError:
 			print "Error: I, state", self.stateName, "don't know about symbol", symbol

@@ -142,7 +142,7 @@ def find1_(state, nextState, listOfStates, name):
 
 	listOfStates.append(foundOneState)
 
-def findE_(state, nextState, listOfStates, name):
+def findH_(state, nextState, listOfStates, name):
 	# There's two weird things going on here. The first is that
 	# we're going left; the second is that we're also
 	# fine with the EH_ pattern. (This implementation is also 
@@ -158,8 +158,7 @@ def findE_(state, nextState, listOfStates, name):
 		
 	foundUnderscoreState.setAllNextStates(state)
 	foundUnderscoreState.setNextState("_", foundUnderscoreState)
-	foundUnderscoreState.setNextState("H", foundUnderscoreState)
-	foundUnderscoreState.setNextState("E", nextState)
+	foundUnderscoreState.setNextState("H", nextState)
 	
 	foundUnderscoreState.setAllHeadMoves("L")
 

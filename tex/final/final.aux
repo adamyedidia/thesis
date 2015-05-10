@@ -1,15 +1,101 @@
 \relax 
-\@writefile{toc}{\contentsline {section}{\numberline {0.1}Introduction}{1}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {1}The Compiler}{2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Concept}{2}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {1.1}TMD}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces This diagram illustrates each of the steps in the conversion between a program written in TMD and a description of a single-tape Turing machine with a binary tape alphabet.}}{3}}
-\newlabel{fig:process}{{1.1}{3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.1}List of Commands}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.2}Main Files}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.3}Function Files}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.2}{\ignorespaces This is the TMD code for a parsimonious program that will loop if Goldbach's conjecture is true, and reject if it is false. It is provided as an example of a TMD main file. See Figure\nobreakspace  {}1.3\hbox {} for the code of the \texttt  {isprime} function, which is called by the main body of the program.}}{6}}
-\newlabel{fig:goldbach}{{1.2}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1.3}{\ignorespaces This is the TMD code for a function that will set the value of the input \texttt  {isPrime?} to 0 if the input \texttt  {x} is not a prime number, and will set the value of \texttt  {isPrime?} to a positive integer if \texttt  {x} is a prime number. The value of \texttt  {x} is not modified by the isprime function, but the value of variable \texttt  {c1} may be changed to something arbitrary and the value of \texttt  {isPrime?} will be changed to depend on the primality of \texttt  {x}. The function's result will depend exclusively on the initial value of \texttt  {x}. }}{7}}
-\newlabel{fig:isprime}{{1.3}{7}}
+\newlabel{sec:background}{{1.1}{2}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}Background and Motivation }{2}}
+\newlabel{sec:tm}{{1.2}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}Turing Machines }{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}The Busy Beaver Function}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}A Description of $G$}{6}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}Parsimony}{7}}
+\newlabel{sec:faq}{{1.6}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.6}Frequently Asked Questions }{8}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Implementation }{9}}
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{sec:implementation}{{2}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Overview}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Major Design Decisions}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}The Tape-Variable Relationship}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces This diagram illustrates each of the steps in the conversion between a program written in TMD and a description of a single-tape Turing machine with a binary tape alphabet.}}{10}}
+\newlabel{fig:process}{{2.1}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Unary}{10}}
+\newlabel{sec:functions}{{2.2.3}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Functions }{11}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Future Directions}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Improving TMD}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces This is a visual representation of a program that spans three functions. The main function, Function A, calls Function B twice, and Function B calls Function C twice. Commands that are not function calls are labeled ``Code 1'' through ``Code 7.'' }}{13}}
+\newlabel{fig:code}{{2.2}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces This is a visual representation of the compiled output of the program from Figure\nobreakspace  {}2.2\hbox {}. On the left is the output of the compiler assuming the inlining method is used, while on the right is the output of the compiler assuming the stack-on-tape method is used. Note that the program flow of the compiled machine on the left is easier to understand; the program flow of the compiled machine on the right depends on what function is at the top of the stack. However, note also that if the set of states that represents ``Code 7,'' ``States 7,'' is very large, the stack-on-tape method is much more parsimonious than the inlining method in this case. On the left, ``States 7'' appears four times, but on the right it only appears once. }}{14}}
+\newlabel{fig:compiled}{{2.3}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Simplifying $G$}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Exploring Other Axiomatic Systems}{15}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}TMD}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}List of Commands}{16}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Main Files}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces This is the TMD code for a parsimonious program that will loop if Goldbach's conjecture is true, and reject if it is false. It is provided as an example of a TMD main file. See Figure\nobreakspace  {}2.5\hbox {} for the code of the \texttt  {isprime} function, which is called by the main body of the program.}}{18}}
+\newlabel{fig:goldbach}{{2.4}{18}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Function Files}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.4}Data Types}{19}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.5}Assign Statements}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces This is the TMD code for a function that will set the value of the input \texttt  {isPrime?} to 0 if the input \texttt  {x} is not a prime number, and will set the value of \texttt  {isPrime?} to a positive integer if \texttt  {x} is a prime number. The value of \texttt  {x} is not modified by the isprime function, but the value of variable \texttt  {c1} may be changed to something arbitrary and the value of \texttt  {isPrime?} will be changed to depend on the primality of \texttt  {x}. The function's result will depend exclusively on the initial value of \texttt  {x}. }}{20}}
+\newlabel{fig:isprime}{{2.5}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.1}Multiplication}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.2}Division}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.3}Modulus}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.4}Integer Equality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.5}Integer Inequality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.6}Constant Equality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.7}Comparison (Greater Than)}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.8}Comparison (Less Than)}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.9}List Equality Testing}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.10}List Index}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.11}List2 Index}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.12}List Length}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.13}List2 Length}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.14}List Assignment}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.6}Modify Statements}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.1}Addition}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.2}Subtraction}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.3}Constant Addition}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.4}Constant Subtraction}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.5}Appending to Lists}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.6}Appending to List2s}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.7}Appending Constants}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.8}List Concatenation}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.9}List2 Concatenation}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.7}Clear Statements}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.8}Label Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.9}Goto Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.10}If-Goto Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.11}Function Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.12}Print Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.13}Halting Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.14}Variable Declaration Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.15}Function Input Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.16}Return Statements}{27}}
+\newlabel{sec:turdtotm}{{2.5}{27}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Compilation from TMD to a Multi-Tape Machine }{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Turing Machine Format}{27}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces This is an example of a multi-tape Turing machine file. The notes in red are explanations of the meanings of the various parts of the Turing machine file. }}{28}}
+\newlabel{fig:example}{{2.6}{28}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Variable Encoding}{28}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces This figure shows the machine shown in Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:tmexample' on page 29 undefined} running for five steps. Note that in the multi-tape machine, at initialization, every tape begins with a single \texttt  {E} symbol and an infinite number of \texttt  {\_} symbols. As will be explained later, this corresponds to every variable having its value be initialized to 0. Naturally, in the lowest-level machine, the tape will be initialized containing only the empty symbol, as required of a standard Turing machine. }}{29}}
+\newlabel{fig:example}{{2.7}{29}}
+\newlabel{compilation}{{2.5.3}{30}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.3}Compilation }{30}}
+\newlabel{sec:mttost}{{2.6}{31}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Transforming a Multi-Tape Machine to a Single-Tape Machine }{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Alphabet}{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}Layout}{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.3}Identifier Format}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.4}Value Format}{33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.5}Value Expansion}{33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.6}Overview of Transformation}{33}}
+\newlabel{sec:mstots}{{2.7}{35}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}Transforming a 4-Symbol Machine to a 2-Symbol Machine }{35}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Alphabet}{35}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Overview of Transformation}{35}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.8}Miscellaneous Optimizations}{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Pruning}{36}}

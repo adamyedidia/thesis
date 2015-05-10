@@ -7,7 +7,7 @@ from constantsTurdToTM import *
 def convertNumberToBarCode(number):
 	barCode = ""	
 	newBarCode = ""
-	barCodeIndexCounter = 0
+	barCodeIndexCounter = -1
 
 	overallCounter = 0
 	
@@ -15,34 +15,39 @@ def convertNumberToBarCode(number):
 
 	while overallCounter < number:
 		if incrementing:
-			if barCodeIndexCounter == len(barCode):
-				newBarCode += "H"
-				barCodeIndexCounter = 0
+			if barCodeIndexCounter == -1:
+				newBarCode = "1" + newBarCode
+				barCodeIndexCounter = len(newBarCode) - 1
 				overallCounter += 1
 				barCode = newBarCode
 				newBarCode = ""
 				incrementing = True	
 
-			elif barCode[barCodeIndexCounter] == "H":
-				newBarCode += "1"
-				barCodeIndexCounter += 1
+			elif barCode[barCodeIndexCounter] == "1":
+				newBarCode = "E" + newBarCode
+				barCodeIndexCounter -= 1
 				incrementing = False
 			
-			elif barCode[barCodeIndexCounter] == "1":	
-				newBarCode += "H"
-				barCodeIndexCounter += 1
+			elif barCode[barCodeIndexCounter] == "E":	
+				newBarCode = "H" + newBarCode
+				barCodeIndexCounter -= 1
+				incrementing = False
+			
+			elif barCode[barCodeIndexCounter] == "H":
+				newBarCode = "1" + newBarCode
+				barCodeIndexCounter -= 1
 
 		else:
-			if barCodeIndexCounter == len(barCode):
-				barCodeIndexCounter = 0
+			if barCodeIndexCounter == -1:
 				overallCounter += 1
 				barCode = newBarCode
+				barCodeIndexCounter = len(barCode) - 1
 				newBarCode = ""
 				incrementing = True
 
 			else:
-				newBarCode += barCode[barCodeIndexCounter]
-				barCodeIndexCounter += 1
+				newBarCode = barCode[barCodeIndexCounter] + newBarCode
+				barCodeIndexCounter -= 1
 
 	return barCode
 				
@@ -97,7 +102,7 @@ def initializeTape(variableSet, listOfStates):
 
 		for i, char in enumerate(variableBarCode):
 			prevState = processInitState(variable + "_init_name." + str(i+2), char, prevState, listOfStates)
-		prevState = processInitState(variable + "_init_name." + str(variableCounter+2), "E", prevState, listOfStates)
+		prevState = processInitState(variable + "_init_name." + str(variableCounter+2), "H", prevState, listOfStates)
 
 		# Write the variable head location (1)
 #		prevState = processInitState(variable + "_init_head.0", "_", prevState, listOfStates)
@@ -181,9 +186,11 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	decisionState = State(name + "_return_var_decision", None, alphabetMTToST())
 	decisionState.setAllNextStates(branchState)
 	decisionState.setNextState("_", outState)
+	decisionState.setHeadMove("_", "R")
 	listOfStates.append(decisionState)
 
 	barCode = convertNumberToBarCode(outerStateTapeNumber)
+	print outerStateTapeNumber, barCode
 
 	# initialize the countin' states (make sure the variable's the right one!
 	for i in range(len(barCode)+1):
@@ -202,16 +209,12 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	for i in range(len(barCode)):
 #			print "Connecting to", listOfCountOnesStates[i+1]
 		listOfCountOnesStates[i].setAllNextStates(branchState)
-		listOfCountOnesStates[i].setNextState("E", SimpleState("ERROR"))
-		listOfCountOnesStates[i].setNextState(barCode[i], listOfCountOnesStates[i+1])
+		listOfCountOnesStates[i].setNextState(barCode[-(i+1)], listOfCountOnesStates[i+1])
 		listOfCountOnesStates[i].setAllHeadMoves("L")
 	
 	# first we need to get to the point where we're reading a variable number
-	seenOneEnds = State(name + "_return_var_one_ends", None, alphabetMTToST())
-	findE_(seenOneEnds, startCountState, listOfStates, name + "_return_var_1_")
-	listOfStates.append(seenOneEnds)
 	
-	findE_(branchState, seenOneEnds, listOfStates, name + "_return_var_0_")
+	findH_(branchState, startCountState, listOfStates, name + "_return_var")
 	listOfStates.append(branchState)	
 
 	return outState
@@ -356,11 +359,27 @@ def moveHeadLeft(name, branchState, readSymbol, writtenSymbol, listOfStates, out
 	return outState
 	
 def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
-	seenEState = State(name + "_go_to_tape_head_seen_E", None, alphabetMTToST())
-	findSymbol(branchState, "E", "R", "R", seenEState)
-	findSymbol(seenEState, "H", "R", "R", outState)
+	seenHState = State(name + "_go_to_tape_head_seen_H", None, alphabetMTToST())
+	seenH_State = State(name + "_go_to_tape_head_seen_H_", None, alphabetMTToST())
+
+	branchState.setNextState("1", branchState)
+	branchState.setNextState("E", branchState)
+	branchState.setNextState("H", seenHState)
+
+	branchState.setAllHeadMoves("R")
+
+	seenHState.setNextState("_", seenH_State)
+	seenHState.setNextState("1", branchState)
+	seenHState.setNextState("E", branchState)
+	seenHState.setNextState("H", seenHState)
+
+	seenHState.setAllHeadMoves("R")
+	
+	findSymbol(seenH_State, "H", "R", "R", outState)
+
 	listOfStates.append(branchState)
-	listOfStates.append(seenEState)
+	listOfStates.append(seenHState)
+	listOfStates.append(seenH_State)
 
 # This is the most confusing function in this file. A lot of weird 
 # stuff needs to happen in order to rewrite the stuff that was on the tape.
@@ -485,6 +504,7 @@ if __name__ == "__main__":
 		coreStateDictionary[outerState.stateName] = State(outerState.stateName, None, alphabetMTToST())
 #		listOfStates.append(coreStateDictionary[outerState.stateName])
 
+	print variableDictionary
 	lastInitState = returnToVariableNameMarker("init", lastInitState, variableDictionary[outerStartState.tapeName], listOfStates)
 #	lastInitState = goToEndHeadLocMarkerFromStartVariableNameMarker("init", lastInitState, "R", listOfStates)
 	goToTapeHeadLocationWithOutState("init", lastInitState, listOfStates, innerStateCorrespondingToOuterStartState)
@@ -530,7 +550,8 @@ if __name__ == "__main__":
 
 				innerStateIsSingle = True
 
-				if outerState.tapeName != nextTapeName or (symbol == "_" and (write != "_" or outerHeadMove == "R")):
+#				if outerState.tapeName != nextTapeName or (symbol == "_" and (write != "_" or outerHeadMove == "R")):
+				if (outerState.tapeName != nextTapeName) or (symbol == "_" and write != "_"):
 					# I know this is terrible! I'm sorry! I don't know how to make it better!
 					if outerHeadMove == "R":
 						branchState = moveHeadRight(name, innerState, symbol, write, listOfStates)
@@ -555,7 +576,8 @@ if __name__ == "__main__":
 					else:
 						pass
 
-				if symbol == "_" and (write != "_" or outerHeadMove == "R"):
+#				if symbol == "_" and (write != "_" or outerHeadMove == "R"):
+				if symbol == "_" and write != "_":
 					# Then we need to extend!
 					branchState = extendSpace(name, branchState, 
 						variableDictionary[outerState.tapeName], listOfStates, innerState, innerStateIsSingle, symbol)
@@ -577,7 +599,8 @@ if __name__ == "__main__":
 				
 					goToTapeHeadLocationWithOutState(name, branchState, listOfStates, coreStateDictionary[nextOuterState.stateName])
 
-				elif symbol == "_" and (write != "_" or outerHeadMove == "R"):
+#				elif symbol == "_" and (write != "_" or outerHeadMove == "R"):
+				elif symbol == "_" and write != "_":
 					# Then we have to get back to where we were :P
 					branchState = findNewVariableLocation(name, branchState,
 						variableDictionary[outerState.tapeName], listOfStates)					
