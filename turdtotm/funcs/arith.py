@@ -144,19 +144,19 @@ def modulus(inState, outState, x, y, z, name):
 	increment(incrementXState, inState)
 	getBackToStart(getBackToStartZState, clearXState)
 
-  clearXState.setNextState("_", writeEXState)
-  clearXState.setNextState("1", clearXState)
-  clearXState.setNextState("E", clearXState)
+	clearXState.setNextState("_", writeEXState)
+	clearXState.setNextState("1", clearXState)
+	clearXState.setNextState("E", clearXState)
   
-  clearXState.setHeadMove("_", "R")
-  clearXState.setHeadMove("1", "L")
-  clearXState.setHeadMove("E", "L")
+	clearXState.setHeadMove("_", "R")
+	clearXState.setHeadMove("1", "L")
+	clearXState.setHeadMove("E", "L")
   
-  clearState.setAllWrites("_")
+	clearXState.setAllWrites("_")
   
-  writeEXState.setNextState("_", inState)
+	writeEXState.setNextState("_", inState)
   
-  writeEXState.setWrite("E")
+	writeEXState.setWrite("_", "E")
 
 	getBackToStart(getBackToStartYState, getBackToStartXState)
 	getBackToStart(getBackToStartXState, finalGetBackToStartZState)

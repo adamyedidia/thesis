@@ -57,24 +57,26 @@ def clearOld(inState, outState, x, lineNumber, names=[".1", ".2", ".3"]):
 	return [inState, clearState, leftState, checkState]
 
 def clear(inState, outState, x, lineNumber, names=[".1", ".2"]):
-  inState.tapeName = x
-  # inState might have been called findUnderscoreState
+	inState.tapeName = x
+	# inState might have been called findUnderscoreState
   
-  clearState = State(str(lineNumber) + names[0], x)
-  writeEState = State(str(lineNumber) + names[1], x)
+	clearState = State(str(lineNumber) + names[0], x)
+	writeEState = State(str(lineNumber) + names[1], x)
   
-  findSymbol(inState, "_", "R", "L", clearState)
+	findSymbol(inState, "_", "R", "L", clearState)
   
-  clearState.setNextState("_", writeEState)
-  clearState.setNextState("1", clearState)
-  clearState.setNextState("E", clearState)
+	clearState.setNextState("_", writeEState)
+	clearState.setNextState("1", clearState)
+	clearState.setNextState("E", clearState)
   
-  clearState.setHeadMove("_", "R")
-  clearState.setHeadMove("1", "L")
-  clearState.setHeadMove("E", "L")
+	clearState.setHeadMove("_", "R")
+	clearState.setHeadMove("1", "L")
+	clearState.setHeadMove("E", "L")
   
-  clearState.setAllWrites("_")
+	clearState.setAllWrites("_")
   
-  writeEState.setNextState("_", outState)
+	writeEState.setNextState("_", outState)
   
-  writeEState.setWrite("_", "E")
+	writeEState.setWrite("_", "E")
+
+	return [inState, clearState, writeEState]
