@@ -1,0 +1,89 @@
+vars Xpos Xneg Ypos Yneg c1 c2 xpos xneg ypos yneg i1 i2 i3 i4 i5 i6 i7 reduces?
+
+label X = [[-2, 2], [-3, 5]] Y = [[-1, 4], [-4, 3], [3, 6]]
+
+modify i1 with append_small_const 0 
+modify i1 with append_small_const 2
+
+modify Xpos with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 2
+modify i1 with append_small_const 0
+
+modify Xneg with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 0 
+modify i1 with append_small_const 5
+
+modify Xpos with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 3
+modify i1 with append_small_const 0
+
+modify Xneg with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 0 
+modify i1 with append_small_const 4
+
+modify Ypos with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 1
+modify i1 with append_small_const 0
+
+modify Yneg with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 0 
+modify i1 with append_small_const 3
+
+modify Ypos with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 4
+modify i1 with append_small_const 0
+
+modify Yneg with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 3 
+modify i1 with append_small_const 6
+
+modify Ypos with append2 i1
+
+clear i1
+
+modify i1 with append_small_const 0
+modify i1 with append_small_const 0
+
+modify Yneg with append2 i1
+
+modify c1 with append_small_const 3
+modify c2 with append_small_const 3
+modify xpos with append_small_const 3
+modify xneg with append_small_const 3
+modify ypos with append_small_const 3
+modify yneg with append_small_const 3
+modify i1 with append_small_const 3
+modify i2 with append_small_const 3
+modify i3 with append_small_const 3
+modify i4 with append_small_const 3
+modify i5 with append_small_const 3
+modify i6 with append_small_const 3
+modify i7 with append_small_const 3
+modify reduces? with append_small_const 3
+
+function newreduces Xpos Xneg Ypos Yneg c1 c2 xpos xneg ypos yneg i1 i2 i3 i4 i5 i6 i7 reduces?
+

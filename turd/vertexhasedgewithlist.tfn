@@ -1,0 +1,37 @@
+input vertex1pospart vertex1negpart vertex2pospart vertex2negpart patternlist2 pattern c1 i1 i2 i3 i4 i5 i6 i7 hasEdge?
+
+label tests if two vertices have an edge.
+
+clear c1
+
+label MAIN_LOOP
+clear pattern
+
+clear i1
+assign i1 to patternlist2 length2
+if i1 goto CONTINUE
+clear hasEdge?
+return
+
+label CONTINUE
+
+print patternlist2
+assign pattern to patternlist2 index2 c1
+function vertexhasedge vertex1pospart vertex1negpart vertex2pospart vertex2negpart pattern i1 i2 i3 i4 i5 i6 i7 hasEdge?
+if hasEdge? goto RETURN_TRUE
+goto INCR_C1
+
+label INCR_C1
+modify c1 with add_small_const 1 
+clear i1 
+assign i1 to patternlist2 length2
+clear hasEdge?
+assign hasEdge? to i1 != c1
+if hasEdge? goto MAIN_LOOP
+goto RETURN_FALSE
+
+label RETURN_TRUE
+return
+
+label RETURN_FALSE
+return

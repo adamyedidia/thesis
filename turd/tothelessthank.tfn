@@ -1,7 +1,5 @@
 input k universe size h1 c1 one_count future_one_count maplist indic future_indic listofvertices
 
-label I think we need this to be positive
-
 clear one_count
 clear future_one_count
 clear listofvertices

@@ -1,0 +1,66 @@
+vars k n r posxlist negxlist i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 kni8fac subsetsreduce?
+
+modify k with add_small_const 1
+modify n with add_small_const 1
+modify r with add_small_const 3
+
+modify h1 with append_small_const 3
+modify posxlist with append2 h1
+clear h1
+
+modify h1 with append_small_const 2
+modify posxlist with append2 h1
+clear h1
+
+modify h1 with append_small_const 0
+modify posxlist with append2 h1
+clear h1
+
+modify h1 with append_small_const 1
+modify negxlist with append2 h1
+clear h1
+
+modify h1 with append_small_const 0
+modify negxlist with append2 h1
+clear h1
+
+modify h1 with append_small_const 1
+modify negxlist with append2 h1
+clear h1
+
+modify i with add_small_const 3
+modify h1 with add_small_const 3
+modify h2 with add_small_const 3
+modify h3 with add_small_const 3 
+modify h4 with add_small_const 3 
+modify h5 with add_small_const 3 
+modify h6 with add_small_const 3 
+modify i1 with add_small_const 3 
+modify i2 with add_small_const 3 
+modify i3 with add_small_const 3 
+modify i4 with add_small_const 3 
+modify i5 with add_small_const 3 
+modify i6 with add_small_const 3 
+modify i7 with add_small_const 3 
+modify i8 with add_small_const 3 
+modify i9 with add_small_const 3 
+modify i10 with add_small_const 3 
+modify i11 with add_small_const 3 
+modify i12 with add_small_const 3 
+modify i13 with add_small_const 3 
+modify i14 with add_small_const 3 
+modify i15 with add_small_const 3 
+modify i16 with add_small_const 3 
+modify i17 with add_small_const 3 
+modify i18 with add_small_const 3 
+modify i19 with add_small_const 3 
+modify i20 with add_small_const 3 
+modify i21 with add_small_const 3 
+modify i22 with add_small_const 3 
+modify i23 with add_small_const 3 
+modify kni8fac with add_small_const 3
+modify subsetsreduce? with add_small_const 3
+
+function subsetsreducenew k n r posxlist negxlist i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 kni8fac subsetsreduce?
+
+accept

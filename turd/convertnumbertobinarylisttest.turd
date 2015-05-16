@@ -1,0 +1,19 @@
+vars number binarylistlength numbercopy two modulus c1 h1 h2 binarylist done?
+
+modify number with add_small_const 64
+modify binarylistlength with add_small_const 6
+modify numbercopy with add_small_const 2
+modify two with add_small_const 3
+modify modulus with add_small_const 3
+modify c1 with add_small_const 3
+modify h1 with add_small_const 3
+modify h2 with add_small_const 3
+modify binarylist with add_small_const 3
+modify done? with add_small_const 3
+
+function convertnumbertobinarylist number binarylistlength numbercopy two modulus c1 h1 h2 binarylist done?
+
+print binarylist
+print done?
+
+accept

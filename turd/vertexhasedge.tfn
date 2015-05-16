@@ -93,10 +93,8 @@ goto MAIN_LOOP
 label RETURN_TRUE
 clear hasEdge?
 modify hasEdge? with add_small_const 1
-print hasEdge?
 return
 
 label RETURN_FALSE
 clear hasEdge?
-print hasEdge?
 return 

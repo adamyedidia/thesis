@@ -1,0 +1,51 @@
+input Bpos Bneg Cpos Cneg patternlist2 c1 c2 xpos xneg ypos yneg i1 i2 i3 i4 i5 i6 i7 i8 i9 reduces?
+
+label B reduces C if and only if for all x in C there exists y in B such that x R y and x >=lex y.
+label UNTESTED
+
+clear c1
+label FORALL_X_IN_C
+	clear c2
+	clear xpos
+	assign xpos to Cpos index2 c1
+	clear xneg
+	assign xneg to Cneg index2 c1
+	label EXISTS_Y_IN_B
+		clear ypos
+		assign ypos to Bpos index2 c2
+		clear yneg
+		assign yneg to Bneg index2 c2
+
+		function vertexhasedgewithlist xpos xneg ypos yneg patternlist2 i1 i2 i3 i4 i5 i6 i7 i8 i9 reduces?
+	
+		if reduces? goto FIND_OUT_IF_LEX
+		goto INCR_C2
+
+		label FIND_OUT_IF_LEX
+		function lexge xpos xneg ypos yneg i1 i2 i3 i4 i5 i6 i7 reduces?
+
+		if reduces? goto INCR_C1
+		goto INCR_C2
+
+		label INCR_C2
+		modify c2 with add_small_const 1
+		clear i1
+		assign i1 to Bpos length2
+		assign reduces? to i1 != c2
+		if reduces? goto EXISTS_Y_IN_B
+		goto RETURN_FALSE
+
+	label INCR_C1
+	modify c1 with add_small_const 1
+	clear i1
+	assign i1 to Cpos length2
+	assign reduces? to i1 = c1
+	if reduces? goto RETURN_TRUE
+	goto FORALL_X_IN_C
+
+label RETURN_FALSE
+return
+
+label RETURN_TRUE
+return
+		

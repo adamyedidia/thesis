@@ -190,7 +190,7 @@ def returnToVariableNameMarker(name, branchState, outerStateTapeNumber, listOfSt
 	listOfStates.append(decisionState)
 
 	barCode = convertNumberToBarCode(outerStateTapeNumber)
-	print outerStateTapeNumber, barCode
+#	print outerStateTapeNumber, barCode
 
 	# initialize the countin' states (make sure the variable's the right one!
 	for i in range(len(barCode)+1):
@@ -359,27 +359,19 @@ def moveHeadLeft(name, branchState, readSymbol, writtenSymbol, listOfStates, out
 	return outState
 	
 def goToTapeHeadLocationWithOutState(name, branchState, listOfStates, outState):
-	seenHState = State(name + "_go_to_tape_head_seen_H", None, alphabetMTToST())
-	seenH_State = State(name + "_go_to_tape_head_seen_H_", None, alphabetMTToST())
+	seenUnderscoreState = State(name + "_go_to_tape_head_seen_underscore", None, alphabetMTToST())
 
+	branchState.setNextState("_", seenUnderscoreState)
 	branchState.setNextState("1", branchState)
 	branchState.setNextState("E", branchState)
-	branchState.setNextState("H", seenHState)
+	branchState.setNextState("H", branchState)
 
 	branchState.setAllHeadMoves("R")
-
-	seenHState.setNextState("_", seenH_State)
-	seenHState.setNextState("1", branchState)
-	seenHState.setNextState("E", branchState)
-	seenHState.setNextState("H", seenHState)
-
-	seenHState.setAllHeadMoves("R")
 	
-	findSymbol(seenH_State, "H", "R", "R", outState)
+	findSymbol(seenUnderscoreState, "H", "R", "R", outState)
 
 	listOfStates.append(branchState)
-	listOfStates.append(seenHState)
-	listOfStates.append(seenH_State)
+	listOfStates.append(seenUnderscoreState)
 
 # This is the most confusing function in this file. A lot of weird 
 # stuff needs to happen in order to rewrite the stuff that was on the tape.
@@ -504,7 +496,7 @@ if __name__ == "__main__":
 		coreStateDictionary[outerState.stateName] = State(outerState.stateName, None, alphabetMTToST())
 #		listOfStates.append(coreStateDictionary[outerState.stateName])
 
-	print variableDictionary
+#	print variableDictionary
 	lastInitState = returnToVariableNameMarker("init", lastInitState, variableDictionary[outerStartState.tapeName], listOfStates)
 #	lastInitState = goToEndHeadLocMarkerFromStartVariableNameMarker("init", lastInitState, "R", listOfStates)
 	goToTapeHeadLocationWithOutState("init", lastInitState, listOfStates, innerStateCorrespondingToOuterStartState)

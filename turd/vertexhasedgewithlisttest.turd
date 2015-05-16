@@ -1,0 +1,49 @@
+vars vertex1pospart vertex1negpart vertex2pospart vertex2negpart patternlist2 vertex1length vertex2length pattern c1 i1 i2 i3 i4 i5 hasEdge?
+
+modify vertex1pospart with append_small_const 1
+modify vertex1pospart with append_small_const 4
+
+modify vertex1negpart with append_small_const 0
+modify vertex1negpart with append_small_const 0
+
+modify vertex2pospart with append_small_const 2
+modify vertex2pospart with append_small_const 3
+modify vertex2pospart with append_small_const 5
+
+modify vertex2negpart with append_small_const 0
+modify vertex2negpart with append_small_const 0
+modify vertex2negpart with append_small_const 0
+
+modify c1 with append_small_const 0
+modify c1 with append_small_const 1
+modify c1 with append_small_const 0
+modify c1 with append_small_const 0
+modify c1 with append_small_const 0
+modify patternlist2 with append2 c1
+
+clear c1
+
+modify c1 with append_small_const 1
+modify c1 with append_small_const 2
+modify c1 with append_small_const 2
+modify c1 with append_small_const 1
+modify c1 with append_small_const 2
+modify patternlist2 with append2 c1
+
+modify vertex1length with add_small_const 2
+modify vertex2length with add_small_const 3
+
+modify pattern with add_small_const 3
+modify i1 with add_small_const 3
+modify i2 with add_small_const 3
+modify i3 with add_small_const 3
+modify i4 with add_small_const 3
+modify i5 with add_small_const 3
+modify hasEdge? with add_small_const 3
+
+function vertexhasedgewithlist vertex1pospart vertex1negpart vertex2pospart vertex2negpart patternlist2 vertex1length vertex2length pattern c1 i1 i2 i3 i4 i5 hasEdge?
+
+print hasEdge?
+
+accept
+

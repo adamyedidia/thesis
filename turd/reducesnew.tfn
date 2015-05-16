@@ -1,0 +1,48 @@
+input Xpos Xneg Ypos Yneg c1 c2 xpos xneg ypos yneg i1 i2 i3 i4 i5 i6 i7 reduces?
+
+label this is for the new Friedman statement that is *more* similar to the old one.
+label A set of vertices X reduces a set of vertices Y if and only if for all y from Y, there exists x <=rlex y from X.
+
+
+label UNTESTED
+
+clear c1
+label FORALL_y_IN_Y
+	clear c2
+	clear ypos
+	assign ypos to Ypos index2 c1
+	clear yneg
+	assign yneg to Yneg index2 c1
+	label EXISTS_x_IN_X
+		clear xpos
+		assign xpos to Xpos index2 c2
+		clear xneg
+		assign xneg to Xneg index2 c2
+
+		function lexge ypos yneg xpos xneg i1 i2 i3 i4 i5 i6 i7 reduces?
+
+		if reduces? goto INCR_C1
+		goto INCR_C2
+
+		label INCR_C2
+		modify c2 with add_small_const 1
+		clear i1
+		assign i1 to Xpos length2
+		assign reduces? to i1 != c2
+		if reduces? goto EXISTS_x_IN_X
+		goto RETURN_FALSE
+
+	label INCR_C1
+	modify c1 with add_small_const 1
+	clear i1
+	assign i1 to Ypos length2
+	clear reduces?
+	assign reduces? to i1 = c1
+	if reduces? goto RETURN_TRUE
+	goto FORALL_y_IN_Y
+
+label RETURN_FALSE
+return
+
+label RETURN_TRUE
+return

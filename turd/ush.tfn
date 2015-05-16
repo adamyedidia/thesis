@@ -1,6 +1,13 @@
-input k knr8facfac invertexpospart invertexnegpart counter_nextnumber holder1 holder2 holder3 current_min outvertexpospart outvertexnegpart
+input knr8facfac invertexpospart invertexnegpart counter_nextnumber vertexlength holder1 holder2 holder3 current_min outvertexpospart outvertexnegpart
+
 clear outvertexpospart
 clear outvertexnegpart
+
+clear counter_nextnumber
+clear vertexlength
+assign vertexlength to invertexpospart length
+if vertexlength goto GET_TO_NEXT_NUMBER_LOOP
+return
 
 label GET_TO_NEXT_NUMBER_LOOP
 clear holder1
@@ -16,6 +23,6 @@ modify outvertexpospart with append holder1
 modify outvertexnegpart with append holder2
 modify counter_nextnumber with add_small_const 1
 clear holder3
-assign holder3 to counter_nextnumber != k
+assign holder3 to counter_nextnumber != vertexlength
 if holder3 goto GET_TO_NEXT_NUMBER_LOOP
 return

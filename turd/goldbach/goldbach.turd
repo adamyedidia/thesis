@@ -1,3 +1,5 @@
+label This program halts if Goldbach's conjecture is false, and loops otherwise.
+
 vars even_number c1 h1 h2 h3 isPrime?
 
 modify even_number with add_small_const 4

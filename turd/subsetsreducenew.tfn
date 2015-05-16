@@ -1,6 +1,6 @@
-input k n r posxlist negxlist pattern i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 kni8fac subsetsreduce?
+input k n r posxlist negxlist i h1 h2 h3 h4 h5 h6 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 kni8fac subsetsreduce?
 
-label 6 inputs: k n r posxlist negxlist pattern
+label 6 inputs: k n r posxlist negxlist
 label 30 internals holy crap
 
 label UNTESTED
@@ -10,7 +10,7 @@ modify i with add_small_const 1
 
 label MAIN_LOOP
 
-function eightknr k n i i1 i2 kni8fac
+function eightknr k n i i1 i2 i3 kni8fac
 clear h1
 assign h1 to kni8fac > r
 if h1 then goto RETURN_TRUE

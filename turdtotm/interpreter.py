@@ -1,5 +1,6 @@
 import sys
 import string
+import copy
 from function import *
 
 path = sys.argv[-1]
@@ -42,7 +43,10 @@ def parseValue(string, currentMapping, variableDictionary):
 			
 def evaluate(value1, value2, operation, lineNumber, functionName):
 	if operation == "+" or operation == "add_small_const":
-		return value1 + value2
+		try:
+			return value1 + value2
+		except:
+			print "error adding", value1, "to", value2, "on line", lineNumber, "of", functionName		
 
 	elif operation == "*":
 		return value1 * value2
@@ -87,7 +91,7 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			assert type(value1) == type([])
 			assert type(value1[0]) == type([])
 			assert value1[0] == [] or isinstance(value1[0][0], ( int, long ) )
-			return value1 + [value2]
+			return value1 + [value2[:]]
 		except:
 			print "bad list2 on line", lineNumber, "of", functionName
 			assert type(value2) == type([])
@@ -117,6 +121,24 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 			value1 = []
 		if value2 == 0:
 			value2 = []
+
+		oldvalue1 = value1[:]
+		oldvalue2 = value2[:]
+
+		value1 = []
+		for i in oldvalue1:
+			if i == 0:
+				value1.append([])
+			else:
+				value1.append(i[:])		
+
+		value2 = []
+		for i in oldvalue2:
+			if i == 0:
+				value2.append([])
+			else:
+				value2.append(i[:])		
+
 
 		try:
 			assert type(value1) == type([])
@@ -350,6 +372,8 @@ while stepCounter < float(numSteps):
 	currentFunction = stack[-1].functionLines	
 	currentMapping = stack[-1].variableMapping	
 	currentLabelDictionary = stack[-1].labelDictionary
+
+	print lineNumber, stack[-1].functionName
 
 #s	print lineNumber
 

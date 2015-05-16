@@ -1,13 +1,19 @@
-\documentclass{report}
+\documentclass[11pt]{report}
 \usepackage{graphicx}
 \usepackage{fullpage}
 \usepackage{titlesec}
 \usepackage{amsmath}
+\usepackage{amsthm}
+\newtheorem{statement}{Statement}
 
+\newcommand{\statenumstate}{533,482-state }
 \newcommand{\statenum}{533,482 }
 \newcommand{\bbstatenum}{$BB($533,482) }
 \newcommand{\bbstatenumcomma}{$BB($533,482, }
 \newcommand{\bbstatenumperiod}{$BB($533,482. }
+
+\newcommand{\gbstatenum}{7,902 }
+\newcommand{\gbstatenumstate}{7,902-state }
 
 \setcounter{secnumdepth}{4}
 
@@ -20,158 +26,136 @@
 
 \begin{abstract}
 
-I present an explicit description of a Turing machine $G$ whose behavior cannot be proved in ZFC, assuming ZFC is consistent. In doing so, I give the first known upper bound on the highest provable Busy Beaver number in ZFC, assuming ZFC is consistent. In the process of creating $G$, I define a higher-level language, TMD, which is much more convenient for writing in than direct state manipulation, and explain in detail the process of compiling this language down to a Turing machine description. TMD is a well-documented language that is optimized for parsimony over efficiency. This makes TMD a uniquely useful tool for creating further Turing machines that verify mathematical statements. 
+Since the definition of the Busy Beaver function by Rad\'{o} in 1962, an interesting open question has been what the smallest value of $n$ for which $BB(n)$ is independent of ZFC. Is this $n$ approximately 10, or closer to 1,000,000, or is it unfathomably large? In this thesis, I show that it is at most \statenum by presenting an explicit description of a \statenumstate Turing machine $Z$ whose behavior cannot be proved in ZFC, assuming ZFC is consistent, based on the work of Friedman. % TODO cite
+In doing so, I give the first known upper bound on the highest provable Busy Beaver number in ZFC. I also present an explicit description of a \gbstatenumstate Turing machine $G$ that haltsif and only if there's a counterexample to Goldbach's conjecture. In the process of creating $G$ and $Z$, I define a higher-level language, TMD, which is much more convenient than direct state manipulation, and explain in great detail the process of compiling this language down to a Turing machine description. TMD is a well-documented language that is optimized for parsimony over efficiency. This makes TMD a uniquely useful tool for creating small Turing machines that encode mathematical statements. 
 
 \end{abstract}
 
-My thesis is split into two chapters. The first chapter explains \emph{what} was done: ZFC, Turing machines, G\"{o}del's incompleteness theorems, the Busy Beaver function, and general clarifications. The second chapter explains \emph{how} it was done: TMD, what intermediate steps are contained between the high-level language and the low-level Turing machine description, and the general algorithm for compilation.
-
 \chapter{Concept}
+
+My thesis is split into three chapters. The first chapter explains \emph{what} was done: ZFC, Turing machines, G\"{o}del's incompleteness theorems, the Busy Beaver function, and general clarifications. The second chapter explains \emph{how} it was done: TMD, what intermediate steps are contained between the high-level language and the low-level Turing machine description, and the general algorithm for compilation. The third chapter provides a very detailed example of the compilation process, applied to my TMD program for encoding Goldbach's conjecture.
 
 \section{Background and Motivation \label{sec:background}}
 
-\emph{Zermelo-Fraenkel set theory with the axiom of choice}, more commonly known as ZFC, is an axiomatic system invented in the twentieth which has since been used as the foundation of most of modern mathematics. It encodes arithmetic by describing natural numbers as increasing sets of sets. Because of its importance as the basic assumption from which most interesting mathematics is derived, it has been the object of plenty of study. \\
+\emph{Zermelo-Fraenkel set theory with the axiom of choice}, more commonly known as ZFC, is an axiomatic system invented in the twentieth which has since been used as the foundation of most of modern mathematics. It encodes arithmetic by describing natural numbers as increasing sets of sets. \\
+\\
+Like any axiomatic system capable of encoding arithmetic, ZFC is constrained by G\"{o}del's two incompleteness theorems. The first incompleteness theorem states that if ZFC is \emph{consistent} (it never proves both a statement and its opposite), then ZFC cannot also be \emph{complete} (able to prove every true statement). The second incompleteness theorem states that if ZFC is consistent, then ZFC cannot prove its own consistency. Because we have built modern mathematics on top of ZFC, we can reasonably be said to have assumed ZFC's consistency. This means that we must also believe that ZFC cannot prove its own consistency. This fact carries with it certain surprising conclusions. \\
 
-Like any axiomatic system capable of encoding arithmetic, ZFC is constrained by G\"{o}del's two incompleteness theorems. The first incompleteness theorem states that if ZFC is \emph{consistent} (it never proves both a statement and its opposite), then ZFC cannot also be \emph{complete} (it proves every true statement). To see that this is true, consider the statement $S$: ``This statement is not provable in ZFC.'' $S$ cannot be proved with ZFC, since if it was proven then it would be false! But if it cannot be proved with ZFC, then it must be true. Hence, there is a true statement in ZFC that cannot be proved in ZFC. \\
+In particular, consider a Turing machine $G$ that enumerates, one after the other, each of the provable statements in ZFC. To describe how such a machine might be constructed, $G$ could start with the axioms and iterate over the inference rules of ZFC, applying each in every possible way to each conclusion that had been reached so far. We might ask $G$ to halt if it ever reaches a contradiction; in other words, $G$ will halt if and only if it ever finds a proof of $0 = 1$. Because we know that this machine will enumerate \emph{every} provable statement in ZFC, we know that it will halt if and only if ZFC is inconsistent. \\
 
-G\"{o}del's second incompleteness theorem states that if ZFC is \emph{sound} (it only proves statments that are true), then ZFC cannot prove its own consistency. To verify this, consider a scenario in which ZFC could prove its own consistency. Now suppose that the statement $S$ above was false. That would imply that $S$ \emph{is} provable in ZFC--which would mean ZFC can prove a falsehood, which is impossible! It follows that the statement $S$ above must be true. But if this conclusion follows from the assumption of ZFC's consistency, then it must be true that if ZFC can prove its own consistency, it can also prove $S$. However, it was established from the proof of the G\"{o}del's first incompleteness theorem that ZFC cannot prove $S$ and remain consistent! Thus, if ZFC is sound and can prove its own consistency, it must be able to prove $S$, so it must be inconsistent. But if ZFC is inconsistent and can prove its own consistency, it must not be sound! Therefore, assuming ZFC is sound, ZFC cannot prove its own consistency. J. Rosser was able to retain the proof while weakening the assumption of soundness to an assumption of consistency in 1936. \\ % TODO cite?
+It follows that $G$ is a Turing machine for which the question of its behavior (whether or not it halts when run indefinitely) is equivalent to the consistency of ZFC. Therefore, just as ZFC cannot prove its own consistency (assuming ZFC is consistent), ZFC also cannot prove that $G$ will loop or halt. \\
 
-Because we as mathematicians have built modern mathematics on top of ZFC, we can reasonably be said to have assumed ZFC's soundness. This means that we must also assume that ZFC cannot prove its own consistency. This fact carries with it certain surprising conclusions. \\
+This is interesting for the following reason. While the undecidability of the halting problem tells us that there cannot exist an algorithmic method for determining whether an \emph{arbitrary} Turing machine loops or halts, $G$ is an example of a \emph{specific} Turing machine whose behavior cannot be proven one way or the other using the foundation of modern mathematics. Mathematicians and computer scientists think of themselves as being able to determine how a given algorithm will behave if we are given enough time to stare at it; despite this intuition, $G$ is a machine whose behavior we can never prove without assuming axioms more powerful than those generally assumed in most of modern mathematics. \\
 
-In particular, consider a Turing machine $G$ that enumerates, one after the other, each of the provable statements in ZFC. Because ZFC is \emph{computable}, it follows that such a machine must exist. To describe how such a machine might be constructed, $G$ could iterate over each of the axioms of ZFC, applying each axiom in each possible way to the conclusion that had been reached so far. We might ask $G$ to halt if it ever reaches a contradiction; in other words, $G$ will halt if and only if it ever finds two provable statements in ZFC that contradict each other. Because we know that this machine will enumerate \emph{every} provable statement in ZFC, we know that it will halt if and only if ZFC is inconsistent. \\
-
-It follows that $G$ is a Turing machine for which the question of its behavior (whether or not it halts when run indefinitely) is equivalent to the consistency of ZFC. Therefore, just as ZFC cannot prove its own consistency (assuming ZFC is sound), ZFC also cannot prove that $G$ will loop or halt. \\
-
-This is intuitively very surprising. While the proof of the undecidability of the halting problem (see Section~\ref{sec:halting}) tells us that there cannot exist an algorithmic method for determining whether an \emph{arbitrary} Turing machine loops or halts, $G$ is an example of a \emph{specific} Turing machine whose behavior cannot be proven one way or the other using the foundation of modern mathematics. We as mathematicians and computer scientists think of ourselves as being able to determine how a given algorithm will behave if we are given enough to stare at it; despite this intuition, $G$ is a machine whose behavior we can never prove without assuming axioms more powerful than those generally assumed in most of modern mathematics. \\
-
-This is only the first surprising fact that follows from G\"{o}del's second incompleteness theorem when applied to ZFC. In the next section, I discuss the Busy Beaver function and the implications on it from a machine like $G$.
+This is only the first surprising fact that follows from G\"{o}del's second incompleteness theorem when applied to ZFC. In the next section, I discuss the Busy Beaver function and the implications for it from a machine like $G$.
 
 \section{Turing Machines \label{sec:tm}}
 
-Mathematians and computation theorists often make reference to a type of machine called a \emph{Turing machine}. Formally, a Turing machine is a 7-tuple of relevant values, one of which is the \emph{transition function}; informally, a Turing machine is a mathematical desciption of an algorithm. In 1936, Alonzo Church and Alan Turing independently proved what would eventually become known as the \emph{Church-Turing thesis}, which postulated that anything that could be done by a computer or by a human with pencil and paper, ignoring resource limitations, could also be done by Turing machine. Turing machines have since become a stand-in used by mathematicians for an algorithm, or a computer program. Because they provide a convenient common standard, because they make the notion of an algorithm rigorous, and because they are as powerful as any other computational machine, mathematicians have used Turing machines to reason about the limits of human computation for the last century. \\
+Informally, a Turing machine is a mathematical desciption of an algorithm. In 1936, Alonzo Church and Alan Turing independently postulated what would eventually become known as the \emph{Church-Turing thesis}, which said that anything that could be done by a computer or by a human with pencil and paper, ignoring resource limitations, could also be done by Turing machine. Turing machines have since become a stand-in used by mathematicians for an algorithm, or a computer program. \\
 
-There are many different competing definitions for Turing machines, each differing slightly from the other. For example, some definitions for Turing machines allow the machine to have a finite number of tapes; others only allow it to have one. Some definitions allow an arbitrarily large alphabet, while others only allow two symbols. Some definitions allow the tape head to remain in place, while others require it to move at every time-step. In most research regarding Turing machines, mathematicians don't concern themselves with which of these models to use, because any one of them can simulate the others, if a constant overhead in the number of states is allowable. Because the work of my thesis concerns at various points the exact number of states required to perform certain tasks, it is important to rigorously define what model of Turing machine is being used. \\
+There are many different definitions for Turing machines, each differing slightly from the other. For example, some definitions for Turing machines allow the machine to have multiple tapes; others only allow it to have one. Some definitions allow an arbitrarily large alphabet, while others only allow two symbols. Some definitions allow the tape head to remain in place, while others require it to move at every time-step. In most research regarding Turing machines, mathematicians don't concern themselves with which of these models to use, because any one of them can simulate the others. However, because this thesis is concerned with upper-bounding the exact number of states required to perform certain tasks, it is important to define precisely what model of Turing machine is being used. \\
 
-Formally, any $k$-state Turing machine used in this thesis is a 7-tuple $M = (Q, \Gamma, b, \Sigma, \delta, q_0, F)$, where: \\ \\
-$Q$ is the set of $k$ \emph{states} $\{q_0, q_1, \dots, q_{k-2}, q_{k-1}, q_{\textrm{ACCEPT}}, q_{\textrm{REJECT}}\}$ \\
+Formally, a $k$-state Turing machine used in this thesis is a 7-tuple $M = (Q, \Gamma, b, \Sigma, \delta, q_0, F)$, where: \\ \\
+$Q$ is the set of $k$ \emph{states} $\{q_0, q_1, \dots, q_{k-2}, q_{k-1}\}$ \\
 $\Gamma = \{0, 1\}$ is the set of \emph{tape alphabet symbols} \\
 $b = 0$ is the \emph{blank symbol} \\
 $\Sigma = \empty$ is the set of \emph{input symbols} \\\
-$\delta = (Q \\ F) \times \Gamma \rightarrow Q \times \Gamma \times \{L, R\}$ is the \emph{transition function} \\
+$\delta = Q \times \Gamma \rightarrow (Q \cup F} \times \Gamma \times \{L, R\}$ is the \emph{transition function} \\
 $q_0$ is the \emph{start state} \\
-$F = \{q_{\textrm{ACCEPT}}, q_{\textrm{REJECT}}\}$ is the set of halting states. \\
+$F = \{\textrm{ACCEPT}, \textrm{REJECT}, \textrm{ERROR}\}$ is the set of \emph{halting transitions}. \\
 
-In this thesis, a Turing machine's \emph{states} make up the Turing machine's easily-accessible, finite memory. The Turing machine's state is initialized to $q_0$. New states are entered according to the Turing machine's transition function. \\
+In this thesis, a Turing machine's \emph{states} make up the Turing machine's easily-accessible, finite memory. The Turing machine's state is initialized to $q_0$. \\
 
-The \emph{tape alphabet symbols} correspond to the the symbols that are can be written on the Turing machine's infinite tape. \\
+The \emph{tape alphabet symbols} correspond to the symbols that can be written on the Turing machine's infinite tape. \\
 
-The \emph{blank symbol} is the only symbol that can appear on the tape an infinite number of times. In my thesis, all Turing machines discussed are run on the \emph{empty input}, which means that all Turing machines discussed are run on a tape where every slot contains the blank symbol. \\
+In my thesis, all Turing machines discussed are run on the \emph{empty input}, which means that all Turing machines discussed are run on a tape where every slot contains the blank symbol. \\
 
-The \emph{input symbols} are the only symbols that can appear on the tape at initialization, other than the blank symbol. They encode the input to the Turing machine. Because all Turing machines discussed in my thesis are run on the empty input, no input symbols will appear on the tape at initialization. \\
-
-The \emph{transition function} encodes the Turing machine's behavior. It is, in some sense, what encodes the algorithm itself. It takes two inputs: the current state of the Turing machine (an element of $(Q \\ F)$ and the symbol read off the tape (an element of $\Gamma$). It outputs three separate instructions: what state to enter (an element of $Q$), what symbol to write onto the tape (an element of $\Gamma$) and what direction to move the head in (an element of $\{L, R\}$). A transition function specifies the entire behavior of the Turing machine in all cases. \\
+The \emph{transition function} encodes the Turing machine's behavior. It takes two inputs: the current state of the Turing machine (an element of $(Q \\ F)$ and the symbol read off the tape (an element of $\Gamma$). It outputs three separate instructions: what state to enter (an element of $Q$), what symbol to write onto the tape (an element of $\Gamma$) and what direction to move the head in (an element of $\{L, R\}$). A transition function specifies the entire behavior of the Turing machine in all cases. \\
 
 The \emph{start state} is the state that the Turing machine is in at initialization. \\
 
-The \emph{set of halting states} is the set of states such that when the Turing machine enters one of these states, execution halts. The question of whether or not a Turing machine halts centers around whether or not a Turing machine will ever enter a state in this set when run indefinitely. Note that states in this set are not included as possible inputs to the transition function, but are included as possible outputs; this encodes the fact that while Turing machines can enter one of these states, they cannot leave them. 
+The set of \emph{halting transitions} is the set of transitions such that when the Turing machine takes one of these transitions, execution halts. The question of whether or not a Turing machine halts centers around whether or not a Turing machine will ever enter a state in this set when run indefinitely. While having three possible halting transitions is not necessary for the purpose of this thesis, being able to different between the three different types of halting is useful for the purpose of testing.
 
 \section{The Busy Beaver Function}
 
-Consider the set of all Turing machines with $k$ states, for some positive integer $k$. In computability theory, we call a Turing machine $B$ a $k$-\emph{Busy Beaver} if when run on the empty tape as input, the following is true: \\ \\
--$B$ halts. \\
+Consider the set of all Turing machines with $k$ states, for some positive integer $k$. In computability theory, we call a Turing machine $B$ a $k$\emph{-State Busy Beaver} if when run on the empty tape as input, the following is true: \\ \\
 -$B$ has $k$ states. \\
+-$B$ halts. \\
 -$B$ runs for at least as many steps before halting as all other halting $k$-state Turing machines. \\
 
-In other words, a Busy Beaver is a Turing machine is a Turing machine that runs for at least as long as all other Turing machines with as many states as it. \\
+% TODO need a pile of references here
 
-The \emph{Busy Beaver function}, often written $BB(x)$, takes as input a positive integer $x$ and returns how many steps it takes for an $x$-Busy Beaver to halt. The Busy Beaver function has a lot of interesting mathematical and computational properties. To begin with, the Busy Beaver function is not a \emph{computable} function; in other words, there does not exist an algorithm that takes $x$ as input and returns $BB(x)$, for any value of $x$. This follows directly from the undecidability of the halting problem. Suppose an algorithm existed that could compute the Busy Beaver function; then, given a $k$-state Turing machine $M$ as input, we could compute $BB(k)$ and run $M$ for $BB(k)$ steps. If, after $BB(k)$ steps, $M$ had not yet halted, we could safely conclude that $M$ would never halt. Thus, if an algorithm $A$ existed to compute the Busy Beaver function, we could construct an algorithm $A'$ to tell us if an arbitrary Turing machine will halt. Because $A'$ cannot exist (see Section~\ref{sec:halting}), $A$ cannot exist either. \\
+In other words, a Busy Beaver is a Turing machine is a Turing machine that runs for at least as long as all other Turing machines with as many states as it. Another common definition for a Busy Beaver is a Turing machine that writes as many 1's on the tape as possible; because this is not the most popular definition, it is not used in this thesis. \\
 
-By the same proof as the one above, we also know that $BB(x)$ must grow faster than any computable function. (To check this, assume that some computable function $f(x)$ grows faster than $BB(x)$, and substitute $f(k)$ for $BB(k)$ in the rest of the proof.) This is a very impressive feature for a function to have, because there exist computable functions, such as the well-known Ackermann function, that are known to grow extremely quickly. \\
+The \emph{Busy Beaver function}, often written $BB(k)$, takes as input a positive integer $k$ and returns how many steps it takes for a $k$-Busy Beaver to halt. The Busy Beaver function has many striking properties. To begin with, the Busy Beaver function is not \emph{computable}; in other words, there does not exist an algorithm that takes $k$ as input and returns $BB(k)$, for arbitrary values of $k$. This follows directly from the undecidability of the halting problem. Suppose an algorithm existed that could compute the Busy Beaver function; then, given a $k$-state Turing machine $M$ as input, we could compute $BB(k)$ and run $M$ for $BB(k)$ steps. If, after $BB(k)$ steps, $M$ had not yet halted, we could safely conclude that $M$ would never halt. Thus, if an algorithm $A$ existed to compute the Busy Beaver function, we could construct an algorithm $A'$ to tell us if an arbitrary Turing machine will halt. Because $A'$ cannot exist (see Section~\ref{sec:halting}), $A$ cannot exist either. \\
 
-For most purposes, when reasoning about Turing machines, it is unnecessary to define precisely what model of Turing machine is being used. Single-tape Turing machines can simulate multi-tape Turing machines, and vice-versa; Turing machines using a two-symbol alphabet can simulate Turing machines using an arbitrarily large but finite alphabet; Turing machines whose heads cannot remain in place after a single time-step can simulate Turing machines whose heads can, and vice-versa. In each of these cases, however, the simulation may require some overhead in the number of states. When discussing explicit values of the Busy Beaver function, the exact number of states used in the Turing machine is relevant. For this reason, any discussion of the Busy Beaver function must include a corresponding Turing machine model. \\
+By the same argument, $BB(x)$ must grow faster than any computable function. (To check this, assume that some computable function $f(k)$ grows faster than $BB(k)$, and substitute $f(k)$ for $BB(k)$ in the rest of the proof.) This is a very impressive feature for a function to have, because there exist computable functions, such as the well-known Ackermann function, that are known to grow extremely quickly. \\
 
-The most common Turing machine model associated with the Busy Beaver function is also the weakest Turing machine model generally discussed by mathematicians; that is, it concerns a single-tape, two-symbol Turing machine that cannot remain in place. This model is formally defined in Section~\ref{sec:tm}. % TODO cite this?
-In the remainder of this section, explicit values of the Busy Beaver function will be discussed. For all of these explicit values, we assume that this Turing machine model is the one being used. \\
-
-Partly because the Busy Beaver function grows so quickly, and partly because the finding the value of Busy Beaver of $x$ for a given $x$ requires so much work (one must fully explore the behavior of all $x$-state Turing machines), few explicit values of the Busy Beaver function are currently known. The known values are as follows: \\
+Partly because the Busy Beaver function grows so quickly, and partly because finding the value of $BB(k)$ for a given $k$ requires so much work (one must fully explore the behavior of all $k$-state Turing machines), few explicit values of the Busy Beaver function are currently known. The known values are as follows: 
 
 $$BB(1) = 1$$
 $$BB(2) = 6$$
 $$BB(3) = 21$$
 $$BB(4) = 107$$
 
-Beyond these four, no values of the Busy Beaver function have been proven. However, lower bounds exist for $BB(5)$ and $BB(6)$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach:
+For $BB(5)$ and $BB(6)$, only lower bounds are known: $BB(5) \ge 47,176,870$, and $BB(6) \ge 7.4 \times 10^{36534}$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach. \\
 
-$$BB(5) \ge 47,176,870$$
-$$BB(6) \ge 7.4 \times 10^{36534}$$
+Another way to say discuss the Busy Beaver sequence is to say that modern mathematics has established a \emph{lower bound} of 4 on the highest provable Busy Beaver value. In this thesis, I prove the first known \emph{upper bound} on the highest provable Busy Beaver value in ZFC; that is, I give a value of $x$ such that the value of $BB(x)$ cannot be proven in ZFC. \\
 
-The current state of human knowledge is that the first four Busy Beaver values are known. Another way to say this is that modern mathematics has established a \emph{lower bound} of 4 on the highest provable Busy Beaver value. In my thesis, I prove the first known \emph{upper bound} on the highest provable Busy Beaver value in ZFC; that is, I give a value of $x$ such that the value of $BB(x)$ cannot be proven in ZFC. \\
+Intuitively, one might expect that while no algorithm may exist to compute $BB(k)$ for \emph{all} values of $x$, we could find the value of $BB(k)$ for any \emph{specific} value of $k$ using a procedure similar to the one we used to find the value of $BB(k)$ for $k \le 4$. The reason that such an upper bound must exist is closely tied to the existence of a machine like the G\"{o}delian machine $Z$, as described in Section~\ref{sec:background}. Suppose that $Z$ has $k$ states. Because $Z$'s behavior (whether it halts or loops) cannot be proven in ZFC, it follows that the value of $BB(k)$ also cannot be proven in ZFC; if it could, then a proof would exist of $Z$'s behavior in ZFC. Such a proof would consist of a \emph{computation history} for $Z$, which is an explicit step-by-step description of $Z$'s behavior for a certain number of steps. If $Z$ halts, a computation history leading up to $Z$'s halting would be the entire proof; if $Z$ loops, then a computation history that takes $BB(k)$ steps, combined with a proof of the value of $BB(k)$, would constitute a proof that $Z$ will run forever. \\
 
-The existence of such an upper bound is very intuitively surprising; one might expect that while no algorithm may exist to compute $BB(x)$ for \emph{any} value of $x$, we could find the value of $BB(x)$ for any \emph{specific} value of $x$ using a procedure similar to the one we used to find the value of $BB(x)$ for $x \le 4$. The reason that such an upper bound must exist is closely tied to the existence of a machine like the G\"{o}delian machine $G$, as described in Section~\ref{sec:background}. Suppose that $G$ has $k$ states. Because $G$'s behavior (whether it halts or loops) cannot be proven in ZFC, it follows that the value of $BB(k)$ also cannot be proven in ZFC; if it could, then a proof would exist of $G$'s behavior in ZFC. Such a proof would consist of a \emph{computation history} for $G$, which is an explicit step-by-step description of $G$'s behavior for a certain number of steps. If $G$ halts, a computation history leading up to $G$'s halting would be the entire proof; if $G$ loops, then a computation history that takes $BB(k)$ steps, combined with a proof of the value of $BB(k)$, would constitute a proof that $G$ will run forever. \\
+For this thesis, I constructed a machine like $Z$, for which a proof that $Z$ runs forever would imply that ZFC was consistent. In doing so, I found an explicit upper bound on the highest Busy Beaver value provable in ZFC. My machine, which I shall refer to as $Z$ hereafter in the paper, contains \statenum states. Therefore, we will never be able to prove the value of \bbstatenum without assuming more powerful axioms than those of ZFC. This upper bound is presumably far from tight, but it is a first step.
 
-For my thesis, I constructed a machine like $G$, for which a proof that $G$ runs forever would imply that ZFC was consistent. In doing so, I found an explicit upper bound on the highest Busy Beaver value provable in ZFC. My machine, which I shall refer to as $G$ hereafter in the paper, contains \statenum states. Therefore, we will never be able to prove the value of \bbstatenum without assuming more powerful axioms than the ones assumed in most modern mathematical proofs.
-
-\section{A Description of $G$}
+\section{A Description of $Z$}
 
 In Section~\ref{sec:background}, I described a G\"{o}delian Turing machine that would be \emph{independent of ZFC}; it would not be possible to prove that this machine would halt or wouldn't halt using the axioms of ZFC, assuming that ZFC was consistent. I suggested that one might build this machine by instructing the machine to start with an identity and apply the axioms of ZFC repeatedly in each possible way so as to enumerate every statement ZFC could ever prove, and to halt if ever a contradiction was found. While the idea for this method is simple, to actually construct such a machine would be very involved, because it would require creating a language in which to encode the axioms of ZFC that could be stored on a Turing machine tape. \\
 
-Thankfully, a simpler method exists for creating $G$. Prof. Harvey Friedman was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent[1], and which is false if ZFC is not consistent. (Note that these two properties are also true of the statement, ``ZFC does not contain a contradiction.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC!) The statement is as follows: \\
+Thankfully, a simpler method exists for creating $Z$. Friedman [1] was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent, and which is false if ZFC is not consistent. Note that these two properties are also true of the statement, ``ZFC is consistent.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC! However, note also that while the statement ``ZFC is consistent'' is equivalent to the consistency of ZFC, Statement~\ref{friedmanstatement} is \emph{not} necessarily equivalent to the consistency of ZFC. The statement is as follows: \\
 
-\emph{For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r,ush(x_1),...,ush(x_r)\}$ of complexity $\le 8knr!$, each
-$\{x_1, \dots, x_{(8kni)!}\}$ reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$.}
+\begin{statement}
+For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r,ush(x_1),...,ush(x_r)\}$ of complexity $\le 8knr!$, each
+$\{x_1, \dots, x_{(8kni)!}\}$ reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$.
+\label{friedmanstatement}
+\end{statement}
 
-In this statement, an \emph{order invariant graph} is a graph containing an infinite number of nodes. In particular, it has one node for each finite set of real numbers of size $k$ or smaller. In every description of nodes that follows, the term \emph{node} refers both to the object in the order invariant graph and to the set of numbers that it represents. \\
+A number of \emph{complexity} at most $c$ refers to a number that can be written as a fraction $a/b$, where $a$ and $b$ are both integers less than or equal to $c$. A set has complexity at most $c$ if all the numbers it contains have complexity at most $c$. \\ 
+
+In this statement, an \emph{order invariant graph} is a graph containing an uncountably infinite number of nodes. In particular, it has one node for each finite set of real numbers. The only numbers relevant to the statement are numbers of complexity $8knr!$ or smaller, so we need only consider the rationals. In every description of nodes that follows, the term \emph{node} refers both to the object in the order invariant graph and to the set of numbers that it represents. \\
 
 Additionally, in an order invariant graph, two nodes $(a,b)$ may have an edge between them if and only if each other pair of nodes $(c,d)$ that is \emph{order equivalent} with $(a,b)$ have an edge between them. Two pairs of nodes $(a, b)$ and $(c, d)$ are \emph{order equivalent} if $a$ and $c$ are the same size and $b$ and $d$ are the same size and if for all $1 \le i \le |a|$ and $1 \le j \le |b|$, the $i$-th element of $a$ is less than the $j$-th element of $b$ if and only if the $i$-th element of $c$ is less than the $j$-th element of $d$. \\
 
-To give a few trivial examples of order invariant graphs: the empty graph is an order invariant graph, as is the complete graph. A graph being order invariant imposes the restriction that \emph{under certain circumstances, if $a$ and $b$ have an edge between them, $c$ and $d$ must too}--a condition which, no matter the circumstances asked, is satisfied by both the complete and the empty graph. Non-trivial examples of order invariant graphs are more difficult to fully describe, because of the fact that they contain an infinite number of nodes; however, subgraphs of non-trivial order invariant graphs can be helpfully described. \\ 
+To give a few trivial examples of order invariant graphs: the graph with no edges is an order invariant graph, as is the complete graph. A graph being order invariant imposes the restriction that \emph{under certain circumstances, if $a$ and $b$ have an edge between them, $c$ and $d$ must too}--a condition which, no matter the circumstances asked, is satisfied by both the complete and the empty graph. \\ % TODO give nontrivial example?
 
 % TODO describe a subgraph of a non-trivial order invariant graph
 
 The \emph{ush()} function takes as input a set and returns a copy of that set with all non-negative numbers in that set incremented by 1. \\ 
 
-A number of \emph{complexity} at most $c$ refers to a number that can be written as a fraction $a/b$, where $a$ and $b$ are both integers less than or equal to $c$. A set has complexity at most $c$ if all the numbers it contains have complexity at most $c$. \\ 
+Finally, \emph{A set of vertices $X$ reduces a set of vertices $Y$ if and only if for all $y \in Y$, either $y \in X$ or there is an $x \in X$ such that ($x E y$ and $\max(x) \le \max(y)$)}. \\
 
-Finally, to quote [1]: \\
-
-\emph{A set of vertices $X$ reduces a set of vertices $Y$ if and only if for all $y \in Y$, either $y \in X$ or there is an $x \in X$ such that ($x E y$ and $\max(x) \le \max(y)$)}. \\
-
-In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is consistent, I constructed a Turing machine, that I will hereafter call $G$, that loops if the statement above is true, and halts if it is false. Because $G$ contains \statenum states, a proof of \bbstatenum would imply a proof of the statement's truth in ZFC (the proof would consist computation history that shows $G$ running for \bbstatenum steps, and a proof of the value of \bbstatenum).
+In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is consistent, I constructed a Turing machine, that I will hereafter call $Z$, that loops if the Statement~\ref{friedmanstatement} above is true, and halts if it is false. Because $Z$ contains \statenum states, a proof of \bbstatenum would imply a proof of Statement~\ref{friedmanstatement}'s truth in ZFC (the proof would consist computation history that shows $Z$ running for \bbstatenum steps, and a proof of the value of \bbstatenum).
 
 \section{Parsimony}
 
-To construct $G$, a program that checks the correctness of Statement~\ref{eq:friedman} appears at first to be a daunting task. In particular, it is impossible for the program to check the correctness of the statement for large $k$, $n$, and $r$ efficiently; note that the statement requires us to check all subgraphs of complexity $(8knr)!$. This requires us to enumerate all fractions with numerators and denominators of size at most $(8knr)!$, for a total of $\Theta((8knr!)^2)$ different fractions! Plainly, this is not a remotely tractable task. \\
+In most algorithmic study, efficiency is the primary concern. On occasion, space usage is also an important concern. In the pursuit of a description for $Z$, however, parsimony is instead the only thing that matters. This leads to a lot of unorthodox design decisions, which are gone into in detail in Chapter~\ref{sec:implementation}. I will note, however, that the point of view of optimizing for \emph{simplicity} is a completely different mindset. One historical analogue is the practice of ``code-golfing'': a recreational pursuit adopted by some programmers in which the goal is to produce a piece of code written in a given programming language, using as few characters as possible. The goal of designing a Turing machine with as few states as possible to accomplish a certain task, without concern for the machine's efficiency or space usage, can be thought of analogous to code-golfing with a particularly low-level programming language. \\
 
-Fortunately, for the purpose of the proof that this paper hopes to create, tractability is not a concern! It is unimportant that $G$ be efficient; if the goal was in fact to find a contradiction in ZFC, there would be much better ways to do it than to enumerate every provable statement in ZFC, or to verify the truth of arcane graph-theoretical statements. Moreover, even if the best way to find a contradiction in ZFC was by mechanically running a computer program, it would be far better to implement the the computer program in software directly, rather than implementing it as a Turing machine and simulating the Turing machine in software for as many steps as possible. \\
+Even for many algorithms used in practice, simplicity of implementation is a consideration on par with efficiency and space usage. It is unfortunate that we as an academic community have few standards with which to rigorously define the simplicity of an algorithm. To attempt to implement the algorithm while using as few characters as possible in most programming languages would fail to capture what it is we mean by the simplicity of an algorithm; often, the winning submissions in code-golf competitions are very difficult to read, require far more time to create than a larger program would have, and depend heavily on the allowances of the specific programming language. It is possible that a step in the direction of rigorously defining the simplicity of an algorithm would be to measure how many states a Turing machine that implements that algorithm would take. The language of TMD might have some use for this purpose.
 
-Crucially, the goal of my thesis is \emph{not} to find a contradiction in ZFC. Instead, it is to construct a proof of the unprovability of large enough Busy Beaver values in ZFC, through the construction of a Turing machine that cannot be proved to loop in ZFC if ZFC is consistent. It is entirely unimportant to this task that the Turing machine how quickly this machine loops. \\
-
-It is, however, important that this program's description be \emph{parsimonious}--that is, that the program use as few states as possible. The fewer states in $G$, the stronger the upper bound on the highest provable Busy Beaver value. \\
-
-In most theoretical algorithmic study, efficiency is the primary concern. On occasion, space usage is also an important concern. In the pursuit of a description for $G$, however, parsimony is instead the only thing that matters. This leads to a lot of unorthodox design decisions, which are gone into in detail in Chapter~\ref{sec:implementation}. I will note, however, that the point of view of optimizing for \emph{simplicity} is a completely different mindset. The closest thing I can think of that I have seen done previously is the practice of ``code-golfing'': a recreational pursuit adopted by some programmers in which the goal is to produce a piece of code written in a given programming languages, using as few characters as possible. The goal of designing a Turing machine with as few states as possible to accomplish a certain task, without concern for the machine's efficiency or space usage, can be thought of analogous to code-golfing with a particularly low-level programming language.
-
-\section{Frequently Asked Questions \label{sec:faq}}
+\section{Clarifications \label{sec:faq}}
 
 The study of axiomatic systems such as ZFC can often be confusing. This section is meant to help possible misunderstandings that the reader may have about this paper's result. \\
 
-\textbf{Q: I claim that the value \bbstatenum can't be proven in ZFC because if it could, then a proof would exist of Statement~\ref{eq:friedman}'s truth in ZFC. But what if the statement was false? Wouldn't a proof of the statement's falsehood exist in ZFC, with or without knowing the value of \bbstatenumcomma by simply give the computation history of $G$ until $G$ halts?} \\
+My claim is that the value \bbstatenum can't be proven in ZFC because if it could, then a proof would exist of Statement~\ref{eq:friedman}'s truth in ZFC. But what if the statement was false? Wouldn't a proof of the statement's falsehood exist in ZFC, with or without knowing the value of \bbstatenumcomma by simply give the computation history of $Z$ until $Z$ halts? The answer to this question is that if the Statement~\ref{eq:friedman} was false, there would indeed exist a proof of the statement's falsehood. However, remember that this statement, just like the similar statement ``ZFC does not contain a contradiction,'' has the property that ZFC must be inconsistent if it is false! Therefore, as long as ZFC is consistent, it cannot contain a proof of Statement~\ref{eq:friedman}'s truth \emph{or} falsehood. It cannot contain a proof of Statement~\ref{eq:friedman}'s truth, because then it would contain a proof of its own consistency, which no consistent axiomatic theory can have. And it cannot contain contain a proof of Statement~\ref{eq:friedman}'s falsehood, because that would prove that ZFC is inconsistent! \\
 
-A: If the Statement~\ref{eq:friedman} was false, there would indeed exist a proof of the statement's falsehood. However, remember that this statement, just like the similar statement ``ZFC does not contain a contradiction,'' has the property that ZFC must be inconsistent if it is false! Therefore, as long as ZFC is consistent, it cannot contain a proof of Statement~\ref{eq:friedman}'s truth \emph{or} falsehood. It cannot contain a proof of Statement~\ref{eq:friedman}'s truth, because then it would contain a proof of its own consistency, which no consistent axiomatic theory can have. And it cannot contain contain a proof of Statement~\ref{eq:friedman}'s falsehood, because that would prove that ZFC is inconsistent! \\
+If the value of \bbstatenum can't be proven in ZFC, does that mean people will never know the value of \bbstatenum with certainty? It depends on what is meant by ``knowledge''! If we restrict ourselves to the axioms of ZFC, we can never \emph{prove} the value of \bbstatenumperiod But if we are willing to assume more powerful axioms than ZFC, then we certainly could! For example, if we are willing to assume an axiom that states ZFC's consistency (which may be reasonable, since most mathematicians believe that ZFC is consistent), then it's entirely possible that we could prove the value of \bbstatenum from within the axiomatic system of (ZFC + $Con($ZFC)). And although most mathematical proofs use only ZFC as axioms, historically, when people have assumed more powerful axioms, it hasn't caused mathemticians to truly doubt the result that was produced. For example, in Wiles' proof of Fermat's Last Theorem, more powerful axioms than ZFC were used, and it wasn't a serious issue. 
 
-\textbf{Q: Does my result mean people will never know the value of \bbstatenum with certainty?} \\
+On the other hand, if the reader is wondering whether or not \bbstatenum will ever be known in practice--well, unfortunately, it seems likely at this point that the value of $BB(6)$ will never be known in practice! Regardless of what systems of axioms we choose to assume, finding very large Busy Beaver values is a practical impossibility.  %TODO cite \\
 
-A: Well, it depends on what one means by ``knowledge''! If we restrict ourselves to the axioms of ZFC, we can never \emph{prove} the value of \bbstatenumperiod But if we are willing to assume more powerful axioms than ZFC, then we certainly could! For example, if we are willing to assume an axiom that states ZFC's consistency (which may be reasonable, since most mathematicians believe that ZFC is consistent), then it's entirely possible that we could prove the value of \bbstatenum from within the axiomatic system of (ZFC + $Con($ZFC)). And although most mathematical proofs use only ZFC as axioms, historically, when people have assumed more powerful axioms, it hasn't caused mathemticians to truly doubt the result that was produced. For example, in Wiles' proof of Fermat's Last Theorem, more powerful axioms than ZFC were used, and it wasn't a serious issue. %TODO cite \\
-
-\textbf{Q: So if we can just assume axioms more powerful than ZFC to prove the value of \bbstatenumcomma what's the significance of saying that \bbstatenum can't be proved in ZFC?} \\
-
-A: Although it is possible to simply assume new and more powerful axioms to prove desired results, it's not a very convincing way to ``prove'' things! And crucially, there's no algorithmic way of ``safely'' assuming new mathematical axioms. Each new mathematical axiom assumed carries with it a genuine risk of introducing an inconsistency, such as Russell's paradox, which ZFC cleverly sidesteps. % TODO cite
+If we can just assume axioms more powerful than ZFC to prove the value of \bbstatenumcomma what is the significance of saying that \bbstatenum can't be proved in ZFC? Although it is possible to simply assume new and more powerful axioms to prove desired results, it's not a very convincing way to ``prove'' things! And crucially, there's no algorithmic way of ``safely'' assuming new mathematical axioms. Each new mathematical axiom assumed carries with it a genuine risk of introducing an inconsistency, such as Russell's paradox, which ZFC cleverly sidesteps. % TODO cite
 There's no larger mathematical consensus of where exactly our knowledge ends; rather, there is a continuous spectrum of increasingly powerful axiomatic theories, each of which is riskier than than the previous one. ZFC happens to be a particularly salient point on that spectrum, because it is well-known, contains enough power to prove most of modern mathematics, and is generally considered very likely to be consistent. I decided to write my proof for ZFC in particular, but no matter where I had decided to draw that line, there would always have been some value $x$ for which $BB(x)$ would be unprovable. 
 
 \chapter{Implementation \label{sec:implementation}}
 
 \section{Overview}
-
-This chapter is devoted to explaining how to write parsimonious Turing machine descriptions. At the start of this chapter, I provide an overview of the compilation process, an explanation of major design decisions, and ideas for further directions to pursue. Following that, I provide a detailed description of the TMD language and the compilation algorithm. \\
 
 A two-symbol, single-tape Turing machine is very unwieldy. It is very inconvenient to program it directly, manipulating each state by hand. Instead, I created a simple higher-level language, which I named Turing Machine Descriptor (TMD). In addition, I wrote two pieces of code: a compiler written in Python that transforms TMD into a description of a 2-symbol, single-tape Turing machine, and a program written in TMD that encodes Statement~\ref{eq:friedman}. \\
  
@@ -186,9 +170,11 @@ In this chapter, each of the four representations will be described in turn, fro
 \end{center} 
 \end{figure}  
 
+The full Turing machine, along with the entirety of the TMD code that compiles down to it and the compiler itself, are available for public use at https://github.com/adamyedidia/thesis.git.
+
 \section{Major Design Decisions}
 
-The goal of my thesis is ultimately to produce a \emph{parsimonious} Turing machine: a Turing machine with minimal number of states. The design of the compiler is informed by this fact. \\
+The goal of this thesis is ultimately to produce a \emph{parsimonious} Turing machine: a Turing machine with minimal number of states. The design of the compiler is informed by this fact. \\
 
 \subsection{The Tape-Variable Relationship}
 
@@ -196,33 +182,29 @@ The first major design decision was to use a higher-level abstraction of a multi
 
 In the multi-tape Turing machine, each variable is given its own tape. This makes it very easy to keep the values of each variable separate. Allowing separate variables in the compiled language is crucial for allowing standard programming techniques to be used. \\
 
-There are several different possible definitions of the behavior of a multi-tape Turing machine that are possible to use. Perhaps the most common representation of a multi-tape Turing machine is the one in which each of the heads on each of the different tapes reads a symbol simultaneously, and each head is allowed to move right or left based on the combination of symbols that was read. Although this representation is very powerful, it is very expensive in terms of the number of states used--the number of lower-level states required is exponential in the number of tapes $t$ in the Turing machine, which in this case is equal to the number of variables used in the program the programmer wants to write. This is because each of the different $|\Sigma|^t$ different possible combinations of symbols needs to be considered ($\Sigma$ is the tape alphabet). \\
+There are several possible definitions of the behavior of a multi-tape Turing machine that we could use. Perhaps the most common is the one in which each of the heads on each of the different tapes reads a symbol simultaneously, and each head is allowed to move right or left based on the combination of symbols that was read. Although this representation is very powerful, it is expensive in terms of the number of states used: the number of lower-level states required is exponential in the number of tapes $t$ in the Turing machine, which in this case equals the number of variables in the program the programmer wants to write. \\
 
-Instead of this powerful but unwieldy representation, I chose a representation that is slightly weaker but much more parsimonious. Each of the states $s$ in the higher-level multi-tape Turing machine has associated with it a single tape $T_s$. State transitions out of $s$ can only depend on the symbol read from $T_s$, and not on the symbols on the other tapes in the other Turing machines. In addition, after the symbol is read from $T_s$, only the tape head on $T_s$ can move left or right; other tapes' tape heads must remain in place. However, state transitions out of $s$ may transition to states that are associated with other tapes. This is how the behavior of the Turing machine can make use of multiple tapes at once: it can read them each in sequence and make a decision based on what was read from each tape. \\
+Instead, I chose a representation that is slightly weaker but much more parsimonious. Each state $s$ in the higher-level multi-tape Turing machine has associated with it a single tape $T_s$. State transitions out of $s$ can only depend on the symbol read from $T_s$, and not on the symbols on the other tapes in the other Turing machines. In addition, after the symbol is read from $T_s$, only the tape head on $T_s$ can move left or right; other tapes' tape heads must remain in place. However, state transitions out of $s$ may transition to states that are associated with other tapes. This is how the behavior of the Turing machine can make use of multiple tapes at once: it can read them each in sequence and make a decision based on what was read from each tape. \\
 
 \subsection{Unary}
 
-The second major design decision that was made was to encode all integers in \emph{unary}: base-one notation. In other words, 1 is represented by ``\texttt{1},'' 2 is represented by ``\texttt{11},'' 3 by ``\texttt{111}'' Unlike representations of numbers in bases greater than one, which take space logarithmic in the value of the number being represented, numbers represented in unary take space linear in the value of the number being represented. As a result, the Turing machine produced by my compiler is exponentially slower and less space-efficient than it might have been with a more efficient numerical representation. However, it is also substantially more parsimonious. Algorithms for computing arithmetic operations in unary are substantially simpler than their binary counterparts, and in this situation, simplicity is all that counts. \\
+The second major design decision was to encode all integers in \emph{unary}: base-one notation. In other words, 1 is represented by ``\texttt{1},'' 2 is represented by ``\texttt{11},'' 3 by ``\texttt{111},'' etc. Numbers represented in unary take space linear in the value of the number being represented. As a result, the Turing machine produced by my compiler is exponentially slower and less space-efficient than it might have been with a more efficient numerical representation. However, it is also more parsimonious. Algorithms for computing arithmetic operations in unary are substantially simpler than their binary counterparts, and in this situation, simplicity is all that counts. \\
 
 As an example, consider the problem of integer divison. In binary, a series of complicated subtractions must be done to compute \texttt{a / b} in polynomial time. On a multi-tape Turing machine with the numbers written in unary, however, the problem becomes far simpler. If \texttt{a} is written on tape $T_a$ and \texttt{b} is written on tape $T_b$, and the output is expected to go on tape $T_c$, all that is necessary is to advance the heads on both $T_a$ and $T_b$ repeatedly. If the head on $T_b$ reaches the end of \texttt{b}'s representation, increment \texttt{c} and return the head on $T_b$ to the beginning of \texttt{b}. If the head on $T_a$ reaches the end of \texttt{a}'s representation, the algorithm terminates. \\
 
-Although unary representation is very inefficient, it is the best way to write numbers that are subject to arithmetic operations and other manipulations if the goal is to make the algorithms for those manipulations as simple as possble. Happily, simplicity helps both from the point of view of minimizing states in the ultimate Turing machine, and from the point of view of making the programming of the compiler easy. \\
-
 \subsection{Functions \label{sec:functions}}
 
-The third major design decision that was made was to allow non-recursive functions. Originally, the plan was to have no functions at all, because I didn't think that I would need to reuse functions very often, and assuming the functions aren't being reused, allowing functions does not help save the amount of code written. Over the course of writing the program, however, it quickly became clear that functions play a crucial role in compartmentalizing a large program into easily-testable sections. \\ 
+The third major design decision was to allow function calls, but not recursion. Originally, the plan was to have no functions at all, because I didn't think that I would need to reuse functions very often, and assuming the functions aren't being reused, allowing functions does not help save the amount of code written. Over the course of writing the program, however, it quickly became clear that functions play a crucial role in compartmentalizing a large program into easily-testable sections. \\ 
 
-In the current version of the compiler, functions are compiled in a way that is equivalent to \emph{inlining} every function and then compiling the resulting program. (To \emph{inline} a function means to splice the code of the function into the place that the function was called.) This means that a separate set of states needs to be made for every call of each function, because the function's return address has been ``hard-coded'' into the set of states, instead of stored on the tape. Note that using this design choice, recursive functions (functions that directly or indirectly call themselves) are impossible: to inline such a function would cause an infinite loop. \\
+In the compiler, functions are compiled in a way that is equivalent to \emph{inlining} every function and then compiling the resulting program. (To \emph{inline} a function means to splice the code of the function into the place that the function was called.) This means that a separate set of states needs to be made for every call of each function, because the function's return address has been ``hard-coded'' into the set of states, instead of stored on the tape. Note that using this design choice, recursive functions (functions that directly or indirectly call themselves) are impossible: to inline such a function would cause an infinite loop. \\
 
 Another possible choice for function processing would be to write the function stack directly onto the tape. In other words, instead of creating a set of states for every function call, simply create a set of states for every function proper, and write the current line number and current function on the tape. Whenever a function call occurs, push a representation of the return address onto the stack on the tape. When a function returns, return to the return address written at the top of the stack and remove it. \\
 
-Because this approach creates a set of states for every line of code written across any function, instead of a set of states for every line of code multiplied by the number of times the surrounding function is called, writing the stack onto the tape can potentially be exponentially more parsimonious. In particular, in the case when the program contains $k$ programs $f_1, f_2, \dots, f_k$, and for each $1 \le i < k$, $f_i$ calls $f_{i+1}$ twice, the states associated with $f_k$ will appear $2^k$ times in the compiled Turing machine using the inlining method, but will only appear once using the stack-on-tape method. In addition, the stack-on-tape allows for the use of recursive functions.\\
+Because this approach creates a set of states for every line of code written across any function, instead of a set of states for every line of code multiplied by the number of times the surrounding function is called, writing the stack onto the tape can potentially be exponentially more parsimonious. In particular, when the program contains $k$ subroutines $f_1, f_2, \dots, f_k$, and for each $1 \le i < k$, $f_i$ calls $f_{i+1}$ twice, the states associated with $f_k$ will appear $2^k$ times in the compiled Turing machine using the inlining method, but will only appear once using the stack-on-tape method. In addition, the stack-on-tape allows for the use of recursive functions.\\
 
-In general, in the graph where each function in the program is given its own node, and where a directed edge is drawn from function $f_i$ to function $f_j$ for each time that $f_i$ calls $f_j$, the number of times that the code of $f_j$ will appear in the ultimate compiled program using the inlining method will be proportional to the number of paths from the main function to $f_j$ in the graph. Note that a recursive function corresponds to a cycle in the graph, and therefore to an infinite number of different paths! Note, also, that even if the graph is acyclic, the number of paths to $f_j$ can potentially be exponential in the size of the graph. \\
+In general, in the graph where each function in the program is given its own node, and where a directed edge is drawn from function $f_i$ to function $f_j$ for each time that $f_i$ calls $f_j$, the number of times that the code of $f_j$ will appear in the ultimate compiled program using the inlining method will be proportional to the number of paths from the main function to $f_j$ in the graph. Note that a recursive function corresponds to a cycle in the graph, and therefore to an infinite number of paths! Note, also, that even if the graph is acyclic, the number of paths to $f_j$ can potentially be exponential in the size of the graph. \\
 
-What, then, is the advantage of the inlining method? Besides being easier to implement from the point of view of designing the compiler, the only advantage is that it avoids the overhead of writing the function stack and line number on the tape, and needing to read it each time a line of code is executed. Additionally, if each function is only ever called once, inlining is no worse than writing the stack on the tape. Because most of the functions in my program were only going to be used once and were separated from each other mainly for the purpose of making testing easier, inlining was a natural choice for this thesis. For a different application in which functions were going to be reused a lot, or in which recursive functions were very important or much simpler than using loops, writing the stack on the tape might have been a much better choice than inlining. \\
-
-Note that if a potential program repeats functions calls rarely, but occasionally, it is possible to use inlining and avoid copying the entire body of the function twice in the compiled program via a programming technique called \emph{loading}. In order to use this technique, a programmer can merge the two function calls into a single function call, with an instruction to call the function twice; after the first call to the function, the programmer can give the instruction to \emph{load} the second function call's arguments into the inputs to the function. I used this technique a handful of times in the design of $G$ to save states on what would have been a duplicate function call. If the programmer is finding herself doing this repeatedly, however, it is better to use the stack-on-tape method. One can think of loading as using the stack-on-tape method locally, with a single bit on the tape encoding the ``return address'' of the function. % TODO maybe give an example of loading?
+What, then, is the advantage of the inlining method? Besides being easier to implement from the point of view of designing the compiler, the only advantage is that it avoids the overhead of writing the function stack and line number on the tape, and needing to read it each time a line of code is executed. Additionally, if each function is only ever called once, inlining is no worse than writing the stack on the tape. Because most of the functions in my program are only used once and are separated from each other mainly for the purpose of making testing easier, inlining was a natural choice. For a different application in which functions were going to be reused a lot, or in which recursive functions were very important or much simpler than using loops, writing the stack on the tape might have been a much better choice. \\
 
 For a side-by-side comparison of how a compiled program would look using the inlining and the stack-on-tape methods, see Figs.~\ref{fig:code} and~\ref{fig:compiled}.
 
@@ -242,50 +224,45 @@ For a side-by-side comparison of how a compiled program would look using the inl
 
 \section{Future Directions}
 
-There are still countless improvements that can be made to the work in this thesis. The improvements can be separated into three different possible directions:  \\ \\
--Improving the TMD language to be more powerful and flexible \\
--Simplifying the final Turing machine, thereby tightening the upper bound of \statenum on the maximum computable Busy Beaver value \\
--Finding more upper bounds based on other axiomatic systems \\
+There are still countless improvements that can be made to the work in this thesis. The improvements can be separated into three different possible directions, which are discussed in turn.
 
 \subsection{Improving TMD}
 
-TMD is a relatively weak language with a lot of awkward aspects. For example, TMD does not support complex arithmetical expressions, either in assignment or as part of an \texttt{if} statement. Ideally, arbitrary expressions could be used in any of these places, to make TMD programs much shorter and less wordy. \\
+TMD is a relatively weak language with many awkward aspects. For example, TMD does not support complex arithmetical expressions, either in assignment or as part of an \texttt{if} statement. Ideally, arbitrary expressions could be used in any of these places, to make TMD programs shorter. \\
 
-Additionally, the fact that variables need to have a value of 0 before they can be reassigned is an annoyance. This aspect of TMD exists because sometimes the programmer already knows that the variable has a 0 value, so it would be wasteful to ``build in'' setting the value of the variable to 0 before reassignment. However, it would be far more convenient if the compiler could automatically recognize most of the situations where the variable is guaranteed to have a 0 value (such as when it hasn't been touched since declaration) and automatically forgo clearing the variable's value in those situations. \\
+Also, the fact that variables need to have a value of 0 before they can be reassigned is an annoyance. This aspect of TMD exists because sometimes the programmer already knows that the variable has a 0 value, so it would be wasteful to ``build in'' setting the value of the variable to 0 before reassignment. However, it would be more convenient if the compiler could automatically recognize most of the situations where the variable is guaranteed to have a 0 value (such as when it hasn't been touched since declaration) and automatically forgo clearing the variable's value in those situations. \\
 
 Finally, it would be very nice if \texttt{while} and \texttt{for} loops were possible in TMD, to make programs cleaner and easier to read. While \texttt{goto} statements are very natural from the point of view of simplicity of compilation, they tend to lead to to bad programming habits and inscrutable code. Providing programmers with the option of using \texttt{while} loops instead would make the job of debugging TMD programs easier. 
 
-\subsection{Simplifying $G$}
+\subsection{Simplifying $Z$}
 
-The final Turing machine, $G$, whose behavior cannot be proven in ZFC, is not as parsimonious as it could be. At a basic level, the process of building a general-purpose compiler to Turing machines and then using that general-purpose compiler to create a specific program cannot possibly be as parsimonious as building the specific program directly. Abandoning the rigid abstraction barrier between the multi-tape and the single-tape abstraction, for example, is certain to make the resulting program more parsimonious, because it makes the programmer strictly more powerful than she was before. \\
+The final Turing machine, $Z$, whose behavior cannot be proven in ZFC, is not as parsimonious as it could be. At a basic level, the process of building a general-purpose compiler to Turing machines and then using that general-purpose compiler to create a specific program cannot possibly be as parsimonious as building the specific program directly. Abandoning the rigid abstraction barrier between the multi-tape and the single-tape abstraction, for example, would surely make the resulting program more parsimonious. However, this improvement in the number of states in the Turing machine comes at a tremendous cost in programmer effort. \\
 
-However, this improvement in the number of states in the Turing machine comes at a tremendous cost in programmer effort. Abstraction barriers and modularity may not be ``optimal'' in the cosmic sense of the term, but they are often a necessary for completing the program without errors in a reasonable time-frame. \\
+Nonetheless, there are always more optimizations that are possible from the point of view of improving the number of states. To start with, writing the function stack on the tape and trying as much as possible to rewrite different functions to reuse the same code is likely to result in a major savings in terms of the number of states. Although we rarely call identical functions in the final program, there are many instances where we call two very similar functions at different points in the program. When those functions are complex enough, it becomes worth it to build a single function capable of running both depending on its inputs, and calling that function twice with different arguments each time. Assuming the stack-on-tape method of compiling functions is used (see~\ref{sec:functions} for a description of this method), this will most likely result in the number of states in the final program being substantially reduced. \\
 
-Nonetheless, there are always more optimizations that are possible from the point of view of improving the number of states. To start with, writing the function stack on the tape and trying as much as possible to rewrite different functions to reuse the same code is likely to result in a major savings in terms of the number of states. Although I rarely call identical functions in the final program, there are many instances where I call two very similar functions at different points in the program. When those functions are complex enough, it becomes worth it to build a single function capable of running both depending on its inputs, and calling that function twice with different arguments each time. Assuming the stack-on-tape method of compiling functions is being used (see~\ref{sec:functions} for a description of this method), this will most likely result in the number of states in the final program being substantially reduced. \\
+Also, making the compiler more parsimonious at each stage is a good way to improve the upper bound presented in this thesis. In particular, the transformation from a 4-symbol Turing machine to a 2-symbol Turing machine has possible improvements that would likely result in a reduction of state usage by a factor of 1.5 or more; see Section~\ref{sec:mstots} for the details on what can be improved in the behavior of that compiler. \\
 
-Additionally, making the compiler more parsimonious at each stage is a good way to improve the upper bound presented in this thesis. In particular, the transformation from a 4-symbol Turing machine to a 2-symbol Turing machine has possible improvements that would likely result in a reduction of state usage by a factor of 1.5 or more; see Section~\ref{sec:mstots} for the details on what can be improved in the behavior of that compiler. \\
-
-Naturally, there are most likely many other improvements that can be made to both the program and the compiler that would reduce the state usage of the result that I simply haven't yet thought of. Turing machines are so different in character from traditional programming languages that even the ways I think about variables and computation are ill-suited to the medium.
+There are most likely many other improvements that can be made to both the program and the compiler that would reduce the number of states.
 
 \subsection{Exploring Other Axiomatic Systems}
 
-As was explained in Section~\ref{sec:faq}, the choice of ZFC as the axiomatic system to use was somewhat arbitrary. There are many different possible axiomatic systems that could have been used as ``the foundation of modern mathematics''; for most purposes, Peano Arithmetic (PA), a weaker axiomatic system than ZFC, is enough to prove interesting mathematical statements. Prof. Harvey Friedman has even conjectured that the still weaker system of Elementary Function Arithmetic (EFA) could be used to prove every theorem published in the \emph{Annals of Mathematics}. This includes Fermat's Last Theorem, whose only known proofs currently assume \emph{Grothendieck universes}, which require stronger axioms even than ZFC.  \\
+There are many possible axiomatic systems that could have been used as ``the foundation of modern mathematics''; for most purposes, Peano Arithmetic (PA), a weaker axiomatic system than ZFC, is enough to prove interesting mathematical statements. Friedman has even conjectured that the still weaker system of Elementary Function Arithmetic (EFA) could be used to prove every theorem published in the \emph{Annals of Mathematics}. This includes Fermat's Last Theorem, whose original proof required \emph{Grothendieck universes}, which require stronger axioms even than ZFC.  \\ % TODO Whose proof? Cite
 
-It could therefore be interesting to find the upper bounds on the highest Busy Beaver values provable using these other systems of axioms--PA, EFA, and ZFC with Grothendieck universes. One presumes that the upper bounds will be tighter for the weaker systems of axioms and looser for the stronger systems of axioms; this could give us a sense of how much ``power'' is gained with each new assumed axiom. We could even find the strongest assumptions made by any theorem published in the \emph{Annals of Mathematics}, and find an upper bound on the highest Busy Beaver value provable using only those assumptions, to establish the full range of weak to strong.\\
+It could therefore be interesting to find the upper bounds on the highest Busy Beaver values provable using these other systems of axioms--PA, EFA, and ZFC with Grothendieck universes. \\
 
-This kind of further research would be helpful to give researchers a numerical value to assign to the strength and weakness of the assumptions of these various axiomatic systems--and possibly use that value to gain a sense of the resulting risk of an inconsistency being present. Prof. Harvey Friedman has helpfully created many different relatively-easy-to-program statements who, like Statement~\ref{eq:friedman}, cannot be proved in each of various different axiomatic systems. With Prof. Friedman's statements and my compiler, the work required to prove these new upper bounds is smaller than it ever has been.
+This kind of further research would be helpful to give researchers a numerical value to assign to the strength and weakness of the assumptions of these various axiomatic systems. Friedman has helpfully created many relatively-easy-to-program statements, like Statement~\ref{eq:friedman}, which cannot be proved in various axiomatic systems. The TMD compiler is well-suited to turning these statements into small Turing machines.
 
 \section{TMD}
 
-The top-level representation is a program written in the TMD language, which is a language created and designed explicitly for use in this project. TMD is altogether not unlike Assembly Language, although it is more powerful in some ways and weaker in others. \\
+The top-level representation is a program written in the TMD language, which is a language created and designed explicitly for use in this project. TMD is not unlike Assembly Language, although it is more powerful in some ways and weaker in others. \\
 
 TMD code can be processed in two different ways. First, it can be \emph{interpreted}; that is, it can be directly evaluated line-by-line. This is generally done to verify a program's correct behavior, and to correct errors which would result in thrown exceptions in the interpreter but might lead to undefined behavior in the compiled Turing machine (because the compiled Turing machine is optimized for parsimony, whereas the interpreter need not be). \\
 
-Second, TMD code can be \emph{compiled} down to a lower-level representation, such as a multi-tape, 3-symbol Turing machine, a single-tape, 4-symbol Turing machine, or a single-tape, 2-symbol Turing machine. Because the ultimate goal of this thesis is to produce a Turing machine whose behavior can't be proved in ZFC assuming ZFC is consistent, this is the more important use of TMD code. It is highly recommended, however, to first interpret any piece of TMD code before compiling it, because the interpreter is much better for catching programming errors. Additionally, the compiler is a general-purpose compiler and not restricted to compiling the program being discussed in this thesis; it could be valuable on its own, as a pedagogical tool. Naturally, the compiler is optimized to minimize the number of states in the resulting Turing machine, not to make the resulting Turing machine time- or space-efficient. \\
+Second, TMD code can be \emph{compiled} down to a lower-level representation, such as a multi-tape, 3-symbol Turing machine, a single-tape, 4-symbol Turing machine, or a single-tape, 2-symbol Turing machine. It is highly recommended, however, to first interpret any piece of TMD code before compiling it, because the interpreter is much better for catching programming errors. The compiler is a general-purpose compiler and not restricted to compiling the programs discussed in this thesis; it could be valuable on its own, as a pedagogical tool. Naturally, the compiler is optimized to minimize the number of states in the resulting Turing machine, not to make the resulting Turing machine time- or space-efficient. \\
 
-There are two types of TMD files. The first type of TMD file is a TMD \emph{main file}. A main file is a file that can be run on its own, but cannot be called by another program. The second type of TMD file is a \emph{function file}. A function file can be called by another program, but cannot be run on its own. The two types of files obey differing syntax, and the differences between them will be explained in further detail in this section.
+There are two types of TMD files. The first type of TMD file is a TMD \emph{main file}. A main file is a file that can be run on its own, but cannot be called by another program. The second type of TMD file is a \emph{function file}. A function file can be called by another program, but cannot be run on its own. The two types of files obey differing syntax, and the differences between them will be explained in further detail in this section. \\
 
-A TMD program is a sequence of commands. Commands are separated by newlines. Each command is given its own line. \\
+A TMD program is a sequence of \emph{commands}. Commands are separated by newlines. Each command is given its own line. \\
 
 \subsection{List of Commands}
 
@@ -310,18 +287,14 @@ The following is a list of possible commands. Let \texttt{x}, \texttt{x1}, \text
 \texttt{label L}: Declares a label L. \\ \\
 \texttt{goto L}: Changes the line of code being executed to the line of code that contains ``\texttt{label L}.'' \\ \\
 \texttt{if x goto L}: If the current value of \texttt{x} is a positive integer, then changes the line of code being executed to the line of code that contains ``\texttt{label L}.'' \\ \\
-\texttt{function f x1 x2 x3} \dots \\: Calls the function \texttt{f} on input variables \texttt{x1}, \texttt{x2}, \texttt{x3}, \dots \\
+\texttt{function f x1 x2 x3} \dots: Calls the function \texttt{f} on input variables \texttt{x1}, \texttt{x2}, \texttt{x3}, \dots \\
 \texttt{print x}: Prints the value of the variable \texttt{x}. Print statements only run if the program is being interpreted. \\ \\
 \texttt{accept}: The Turing machine accepts. \\ \\ 
 \texttt{reject}: The Turing machine rejects. 
 
 \subsection{Main Files}
 
-Main files contain the body of a program, and can be run. Running a main file will cause the sequence of commands in that main file to be run, starting at the top of the main file. \\
-
-Any variable declared at any point in a main file will be initialized before the execution of the program, with an initial value of 0. As part of their execution, main files can call function files, but they cannot call other main files. \\
-
-Main files may not reach the end of the program without accepting or rejecting. 
+Main files contain the body of a program, and can be run. Any variable declared at any point in a main file will be initialized before the execution of the program, with an initial value of 0. As part of their execution, main files can call function files, but they cannot call other main files. Main files may not reach the end of the program without accepting or rejecting. \\
 
 \begin{figure} 
 \begin{center} 
@@ -334,11 +307,9 @@ Main files may not reach the end of the program without accepting or rejecting.
 
 Function files contain the description of a function. They cannot be run alone; instead, they are called from within a main file or another function file. \\
   
-New variables may not be declared from within a function file; instead, any variables needed to perform the computation in the function file are passed in from the file that calls it. Any variables passed into a function file may be modified freely, including integers; that means that there is \emph{no} built-in guarantee that inputs to your function will retain their values after the function runs. \\
+New variables may not be declared from within a function file; instead, any variables needed to perform the computation in the function file are passed from the file that calls it. Any variables passed into a function file may be modified freely, including integers; that means that there is \emph{no} built-in guarantee that inputs to a function will retain their values after the function runs. \\
 
-Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they take effect by modifying the inputs to take on the desired value. \\
-
-Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). This is because the compiler effectively inlines every function when compiling a TMD program to a Turing machine description; no description of a function stack is stored on the tape proper, so a recursive function would cause the compiler to enter an infinite loop. \\
+Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they work by modifying the inputs they are given. Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). \\
 
 \begin{figure} 
 \begin{center} 
@@ -349,7 +320,7 @@ Although functions can be called by other functions, they cannot be called recur
 
 \subsection{Data Types}
 
-TMD has three possible data types: \texttt{int}, \texttt{list}, and \texttt{list2}. An \texttt{int} is a non-negative integer. A \texttt{list} is a list (possibly empty) of \texttt{int}s. A \texttt{list2} is a list (possibly empty) of \texttt{list}s. TMD is not strongly typed; a variable can at various points belong to various different data types. In fact, it can even belong to multiple data types at once. The \texttt{int} value of \texttt{0}, the \texttt{list} value of \texttt{[]}, and the \texttt{list2} value of \texttt{[]} are all represented the same way on the Turing machine's tape. In accordance with this paradigm, even in the TMD interpreter, if the programmer chose to add \texttt{3} to a variable whose current value was \texttt{0}, it would yield the value \texttt{3}, but if the programmer chose instead to \emph{append} \texttt{3} to a variable whose current value was \texttt{0}, it would yield the value \texttt{[3]}. This is the only situation in which a variable can belong to several different data types simultaneously.
+TMD has three possible data types: \texttt{int}, \texttt{list}, and \texttt{list2}. An \texttt{int} is a non-negative integer. A \texttt{list} is a list (possibly empty) of \texttt{int}s. A \texttt{list2} is a list (possibly empty) of \texttt{list}s. TMD is not strongly typed; a variable can at various points belong to different data types. In fact, it can even belong to multiple data types at once. The \texttt{int} value of \texttt{0}, the \texttt{list} value of \texttt{[]}, and the \texttt{list2} value of \texttt{[]} are all represented the same way on the Turing machine's tape. In accordance with this paradigm, even in the TMD interpreter, if the programmer chose to add \texttt{3} to a variable whose current value was \texttt{0}, it would yield the value \texttt{3}, but if the programmer chose instead to \emph{append} \texttt{3} to a variable whose current value was \texttt{0}, it would yield the value \texttt{[3]}. This is the only situation in which a variable can belong to several data types simultaneously.
 
 \subsection{Assign Statements}
 
@@ -360,6 +331,8 @@ Assign statements can take any of the following four forms: \\ \\
 \texttt{assign x1 to x2} \\
 
 Assign statements result in the value of \texttt{x1} being set to the result of the operation [operation] being applied to \texttt{x2} and \texttt{x3} in the first case, to \texttt{x2} and \texttt{c} in the second case, and to \texttt{x2} alone in the third case. In the fourth case, the value of \texttt{x1} is set to the value of \texttt{x2}, as long as \texttt{x2} is an \texttt{int}. Unlike in most programming languages, the value of \texttt{x1} must be 0 before an assign statement can be applied to it. \\
+
+Some assign statements involve constant arithmetic. These statements generally specify that the constant $c$ should be \emph{small}. This is because these statements include $O(c)$ states. For constants greater than about 20, it is advisable to assign a variable to take on the constant's value using interated multiplication, and use the standard arithmetic operation instead, using $O(\log c)$ states. For particularly enormous constants, it may even be advisable to construct a parsimonious function file simply to generate them using a function file; if the function file is very well-designed, this may take as few as $O(BB^{-1}(c)$ states!
 
 In the explanations that follow, the value of \texttt{x1} is $x_1$, the value of \texttt{x2} is $x_2$, the value of \texttt{x3} is $x_3$, and the value of \texttt{c} is $c$. As before, \texttt{x1}, \texttt{x2}, and \texttt{x3} denote variables, and \texttt{c} denotes a numerical constant. Note that the allowed operations in assign statements are \emph{not} the same as the allowed operations in modify statements. This is because some operations are more parsimonious as an assignment, and other operations are more parsimonious as a modification.
 
@@ -743,7 +716,7 @@ The high-level diagram in Figure~\ref{stmstmlayout} obscures an important detail
 
 The solution is to dynamically increase the space allocated to a mini-tape value whenever the mini-tape value increases in size. In other words, whenever a state in the multi-tape Turing machine is instructed to write a non-\texttt{\_} symbol on top of a \texttt{\_} symbol, it enters a group of intermediate states designed to ``push'' every symbol down along the tape, to create one more symbol of room for the mini-tape value. This group of intermediate states remembers the symbol it just read, moves right, writes down the symbol it just read, and repeats. See Figure~\ref{fig:expandfsm} for a diagram of the state machine used to ``push'' every symbol along the tape and make room for the expanding mini-tape value. \\
 
-\subsection{Overview of Transformation}
+\subsection{Overview of Transformation \label{mttoststeps}}
 
 Now that the high-level ideas have been described in detail, a step-by-step low-level description of the transformmation process can be given. \\
 
@@ -807,7 +780,7 @@ The mapping from \{\texttt{\_}, \texttt{1}, \texttt{H}, \texttt{E}\} to sequence
 
 \texttt{a} is the empty symbol.
 
-\subsection{Overview of Transformation}
+\subsection{Overview of Transformation \label{sec:mstotssteps}}
 
 The following is a step-by-step low-level description of the transformation process. \\
 
@@ -850,5 +823,154 @@ The output of the compiler as presented sometimes contains states where both pos
 
 % TODO conclusion?
 
-\end{document}
+\chapter{Example Compilation: Goldbach's Conjecture}
 
+\section{Goldbach's Conjecture}
+
+Goldbach's Conjecture is one of the oldest unproven conjectures in mathematics, dating to the year 1742. It is well-known among mathematicians and laypeople alike. Its statement is as follows: \\
+
+\begin{statement}
+\emph{Every even integer greater than 2 can be expressed as the sum of two primes.}
+\label{goldbachstatement}
+\end{statement}
+
+In this chapter, I will create a description of a Turing machine, $G$, whose behavior cannot be predicted without proving or disproving Goldbach's conjecture. In other words, the problem of understanding the behavior of $G$ is provably at least as hard as the problem of proving or disproving Goldbach's conjecture. Each step of $G$'s creation will be illustrated.
+
+\section{TMD \label{sec:tmdgoldbach}}
+
+In order to create a description of $G$, I must create a computer program written in TMD that loops if every even integer greater than 2 can be expressed as the sum of two primes, and that halts if there exists some even integer greater than two that cannot be expressed as the sum of two primes. To do this, I will create a TMD program that loops over every even integer $n > 2$. While inside that loop, it will loop over every positive integer $i$ between $2$ and $n-2$, and checks the primality of $i$ and $n-i$. If both $i$ and $n-i$ are prime, the program continues to the next even integer, $n+2$; if there exists no $i$ between $2$ and $n-2$ such that both $2$ and $n-2$ are both prime, the program halts.
+
+\subsection{Main File}
+
+The main file is titled \texttt{goldbach.tmd}. The file's source is as follows: \\ \\
+{\tt label This program halts if Goldbach's conjecture is false, and loops otherwise. \\ \\
+vars even\_number c1 h1 h2 h3 isPrime? \\ \\
+modify even\_number with add\_small\_const 4 \\ \\
+label EVEN\_NUMBER\_LOOP \\ \\ 
+\indent	clear c1 \\ 
+\indent	modify c1 with add\_small\_const 2 \\ \\
+\indent	label C1\_LOOP \\ \\
+\indent \indent	clear h3 \\ \\		
+\indent \indent	label LOAD\_C1 \\
+\indent \indent	clear h1 \\
+\indent \indent	assign h1 to c1 \\
+\indent \indent print h1 \\
+\indent \indent	goto RUN\_ISPRIME \\ \\
+\indent \indent	label LOAD\_C2 \\
+\indent \indent	modify h3 with add\_small\_const 1 \\
+\indent \indent	clear h1 \\
+\indent \indent	assign h1 to even\_number \\
+\indent \indent	modify h1 with - c1 \\
+\indent \indent	print h1 \\
+\indent \indent	clear h2 \\
+\indent \indent	assign h2 to h1 equals\_small\_const 1 \\
+\indent \indent	if h2 then goto REJECT \\
+\indent \indent	goto RUN\_ISPRIME \\ \\
+\indent \indent	label RUN\_ISPRIME \\
+\indent \indent	function isprime h1 h2 isPrime? \\
+\indent \indent	if isPrime? then goto CHECK\_H3 \\
+\indent \indent	goto INCR\_C1 \\ \\
+\indent \indent	label CHECK\_H3 \\
+\indent \indent	if h3 then goto INCR\_EVEN\_NUMBER \\
+\indent \indent	goto LOAD\_C2 \\ \\
+\indent \indent	label INCR\_C1 \\
+\indent \indent	modify c1 with add\_small\_const 1 \\
+\indent \indent	goto C1\_LOOP \\ \\
+\indent	label INCR\_EVEN\_NUMBER \\
+\indent	modify even\_number with add\_small\_const 2 \\
+\indent	print even\_number \\
+\indent	goto EVEN\_NUMBER\_LOOP \\ \\
+label REJECT \\
+reject \\ 
+}		
+
+This program is structured as described previously. The outer loop tries each possible value of $n$ (called \texttt{even\_number} in the program), and the inner loop tests each such $n$ to see if there exists some $i$ (called \texttt{c1} in the program) such that $i$ and $n-i$ are both prime. The apparently complicated apparatus present in the inner loop, especially that labeled \texttt{LOAD\_C1}, \texttt{LOAD\_C2}, and \texttt{RUN\_ISPRIME}, is designed to call the \texttt{isprime} function twice: once on $i$, and once on $n-i$. Because to call a function twice directly would be to incur an unnecessary cost in state usage equal to the state usage of the function in question, the program shown above cleverly ``loads'' and ``unloads'' the values of $i$ and $n-i$ into the variable \texttt{h1}, and runs the loop labeled \texttt{RUN\_ISPRIME} twice on the variable \texttt{h1}, to achieve the desired effect without calling \texttt{isprime} twice. The holder variable \texttt{h3} how many \texttt{isprime} calls have already occurred and helps ensure that both $i$ and $n-i$ are checked for primality in sequence. Note that this idea of ``loading'' and ``unloading'' values into the variable \texttt{h1} can be thought of as a rudimentary function stack, with the \texttt{h3} variable holding the \texttt{isprime} return address. 
+
+\subsection{The \texttt{isprime} Function}
+
+This function file is titled \texttt{isprime.tfn}. The file's source is as follows: \\ \\
+{\tt input x y z \\ \\
+label x is the input to the Function, z is the output and is 1 if x is prime and 0 otherwise
+label x = 1 is not allowed \\ \\
+clear y \\
+modify y with add\_small\_const 1 \\ \\ 
+goto INCR\_Y \\ \\
+label MAIN\_LOOP \\
+clear z \\
+assign z to x \% y \\
+if z goto INCR\_Y \\
+return \\ \\
+label INCR\_Y \\
+modify y with add\_small\_const 1 \\
+clear z \\
+assign z to x != y \\
+if z goto MAIN\_LOOP \\
+modify z with add\_small\_const 1 \\
+return \\ }
+
+The \texttt{isprime} function takes three inputs, $x$, $y$, and $z$; after the function's execution, $z = 1$ if $x$ is prime, and $z = 0$ otherwise. The value of $y$ is arbitrary after the function's execution. The value of $x$ is unmodified. \\
+
+The \texttt{isprime} function opeartes by iterating over each value $i$ between 2 and $x-1$. If there exists an $i$ with $2 \le i \le x-1$ such that $x \equiv 0 \mod i$, then the value of $z$ is set to 1 and the function returns; otherwise, the value of $z$ is set to 0 and the function returns. \\
+
+\section{Compilation from TMD to a Multi-Tape Machine \label{sec:turdtotmgoldbach}}
+
+The compilation algorithm (explained in more detail in Section~\ref{sec:turdtotm}) transforms the TMD program given in Section~\ref{sec:tmdgoldbach} (\texttt{goldbach.tmd}) into a description of an 89-state, 6-tape, 3-symbol Turing machine. To do so, it creates one tape for each variable in the program (\texttt{even\_number}, \texttt{c1}, \texttt{h1}, \texttt{h2}, \texttt{h3}, and \texttt{isPrime?}). Each tape is initialized with only a single \texttt{E} symbol amidst an infinite sea of \texttt{\_} symbols. This corresponds each variable being initialized with a value of \texttt{0}.
+
+The compilation algorithm transforms many of the lines of code in \texttt{goldbach.tmd} into groups of states. Lines containing \texttt{if}, \texttt{assign}, \texttt{clear}, or \texttt{modify} statements each are transformed into a corresponding group of states; lines containing \texttt{return}, \texttt{goto}, \texttt{label}, or \texttt{function} are not transformed into states, but rather manipulate the program flow and determine which groups of states point to other states. To see a detailed picture of what \texttt{goldbach.tmd} looks like when it is compiled into a 6-tape, 3-symbol Turing machine, see Figure~\ref{fig:goldbach1}.
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach1.png} 
+\caption{This is a pictorial representation of the compiled output of \texttt{goldbach.tmd}. This state machine will reject if and only if Statement~\ref{goldbachstatement} is false. Each boxed line of code represents a group of states in the multi-tape Turing machine. Arrows from one box to another indicate the state machine's logical flow. When no arrows leave a box, logical flow is presumed to continue to the box immediately beneath it. Note that only \texttt{if} statements cause a branch in the program's logical flow. Note also that the \texttt{isprime} function is inlined directly into the \texttt{goldbach.tmd}. Variable names are shown in red in the \texttt{isprime} function, to indicate that those are the names of the external variables of \texttt{goldbach.tmd}, and not the variables internal to the \texttt{isprime} function. To see a more detailed view of the \texttt{isprime} function in which individual states are visible, see Figure~\ref{fig:goldbach2}. \label{fig:goldbach1}}
+\end{center} 
+\end{figure}
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach2.png} 
+\caption{This is a view of the state machine associated with the \texttt{isprime} function, which has as its goal to set the value of $z$ to 1 if $x$ is prime, and set the value of $z$ to 0 otherwise. Each box represents a group of states associated with a line of code in the source of \texttt{isprime.tfn}. The smaller circles represent individual states. Transitions between states are accurate and complete, with two exceptions: transitions from states to themselves and transitions from states to the \texttt{ERROR} state are omitted for clarity. Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. To see a more detailed view of the state machine associated with the line of code \texttt{assign z to x \% y}, in which the state transitions are fully described, see Figure~\ref{fig:goldbach3}. \label{fig:goldbach2}}
+\end{center} 
+\end{figure}
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach3.png} 
+\caption{This is a detailed view of the state machine associated with the line of code \texttt{assign z to x \% y} function, which has as its goal to set the value of $z$ to the value $x \mod y$. Each circle represents a state in the multi-tape Turing machine. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt{ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt{ERROR} state). Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the multi-tape Turing machine is transformed into its single-tape equivalent, see Figure~\ref{fig:goldbach4}. \label{fig:goldbach3}}
+\end{center} 
+\end{figure}
+
+\section{Transforming a Multi-Tape Machine to a Single-Tape Machine \label{sec:mttostgoldbach}}
+
+The multi-tape-to-single-tape transformation algorithm transforms the 89-state, 6-tape, 3-symbol Turing machine given in Section~\ref{sec:turdtotmgoldbach} into a 1382-state, single-tape, 4-symbol Turing machine. The details of the transformation algorithm are described in depth in Section~\ref{sec:mttost}. \\
+
+First, a sequence of initialization states are added to the Turing machine, the first of which is the start state. These initialization states write the alternating sequence of identifiers and empty tape values (initialized to \texttt{\_E\_\_\_}\dots, which corresponds to \texttt{0}. The last of the initialization states points to a state corresponding to the start state of the multi-tape Turing machine. From there, the remainder of the algorithm simply takes every state transition in the multi-tape Turing machine, and transforms it using a process described in more detail in Subsection~\ref{mttoststeps}, and shown pictorially in Figure~\ref{fig:goldbach4}.
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach4.png} 
+\caption{This is a pictorial representation of the multi-tape-to-single-tape transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt{\_} symbol, the head on the $z$ tape replaces it with an \texttt{E} symbol and stays in place. At the bottom of the picture is the group of single-tape Turing machine states associated with this multi-tape state transition. Each of the multi-tape states has a single-tape state that directly correspond to it; in between these states are a group of states designed to ``push'' every symbol on the tape down to make more room for the $z$ value, a group of states designed to read in the identifier associated with $y$, and a group of states designed to reach the relevant part of the $y$ tape. In the state machine shown on the bottom, transitions from states to themselves or from states to the \texttt{ERROR} state are omitted. For a more detailed view of the state machine associated with ``pushing down'' every symbol on the tape, see Figure~\ref{fig:goldbach5}. \label{fig:goldbach4}}
+\end{center} 
+\end{figure}
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach5.png} 
+\caption{This is a detailed view of the state machine associated with ``pushing down'' every symbol on the tape. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt{ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt{ERROR} state). On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the 4-symbol Turing machine is transformed into its 2-symbol equivalent, see Figure~\ref{fig:goldbach6}. \label{fig:goldbach5}}
+\end{center} 
+\end{figure}
+
+\section{Transforming a 4-Symbol Turing Machine to a 2-Symbol Machine \label{sec:mstotsgoldbach}}
+
+The 4-symbol-to-2-symbol transformation algorithm transforms the 1382-state, single-tape, 4-symbol Turing machine in Section~\ref{sec:mttostgoldbach} into a 7902-state, single-tape, 2-symbol Turing machine. This transformation takes place simply by applying the process described in detail in Section~\ref{sec:mstotssteps} to each of the state transitions in the 4-symbol Turing machine to yield a 2-symbol Turing machine. A pictorial representation of this process is showin in Figure~\ref{fig:goldbach6}.
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/goldbach6.png} 
+\caption{This is a pictorial representation of the 4-symbol-to-2-symbol transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt{1} symbol, the head on the $z$ tape replaces it with an \texttt{H} symbol and moves right. At the bottom of the picture is the lower-level state machine. Because a \texttt{1} symbol corresponds to the sequence \texttt{ab} and an \texttt{H} corresponds ot the sequence \texttt{ba}, the lower-level Turing machine is instructed to write the sequence \texttt{ba} on the tape and move right two spaces if the sequence \texttt{ab} is read in. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). \label{fig:goldbach6}}
+\end{center} 
+\end{figure}
+
+\end{document}
+% TODO explain negative numbers
+% TODO create all citations
+% TODO fix all broken references

@@ -41,6 +41,13 @@ modify pattern with append_small_const 2
 modify pattern with append_small_const 0
 modify pattern with append_small_const 2
 
+modify counter1 with append_small_const 3
+modify counter2 with append_small_const 3
+modify pattern_counter with append_small_const 3
+modify holder1 with append_small_const 3
+modify holder2 with append_small_const 3
+modify hasEdge? with append_small_const 3
+
 
 function vertexhasedge vertex1pospart vertex1negpart vertex2pospart vertex2negpart pattern vertex1length vertex2length counter1 counter2 pattern_counter holder1 holder2 hasEdge?
 

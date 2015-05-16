@@ -1,4 +1,4 @@
-input k n r listofpatterns numpatterns pattern knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 
+input k n r listofpatterns numpatterns patternlist2 knr8fac knr8facfac c1 poslist neglist posgraph neggraph graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41 
 
 label inputs: k, n, r
 label no outputs. Just halts if something fails to happen.
@@ -81,15 +81,18 @@ assign graphsize to posgraph length2
 
 clear c1
 label PATTERN_LOOP
-	clear pattern 
-	assign pattern to listofpatterns index c1
-	
-	function hasafree k n r knr8facfac posgraph neggraph pattern graphsize i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36 i37 i38 i39 i40 i41
+
+	function convertnumbertobinarylist c1 numpatterns i1 i2 i3 i4 i5 i6 i7 i8 
+	function map2 listofpatterns i7 numpatterns i1 i2 i3 patternlist2 	
+
+	print patternlist2
+
+	function hasafreerepeats k n r knr8facfac posgraph neggraph graphsize patternlist2 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 i30 i31 i32 i33 i34 i35 i36
 
 	modify c1 with add_small_const 1
-	clear i1 
-	assign i1 to c1 != numpatterns
 	
-	if i1 then goto PATTERN_LOOP
+	if i8 then goto RETURN
+	goto PATTERN_LOOP
 
+label RETURN	
 return

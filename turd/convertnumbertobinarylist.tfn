@@ -1,0 +1,37 @@
+input number binarylistlength numbercopy two modulus c1 h1 h2 binarylist done?
+
+label inputs: number and binarylistlength
+label outputs: binarylist and done?
+
+clear two
+modify two with add_small_const 2
+clear modulus 
+modify modulus with add_small_const 2
+clear numbercopy
+assign numbercopy to number
+
+clear c1
+clear binarylist
+
+label MAIN_LOOP
+clear h1
+assign h1 to numbercopy % modulus
+modify numbercopy with - h1
+clear h2
+assign h2 to h1 * two
+clear h1
+assign h1 to h2 / modulus
+modify binarylist with append h1
+modify c1 with add_small_const 1
+clear h1
+assign h1 to modulus * two
+clear modulus
+assign modulus to h1
+clear h1
+assign h1 to c1 != binarylistlength
+if h1 goto MAIN_LOOP
+
+clear done?
+modify numbercopy with + numbercopy
+assign done? to numbercopy / modulus
+return

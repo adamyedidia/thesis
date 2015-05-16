@@ -1,6 +1,11 @@
-input k n r knr8facfac posgraph neggraph pattern size c1 h1 indexlist
+input k n r knr8facfac posgraph neggraph size patternlist2 c1 h1 h2 h3 h4 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 future_indexlist indexlist
+
+label takes as input a graph, and rejects if that graph doesn't contain a proper thingy. THIS IS THE FUNCTION WITH A HALT STATEMENT!
+label this is different from the previous hasafree Function because repeated vertices are allowed.
 
 clear c1
+clear indexlist
+clear future_indexlist
 
 label INIT_INDEX_LIST
 label indexlist <- [0]*r
@@ -13,6 +18,7 @@ if h1 then goto INIT_INDEX_LIST
 clear c1
 
 label FIND_LESS_THAN_SIZE_SPOT_LOOP
+
 clear h1
 assign h1 to indexlist index c1
 modify h1 with add_small_const 1
@@ -27,23 +33,60 @@ modify future_indexlist with append_small_const 0
 modify c1 with add_small_const 1
 clear h1
 assign h1 to c1 = r
-if h1 then goto HANDLE_END_WORK
+if h1 goto DO_INDEXMAP
 goto FIND_LESS_THAN_SIZE_SPOT_LOOP
 
 label HANDLE_SMALL
 modify future_indexlist with append h1
-label recall that h1 has already been incremented, so no mistake here
+modify c1 with add_small_const 1
 goto COPY_REMAINING_ENTRIES_LOOP
 
 label COPY_REMAINING_ENTRIES_LOOP
-modify c1 with add_small_const 1
 clear h1
 assign h1 to c1 = r
-if h1 then goto DO_INDEXMAP
-clear h1
+clear h2
+if h1 goto DO_INDEXMAP
 assign h1 to indexlist index c1
 modify future_indexlist with append h1
+modify c1 with add_small_const 1
 goto COPY_REMAINING_ENTRIES_LOOP
 
+
 label DO_INDEXMAP
-function indexmap r indexlist posgraph neggraph
+function indexmap2 r indexlist posgraph neggraph i1 i2 i3 h1 h2 
+goto CHECK_FOR_R
+
+label CHECK_FOR_R
+function subsetsreducenew k n r h1 h2 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 c1 h4 i11 i12 i13 i14 i15 i16 i17 i18 i19 i20 i21 i22 i23 i24 i25 i26 i27 i28 i29 h3
+if h3 goto SEE_IF_ITS_FREE
+goto DONE_CHECKING_FOR_R
+
+label SEE_IF_ITS_FREE
+function ush2 knr8facfac h1 h2 r i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 h3 h4
+modify h1 with concat2 h3
+modify h2 with concat2 h4
+clear h3
+assign h3 to r
+modify h3 with + r
+label h3 = 2r
+
+print patternlist2
+
+function isfree h1 h2 patternlist2 h3 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10 i11 i12 i13 i14 i15 i16 h4 
+if h4 goto RETURN
+label we've found one!
+goto DONE_CHECKING_FOR_R
+
+label DONE_CHECKING_FOR_R
+clear indexlist
+assign indexlist to future_indexlist list
+clear future_indexlist
+clear c1
+if h2 goto REJECT
+goto FIND_LESS_THAN_SIZE_SPOT_LOOP
+
+label REJECT
+reject
+
+label RETURN
+return

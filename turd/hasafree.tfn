@@ -5,6 +5,8 @@ label inputs are k n r knr8facfac posgraph neggraph pattern size
 label 40 internals
 label no outputs
 
+label DEPRECATED
+
 clear one_count
 clear future_one_count
 clear c1

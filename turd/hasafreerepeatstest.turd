@@ -1,0 +1,19 @@
+vars k n r knr8facfac posgraph neggraph size patternlist2 c1 h1 h2 future_indexlist indexlist
+
+modify k with add_small_const 3
+modify n with add_small_const 3
+modify r with add_small_const 3
+modify knr8facfac with add_small_const 3
+modify posgraph with add_small_const 3
+modify neggraph with add_small_const 3
+modify patternlist2 with add_small_const 3
+modify c1 with add_small_const 3
+modify h1 with add_small_const 3
+modify h2 with add_small_const 3
+modify future_indexlist with add_small_const 3
+modify indexlist with add_small_const 3
+modify size with add_small_const 5
+
+function hasafreerepeats k n r knr8facfac posgraph neggraph size patternlist2 c1 h1 h2 future_indexlist indexlist
+
+accept

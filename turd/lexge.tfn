@@ -1,0 +1,35 @@
+input pospartxlist negpartxlist pospartylist negpartylist i h1 h2 h3 h4 i1 i2 lexge?
+
+label x lexge y means that x_i >= y_i where i is least such that x_i not= y_i
+
+clear i
+label MAIN_LOOP
+clear h1
+assign h1 to pospartxlist index i
+clear h2
+assign h2 to negpartxlist index i
+clear h3
+assign h3 to pospartylist index i
+clear h4 
+assign h4 to negpartylist index i
+
+function signedgreaterthan h1 h2 h3 h4 i1 i2 lexge?
+if lexge? goto RETURN_TRUE
+function signedequals h1 h2 h3 h4 i1 i2 lexge?
+if lexge? goto INCR_I
+goto RETURN_FALSE
+
+label INCR_I
+modify i with add_small_const 1
+clear h1
+assign h1 to pospartxlist length
+clear lexge?
+assign lexge? to h1 = i
+if lexge? goto RETURN_TRUE
+goto MAIN_LOOP
+
+label RETURN_TRUE
+return
+
+label RETURN_FALSE
+return 
