@@ -10,122 +10,122 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1.4}A Description of $Z$}{5}}
 \newlabel{friedmanstatement}{{1}{5}}
 \@writefile{toc}{\contentsline {section}{\numberline {1.5}Parsimony}{6}}
-\newlabel{sec:faq}{{1.6}{7}}
-\@writefile{toc}{\contentsline {section}{\numberline {1.6}Clarifications }{7}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {2}Implementation }{9}}
+\newlabel{sec:faq}{{1.6}{6}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.6}Clarifications }{6}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Implementation }{8}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{sec:implementation}{{2}{9}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.1}Overview}{9}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.2}Major Design Decisions}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}The Tape-Variable Relationship}{9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces This diagram illustrates each of the steps in the conversion between a program written in TMD and a description of a single-tape Turing machine with a binary tape alphabet.}}{10}}
-\newlabel{fig:process}{{2.1}{10}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Unary}{11}}
-\newlabel{sec:functions}{{2.2.3}{11}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Functions }{11}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Future Directions}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Improving TMD}{12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces This is a visual representation of a program that spans three functions. The main function, Function A, calls Function B twice, and Function B calls Function C twice. Commands that are not function calls are labeled ``Code 1'' through ``Code 7.'' }}{13}}
-\newlabel{fig:code}{{2.2}{13}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces This is a visual representation of the compiled output of the program from Figure\nobreakspace  {}2.2\hbox {}. On the left is the output of the compiler assuming the inlining method is used, while on the right is the output of the compiler assuming the stack-on-tape method is used. Note that the program flow of the compiled machine on the left is easier to understand; the program flow of the compiled machine on the right depends on what function is at the top of the stack. However, note also that if the set of states that represents ``Code 7,'' ``States 7,'' is very large, the stack-on-tape method is much more parsimonious than the inlining method in this case. On the left, ``States 7'' appears four times, but on the right it only appears once. }}{14}}
-\newlabel{fig:compiled}{{2.3}{14}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Simplifying $Z$}{15}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Exploring Other Axiomatic Systems}{15}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.4}TMD}{16}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}List of Commands}{16}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Main Files}{18}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Function Files}{18}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.4}Data Types}{18}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.5}Assign Statements}{18}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces This is the TMD code for a parsimonious program that will loop if Goldbach's conjecture is true, and reject if it is false. It is provided as an example of a TMD main file. See Figure\nobreakspace  {}2.5\hbox {} for the code of the \texttt  {isprime} function, which is called by the main body of the program.}}{19}}
-\newlabel{fig:goldbach}{{2.4}{19}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces This is the TMD code for a function that will set the value of the input \texttt  {isPrime?} to 0 if the input \texttt  {x} is not a prime number, and will set the value of \texttt  {isPrime?} to a positive integer if \texttt  {x} is a prime number. The value of \texttt  {x} is not modified by the isprime function, but the value of variable \texttt  {c1} may be changed to something arbitrary and the value of \texttt  {isPrime?} will be changed to depend on the primality of \texttt  {x}. The function's result will depend exclusively on the initial value of \texttt  {x}. }}{20}}
-\newlabel{fig:isprime}{{2.5}{20}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.1}Multiplication}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.2}Division}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.3}Modulus}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.4}Integer Equality Testing}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.5}Integer Inequality Testing}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.6}Constant Equality Testing}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.7}Comparison (Greater Than)}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.8}Comparison (Less Than)}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.9}List Equality Testing}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.10}List Index}{22}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.11}List2 Index}{23}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.12}List Length}{23}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.13}List2 Length}{23}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.14}List Assignment}{23}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.6}Modify Statements}{23}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.1}Addition}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.2}Subtraction}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.3}Constant Addition}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.4}Constant Subtraction}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.5}Appending to Lists}{24}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.6}Appending to List2s}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.7}Appending Constants}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.8}List Concatenation}{25}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.9}List2 Concatenation}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.7}Clear Statements}{25}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.8}Label Statements}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.9}Goto Statements}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.10}If-Goto Statements}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.11}Function Statements}{26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.12}Print Statements}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.13}Halting Statements}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.14}Variable Declaration Statements}{27}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.15}Function Input Statements}{28}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.16}Return Statements}{28}}
-\newlabel{sec:turdtotm}{{2.5}{28}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.5}Compilation from TMD to a Multi-Tape Machine }{28}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Turing Machine Format}{28}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces This is an example of a multi-tape Turing machine file. The notes in red are explanations of the meanings of the various parts of the Turing machine file. }}{29}}
-\newlabel{fig:example}{{2.6}{29}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces This figure shows the machine shown in Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:tmexample' on page 30 undefined} running for five steps. Note that in the multi-tape machine, at initialization, every tape begins with a single \texttt  {E} symbol and an infinite number of \texttt  {\_} symbols. As will be explained later, this corresponds to every variable having its value be initialized to 0. Naturally, in the lowest-level machine, the tape will be initialized containing only the empty symbol, as required of a standard Turing machine. }}{30}}
-\newlabel{fig:example}{{2.7}{30}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Variable Encoding}{31}}
-\newlabel{compilation}{{2.5.3}{32}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.3}Compilation }{32}}
-\newlabel{sec:mttost}{{2.6}{32}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.6}Transforming a Multi-Tape Machine to a Single-Tape Machine }{32}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Alphabet}{33}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}Layout}{33}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.3}Identifier Format}{33}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.4}Value Format}{35}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.5}Value Expansion}{35}}
-\newlabel{mttoststeps}{{2.6.6}{36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.6}Overview of Transformation }{36}}
-\newlabel{sec:mstots}{{2.7}{37}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.7}Transforming a 4-Symbol Machine to a 2-Symbol Machine }{37}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Alphabet}{37}}
-\newlabel{sec:mstotssteps}{{2.7.2}{38}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Overview of Transformation }{38}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.8}Miscellaneous Optimizations}{38}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Pruning}{38}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Example Compilation: Goldbach's Conjecture}{40}}
+\newlabel{sec:implementation}{{2}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Overview}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Major Design Decisions}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}The Tape-Variable Relationship}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces This diagram illustrates each of the steps in the conversion between a program written in TMD and a description of a single-tape Turing machine with a binary tape alphabet.}}{9}}
+\newlabel{fig:process}{{2.1}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Unary}{10}}
+\newlabel{sec:functions}{{2.2.3}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Functions }{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Future Directions}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Improving TMD}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces This is a visual representation of a program that spans three functions. The main function, Function A, calls Function B twice, and Function B calls Function C twice. Commands that are not function calls are labeled ``Code 1'' through ``Code 7.'' }}{12}}
+\newlabel{fig:code}{{2.2}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces This is a visual representation of the compiled output of the program from Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:code' on page 13 undefined}. On the left is the output of the compiler assuming the inlining method is used, while on the right is the output of the compiler assuming the stack-on-tape method is used. Note that the program flow of the compiled machine on the left is easier to understand; the program flow of the compiled machine on the right depends on what function is at the top of the stack. However, note also that if the set of states that represents ``Code 7,'' ``States 7,'' is very large, the stack-on-tape method is much more parsimonious than the inlining method in this case. On the left, ``States 7'' appears four times, but on the right it only appears once. }}{13}}
+\newlabel{fig:compiled}{{2.3}{13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Simplifying $Z$}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Exploring Other Axiomatic Systems}{14}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}TMD}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}List of Commands}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Main Files}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Function Files}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.4}Data Types}{17}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.5}Assign Statements}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces This is the TMD code for a parsimonious program that will loop if Goldbach's conjecture is true, and reject if it is false. It is provided as an example of a TMD main file. See Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:isprime' on page 18 undefined} for the code of the \texttt  {isprime} function, which is called by the main body of the program.}}{18}}
+\newlabel{fig:goldbach}{{2.4}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces This is the TMD code for a function that will set the value of the input \texttt  {isPrime?} to 0 if the input \texttt  {x} is not a prime number, and will set the value of \texttt  {isPrime?} to a positive integer if \texttt  {x} is a prime number. The value of \texttt  {x} is not modified by the isprime function, but the value of variable \texttt  {c1} may be changed to something arbitrary and the value of \texttt  {isPrime?} will be changed to depend on the primality of \texttt  {x}. The function's result will depend exclusively on the initial value of \texttt  {x}. }}{19}}
+\newlabel{fig:isprime}{{2.5}{19}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.1}Multiplication}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.2}Division}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.3}Modulus}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.4}Integer Equality Testing}{20}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.5}Integer Inequality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.6}Constant Equality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.7}Comparison (Greater Than)}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.8}Comparison (Less Than)}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.9}List Equality Testing}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.10}List Index}{21}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.11}List2 Index}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.12}List Length}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.13}List2 Length}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.5.14}List Assignment}{22}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.6}Modify Statements}{22}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.1}Addition}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.2}Subtraction}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.3}Constant Addition}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.4}Constant Subtraction}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.5}Appending to Lists}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.6}Appending to List2s}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.7}Appending Constants}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.8}List Concatenation}{24}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.6.9}List2 Concatenation}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.7}Clear Statements}{24}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.8}Label Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.9}Goto Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.10}If-Goto Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.11}Function Statements}{25}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.12}Print Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.13}Halting Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.14}Variable Declaration Statements}{26}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.15}Function Input Statements}{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.16}Return Statements}{27}}
+\newlabel{sec:turdtotm}{{2.5}{27}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Compilation from TMD to a Multi-Tape Machine }{27}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Turing Machine Format}{27}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.6}{\ignorespaces This is an example of a multi-tape Turing machine file. The notes in red are explanations of the meanings of the various parts of the Turing machine file. }}{28}}
+\newlabel{fig:example}{{2.6}{28}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces This figure shows the machine shown in Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:tmexample' on page 29 undefined} running for five steps. Note that in the multi-tape machine, at initialization, every tape begins with a single \texttt  {E} symbol and an infinite number of \texttt  {\_} symbols. As will be explained later, this corresponds to every variable having its value be initialized to 0. Naturally, in the lowest-level machine, the tape will be initialized containing only the empty symbol, as required of a standard Turing machine. }}{29}}
+\newlabel{fig:example}{{2.7}{29}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Variable Encoding}{30}}
+\newlabel{compilation}{{2.5.3}{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.3}Compilation }{31}}
+\newlabel{sec:mttost}{{2.6}{31}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Transforming a Multi-Tape Machine to a Single-Tape Machine }{31}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Alphabet}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.2}Layout}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.3}Identifier Format}{32}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.4}Value Format}{34}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.5}Value Expansion}{34}}
+\newlabel{mttoststeps}{{2.6.6}{35}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.6}Overview of Transformation }{35}}
+\newlabel{sec:mstots}{{2.7}{36}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}Transforming a 4-Symbol Machine to a 2-Symbol Machine }{36}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Alphabet}{36}}
+\newlabel{sec:mstotssteps}{{2.7.2}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Overview of Transformation }{37}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.8}Miscellaneous Optimizations}{37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Pruning}{37}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Example Compilation: Goldbach's Conjecture}{39}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Goldbach's Conjecture}{40}}
-\newlabel{goldbachstatement}{{2}{40}}
-\newlabel{sec:tmdgoldbach}{{3.2}{40}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}TMD }{40}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Main File}{40}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}The \texttt  {isprime} Function}{42}}
-\newlabel{sec:turdtotmgoldbach}{{3.3}{43}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Compilation from TMD to a Multi-Tape Machine }{43}}
-\newlabel{sec:mttostgoldbach}{{3.4}{43}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Transforming a Multi-Tape Machine to a Single-Tape Machine }{43}}
-\newlabel{sec:mstotsgoldbach}{{3.5}{43}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.5}Transforming a 4-Symbol Turing Machine to a 2-Symbol Machine }{43}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces This is a pictorial representation of the compiled output of \texttt  {goldbach.tmd}. This state machine will reject if and only if Statement\nobreakspace  {}2\hbox {} is false. Each boxed line of code represents a group of states in the multi-tape Turing machine. Arrows from one box to another indicate the state machine's logical flow. When no arrows leave a box, logical flow is presumed to continue to the box immediately beneath it. Note that only \texttt  {if} statements cause a branch in the program's logical flow. Note also that the \texttt  {isprime} function is inlined directly into the \texttt  {goldbach.tmd}. Variable names are shown in red in the \texttt  {isprime} function, to indicate that those are the names of the external variables of \texttt  {goldbach.tmd}, and not the variables internal to the \texttt  {isprime} function. To see a more detailed view of the \texttt  {isprime} function in which individual states are visible, see Figure\nobreakspace  {}3.2\hbox {}. }}{44}}
-\newlabel{fig:goldbach1}{{3.1}{44}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces This is a view of the state machine associated with the \texttt  {isprime} function, which has as its goal to set the value of $z$ to 1 if $x$ is prime, and set the value of $z$ to 0 otherwise. Each box represents a group of states associated with a line of code in the source of \texttt  {isprime.tfn}. The smaller circles represent individual states. Transitions between states are accurate and complete, with two exceptions: transitions from states to themselves and transitions from states to the \texttt  {ERROR} state are omitted for clarity. Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. To see a more detailed view of the state machine associated with the line of code \texttt  {assign z to x \% y}, in which the state transitions are fully described, see Figure\nobreakspace  {}3.3\hbox {}. }}{45}}
-\newlabel{fig:goldbach2}{{3.2}{45}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces This is a detailed view of the state machine associated with the line of code \texttt  {assign z to x \% y} function, which has as its goal to set the value of $z$ to the value $x \penalty \z@ \mkern 12mu{\mathgroup \symoperators mod}\tmspace  +\thinmuskip {.1667em}\tmspace  +\thinmuskip {.1667em}y$. Each circle represents a state in the multi-tape Turing machine. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt  {ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt  {ERROR} state). Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the multi-tape Turing machine is transformed into its single-tape equivalent, see Figure\nobreakspace  {}3.4\hbox {}. }}{46}}
-\newlabel{fig:goldbach3}{{3.3}{46}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces This is a pictorial representation of the multi-tape-to-single-tape transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt  {\_} symbol, the head on the $z$ tape replaces it with an \texttt  {E} symbol and stays in place. At the bottom of the picture is the group of single-tape Turing machine states associated with this multi-tape state transition. Each of the multi-tape states has a single-tape state that directly correspond to it; in between these states are a group of states designed to ``push'' every symbol on the tape down to make more room for the $z$ value, a group of states designed to read in the identifier associated with $y$, and a group of states designed to reach the relevant part of the $y$ tape. In the state machine shown on the bottom, transitions from states to themselves or from states to the \texttt  {ERROR} state are omitted. For a more detailed view of the state machine associated with ``pushing down'' every symbol on the tape, see Figure\nobreakspace  {}3.5\hbox {}. }}{47}}
-\newlabel{fig:goldbach4}{{3.4}{47}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces This is a detailed view of the state machine associated with ``pushing down'' every symbol on the tape. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt  {ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt  {ERROR} state). On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the 4-symbol Turing machine is transformed into its 2-symbol equivalent, see Figure\nobreakspace  {}3.6\hbox {}. }}{48}}
-\newlabel{fig:goldbach5}{{3.5}{48}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces This is a pictorial representation of the 4-symbol-to-2-symbol transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt  {1} symbol, the head on the $z$ tape replaces it with an \texttt  {H} symbol and moves right. At the bottom of the picture is the lower-level state machine. Because a \texttt  {1} symbol corresponds to the sequence \texttt  {ab} and an \texttt  {H} corresponds ot the sequence \texttt  {ba}, the lower-level Turing machine is instructed to write the sequence \texttt  {ba} on the tape and move right two spaces if the sequence \texttt  {ab} is read in. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). }}{49}}
-\newlabel{fig:goldbach6}{{3.6}{49}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Goldbach's Conjecture}{39}}
+\newlabel{goldbachstatement}{{2}{39}}
+\newlabel{sec:tmdgoldbach}{{3.2}{39}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}TMD }{39}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Main File}{39}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}The \texttt  {isprime} Function}{41}}
+\newlabel{sec:turdtotmgoldbach}{{3.3}{42}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Compilation from TMD to a Multi-Tape Machine }{42}}
+\newlabel{sec:mttostgoldbach}{{3.4}{42}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Transforming a Multi-Tape Machine to a Single-Tape Machine }{42}}
+\newlabel{sec:mstotsgoldbach}{{3.5}{42}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Transforming a 4-Symbol Turing Machine to a 2-Symbol Machine }{42}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces This is a pictorial representation of the compiled output of \texttt  {goldbach.tmd}. This state machine will reject if and only if Statement\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `goldbachstatement' on page 43 undefined} is false. Each boxed line of code represents a group of states in the multi-tape Turing machine. Arrows from one box to another indicate the state machine's logical flow. When no arrows leave a box, logical flow is presumed to continue to the box immediately beneath it. Note that only \texttt  {if} statements cause a branch in the program's logical flow. Note also that the \texttt  {isprime} function is inlined directly into the \texttt  {goldbach.tmd}. Variable names are shown in red in the \texttt  {isprime} function, to indicate that those are the names of the external variables of \texttt  {goldbach.tmd}, and not the variables internal to the \texttt  {isprime} function. To see a more detailed view of the \texttt  {isprime} function in which individual states are visible, see Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:goldbach2' on page 43 undefined}. }}{43}}
+\newlabel{fig:goldbach1}{{3.1}{43}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces This is a view of the state machine associated with the \texttt  {isprime} function, which has as its goal to set the value of $z$ to 1 if $x$ is prime, and set the value of $z$ to 0 otherwise. Each box represents a group of states associated with a line of code in the source of \texttt  {isprime.tfn}. The smaller circles represent individual states. Transitions between states are accurate and complete, with two exceptions: transitions from states to themselves and transitions from states to the \texttt  {ERROR} state are omitted for clarity. Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. To see a more detailed view of the state machine associated with the line of code \texttt  {assign z to x \% y}, in which the state transitions are fully described, see Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:goldbach3' on page 44 undefined}. }}{44}}
+\newlabel{fig:goldbach2}{{3.2}{44}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces This is a detailed view of the state machine associated with the line of code \texttt  {assign z to x \% y} function, which has as its goal to set the value of $z$ to the value $x \penalty \z@ \mkern 12mu{\mathgroup \symoperators mod}\tmspace  +\thinmuskip {.1667em}\tmspace  +\thinmuskip {.1667em}y$. Each circle represents a state in the multi-tape Turing machine. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt  {ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt  {ERROR} state). Yellow circles represent states associated with the $x$ tape, pink circles represent states associated with the $y$ tape, and blue circles represent states associated with the $z$ tape. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the multi-tape Turing machine is transformed into its single-tape equivalent, see Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:goldbach4' on page 45 undefined}. }}{45}}
+\newlabel{fig:goldbach3}{{3.3}{45}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces This is a pictorial representation of the multi-tape-to-single-tape transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt  {\_} symbol, the head on the $z$ tape replaces it with an \texttt  {E} symbol and stays in place. At the bottom of the picture is the group of single-tape Turing machine states associated with this multi-tape state transition. Each of the multi-tape states has a single-tape state that directly correspond to it; in between these states are a group of states designed to ``push'' every symbol on the tape down to make more room for the $z$ value, a group of states designed to read in the identifier associated with $y$, and a group of states designed to reach the relevant part of the $y$ tape. In the state machine shown on the bottom, transitions from states to themselves or from states to the \texttt  {ERROR} state are omitted. For a more detailed view of the state machine associated with ``pushing down'' every symbol on the tape, see Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:goldbach5' on page 46 undefined}. }}{46}}
+\newlabel{fig:goldbach4}{{3.4}{46}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces This is a detailed view of the state machine associated with ``pushing down'' every symbol on the tape. Transitions between states are accurate and complete, with the exception of transitions from states to the \texttt  {ERROR} state, which are omitted for clarity (if there doesn't exist a transition for a given symbol, it can be presumed that that transition is to the \texttt  {ERROR} state). On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). To see how a state transition in the 4-symbol Turing machine is transformed into its 2-symbol equivalent, see Figure\nobreakspace  {}\G@refundefinedtrue \text  {\normalfont  \bfseries  ??}\GenericWarning  {               }{LaTeX Warning: Reference `fig:goldbach6' on page 47 undefined}. }}{47}}
+\newlabel{fig:goldbach5}{{3.5}{47}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces This is a pictorial representation of the 4-symbol-to-2-symbol transformation algorithm. At the top of the picture is the original state transition: upon reading in a \texttt  {1} symbol, the head on the $z$ tape replaces it with an \texttt  {H} symbol and moves right. At the bottom of the picture is the lower-level state machine. Because a \texttt  {1} symbol corresponds to the sequence \texttt  {ab} and an \texttt  {H} corresponds ot the sequence \texttt  {ba}, the lower-level Turing machine is instructed to write the sequence \texttt  {ba} on the tape and move right two spaces if the sequence \texttt  {ab} is read in. On each transition arrow, the character in blue represents the symbol that must be read for this state transition to take place. The character in red represents the direction which the head moves in response to the transition (if omitted, the head remains in place). The character in green represents the new symbol written on the tape (if omitted, the symbol written is the same as the symbol read). }}{48}}
+\newlabel{fig:goldbach6}{{3.6}{48}}
