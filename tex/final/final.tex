@@ -26,7 +26,7 @@
 
 \begin{abstract}
 
-Since the definition of the Busy Beaver function by Rad\'{o} in 1962, an interesting open question has been what the smallest value of $n$ for which $BB(n)$ is independent of ZFC. Is this $n$ approximately 10, or closer to 1,000,000, or is it unfathomably large? In this thesis, I show that it is at most \statenum by presenting an explicit description of a \statenumstate Turing machine $Z$ whose behavior cannot be proved in ZFC, assuming ZFC is consistent, based on the work of Friedman. % TODO cite
+Since the definition of the Busy Beaver function by Rad\'{o} in 1962, an interesting open question has been what the smallest value of $n$ for which $BB(n)$ is independent of ZFC. Is this $n$ approximately 10, or closer to 1,000,000, or is it unfathomably large? In this thesis, I show that it is at most \statenum by presenting an explicit description of a \statenumstate Turing machine $Z$ whose behavior cannot be proved in ZFC, assuming ZFC is consistent, based on the work of Friedman. \cite{friedman}~
 In doing so, I give the first known upper bound on the highest provable Busy Beaver number in ZFC. I also present an explicit description of a \gbstatenumstate Turing machine $G$ that haltsif and only if there's a counterexample to Goldbach's conjecture. In the process of creating $G$ and $Z$, I define a higher-level language, TMD, which is much more convenient than direct state manipulation, and explain in great detail the process of compiling this language down to a Turing machine description. TMD is a well-documented language that is optimized for parsimony over efficiency. This makes TMD a uniquely useful tool for creating small Turing machines that encode mathematical statements. 
 
 \end{abstract}
@@ -64,26 +64,24 @@ $\delta = Q \times \Gamma \rightarrow (Q \cup F) \times \Gamma \times \{L, R\}$ 
 $q_0$ is the \emph{start state} \\
 $F = \{\textrm{ACCEPT}, \textrm{REJECT}, \textrm{ERROR}\}$ is the set of \emph{halting transitions}. \\
 
-In this thesis, a Turing machine's \emph{states} make up the Turing machine's easily-accessible, finite memory. The Turing machine's state is initialized to $q_0$. \\
+A Turing machine's \emph{states} make up the Turing machine's easily-accessible, finite memory. The Turing machine's state is initialized to $q_0$. \\
 
 The \emph{tape alphabet symbols} correspond to the symbols that can be written on the Turing machine's infinite tape. \\
 
-In my thesis, all Turing machines discussed are run on the \emph{empty input}, which means that all Turing machines discussed are run on a tape where every slot contains the blank symbol. \\
+In this thesis, all Turing machines discussed are run on the all-\texttt{0} input. \\
 
-The \emph{transition function} encodes the Turing machine's behavior. It takes two inputs: the current state of the Turing machine (an element of $(Q \\ F)$ and the symbol read off the tape (an element of $\Gamma$). It outputs three separate instructions: what state to enter (an element of $Q$), what symbol to write onto the tape (an element of $\Gamma$) and what direction to move the head in (an element of $\{L, R\}$). A transition function specifies the entire behavior of the Turing machine in all cases. \\
+The \emph{transition function} encodes the Turing machine's behavior. It takes two inputs: the current state of the Turing machine (an element of $Q$) and the symbol read off the tape (an element of $\Gamma$). It outputs three separate instructions: what state to enter (an element of $Q$), what symbol to write onto the tape (an element of $\Gamma$) and what direction to move the head in (an element of $\{L, R\}$). A transition function specifies the entire behavior of the Turing machine in all cases. \\
 
 The \emph{start state} is the state that the Turing machine is in at initialization. \\
 
-The set of \emph{halting transitions} is the set of transitions such that when the Turing machine takes one of these transitions, execution halts. The question of whether or not a Turing machine halts centers around whether or not a Turing machine will ever enter a state in this set when run indefinitely. While having three possible halting transitions is not necessary for the purpose of this thesis, being able to different between the three different types of halting is useful for the purpose of testing.
+The set of \emph{halting transitions} is the set of transitions such that when the Turing machine takes one of these transitions, execution halts. The question of whether or not a Turing machine halts centers around whether or not a Turing machine will ever enter a state in this set when run indefinitely. While having three possible halting transitions is not necessary for the purpose of this thesis, being able to different between the three different types of halting is useful for the purpose of testing. Typically, the ACCEPT transition is used for the confirmation of the truth of a conjecture, the REJECT transition is used for the confirmation of the falsehood of a conjecture, and the ERROR transition is used only for debugging: when the Turing machine is in an impossible situation, assuming it has been run on correct code.
 
 \section{The Busy Beaver Function}
 
 Consider the set of all Turing machines with $k$ states, for some positive integer $k$. In computability theory, we call a Turing machine $B$ a $k$\emph{-State Busy Beaver} if when run on the empty tape as input, the following is true: \\ \\
 -$B$ has $k$ states. \\
 -$B$ halts. \\
--$B$ runs for at least as many steps before halting as all other halting $k$-state Turing machines. \\
-
-% TODO need a pile of references here
+-$B$ runs for at least as many steps before halting as all other halting $k$-state Turing machines. \cite{busybeaver} \\
 
 In other words, a Busy Beaver is a Turing machine is a Turing machine that runs for at least as long as all other Turing machines with as many states as it. Another common definition for a Busy Beaver is a Turing machine that writes as many 1's on the tape as possible; because the number of 1's written is a somewhat arbitrary measure, it is not used in this thesis. \\
 
@@ -98,8 +96,8 @@ $$BB(2) = 6$$
 $$BB(3) = 21$$
 $$BB(4) = 107$$
 
-For $BB(5)$ and $BB(6)$, only lower bounds are known: $BB(5) \ge 47,176,870$, and $BB(6) \ge 7.4 \times 10^{36534}$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach. \\
-% TODO cite
+For $BB(5)$ and $BB(6)$, only lower bounds are known: $BB(5) \ge 47,176,870$, and $BB(6) \ge 7.4 \times 10^{36534}$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach. A summary of the current state of human knowledge about Busy Beaver values can be found at \cite{bbvalues}.\\
+
 
 Another way to discuss the Busy Beaver sequence is to say that modern mathematics has established a \emph{lower bound} of 4 on the highest provable Busy Beaver value. In this thesis, I prove the first known \emph{upper bound} on the highest provable Busy Beaver value in ZFC; that is, I give a value of $x$ such that the value of $BB(k)$ cannot be proven in ZFC. \\
 
@@ -111,13 +109,13 @@ For this thesis, I constructed a machine like $Z$, for which a proof that $Z$ ru
 
 In Section~\ref{sec:background}, I described a G\"{o}delian Turing machine that would be \emph{independent of ZFC}; it would not be possible to prove that this machine would halt or wouldn't halt using the axioms of ZFC, assuming that ZFC was consistent. I suggested that one might build this machine by instructing the machine to start with the axioms of ZFC and apply the inference rules of first-order logic of ZFC repeatedly in each possible way so as to enumerate every statement ZFC could prove, and to halt if ever a contradiction was found. While the idea for this method is simple, to actually construct such a machine would be very involved, because it would require creating a language in which to encode the axioms of ZFC that could be stored on a Turing machine tape. \\
 
-Thankfully, a simpler method exists for creating $Z$. Friedman % TODO cite
-was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent, and which is false if ZFC is not consistent. Note that these two properties are also true of the statement, ``ZFC is consistent.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC! However, note also that while the statement ``ZFC is consistent'' is equivalent to the consistency of ZFC, Friedman's Statement is \emph{not} known to be equivalent to the consistency of ZFC. The statement is as follows: \\
+Thankfully, a simpler method exists for creating $Z$. Friedman \cite{friedman}~
+was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent, and which is false if ZFC is not consistent. Note that these two properties are also true of the statement, ``ZFC is consistent.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC! However, note also that while the statement ``ZFC is consistent'' is equivalent to the consistency of ZFC, Friedman's statement is \emph{not} known to be equivalent to the consistency of ZFC. The statement is as follows: \\
 
-\begin{statement}
-For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r,ush(x_1),...,ush(x_r)\}$ of complexity $\le (8knr)!$, each
-$\{x_1, \dots, x_{(8kni)!}\}$ reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. % TODO fix the crossing the line and "cite specific statement of Friedman in specific paper"? This one's gonna be tricky
-\label{friedmanstatement}
+\begin{statement} \label{eq:friedman}
+For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r, \\
+ush(x_1),...,ush(x_r)\}$ of complexity $\le (8knr)!$, each $\{x_1, \dots, x_{(8kni)!}\}$
+reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. \cite{friedman}
 \end{statement}
 
 A number of \emph{complexity} at most $c$ refers to a number that can be written as a fraction $a/b$, where $a$ and $b$ are both integers less than or equal to $c$. A set has complexity at most $c$ if all the numbers it contains have complexity at most $c$. \\ 
@@ -126,22 +124,23 @@ An \emph{order invariant graph} is a graph containing a countably infinite numbe
 
 Also, in an order invariant graph, two nodes $(a,b)$ have an edge between them if and only if each other pair of nodes $(c,d)$ that is \emph{order equivalent} with $(a,b)$ have an edge between them. Two pairs of nodes $(a, b)$ and $(c, d)$ are \emph{order equivalent} if $a$ and $c$ are the same size and $b$ and $d$ are the same size and if for all $1 \le i \le |a|$ and $1 \le j \le |b|$, the $i$-th element of $a$ is less than the $j$-th element of $b$ if and only if the $i$-th element of $c$ is less than the $j$-th element of $d$. \\
 
-To give some trivial examples of order invariant graphs: the graph with no edges is order invariant, as is the complete graph. \\ % TODO give nontrivial example.
+To give some trivial examples of order invariant graphs: the graph with no edges is order invariant, as is the complete graph. A more nontrivial example might be a graph on $[Q]^2$, in which each node corresponds to a set of two real numbers, and there is an edge between two nodes if and only if their corresponding sets $a$ and $b$ satisfy $a_1 < b_1 < a_2 < b_2$. (Because edges are undirected in order invariant graphs, such an edge will exist if \emph{either} assignment of the vertices to $a$ and $b$ satisfies the inequality above). \\
 
 The \emph{ush()} function takes as input a set and returns a copy of that set with all non-negative numbers in that set incremented by 1. \\ 
 
 Finally, a set of vertices $X$ reduces a set of vertices $Y$ if and only if for all $y \in Y$, either $y \in X$ or there is an $x \in X$ such that $x$ and $y$ share an edge and $\max(x) \le \max(y)$. \\
 
-In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is consistent, we construct a Turing machine, $Z$, that loops if the Statement~\ref{friedmanstatement} above is true, and halts if it is false. 
+Finally, a set of vertices $X$ \emph{reduces} a set of vertices $Y$ if and only if for all $y \in Y$, there exists $x \in X$ such that $x \le_{rlex} y$. $x \le_{rlex} y$ if and only if $x = y$ or $x_i < y_i$ where $i$ is least such that $x_i \not= y_i$.~\cite{personalcomm} \\
+
+In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is consistent, we construct a Turing machine, $Z$, that loops if Statement~\ref{eq:friedman} is true, and halts if it is false. 
 
 \section{Parsimony}
 
-In most algorithmic study, efficiency is the primary concern. On occasion, space usage is also important. In designing $Z$, however, parsimony is the only thing that matters. This leads to a lot of unorthodox design decisions, which are discussed in detail in Chapter~\ref{sec:implementation}. We note, however, that one historical analogue is the practice of ``code-golfing'': a recreational pursuit adopted by some programmers in which the goal is to produce a piece of code written in a given programming language, using as few characters as possible. % TODO reference
-The goal of designing a Turing machine with as few states as possible to accomplish a certain task, without concern for the machine's efficiency or space usage, can be thought of analogous to code-golfing with a particularly low-level programming language. \\
+In most algorithmic study, efficiency is the primary concern. On occasion, space usage is also important. In designing $Z$, however, parsimony is the only thing that matters. This leads to a lot of unorthodox design decisions, which are discussed in detail in Chapter~\ref{sec:implementation}. We note, however, that one historical analogue is the practice of ``code-golfing'': a recreational pursuit adopted by some programmers in which the goal is to produce a piece of code written in a given programming language, using as few characters as possible. Many examples of programmers code-golfing can be found at \cite{codegolf}.~The goal of designing a Turing machine with as few states as possible to accomplish a certain task, without concern for the machine's efficiency or space usage, can be thought of analogous to code-golfing with a particularly low-level programming language. \\
 
 Even for many algorithms used in practice, simplicity of implementation is a consideration on par with efficiency and space usage. It is difficult to find standards with which to rigorously define the simplicity of an algorithm. To attempt to implement the algorithm while using as few characters as possible in most programming languages would fail to capture what it is we mean by the simplicity of an algorithm more accurately than simple code-golfing might, because the rules for Turing machines are much simpler than the rules for most modern programming languages, and the resulting programs would depend much less on the idiosyncracies of the specific language used. It is possible that a step in the direction of rigorously defining the simplicity of an algorithm would be to measure how many states a Turing machine that implements that algorithm would take. The language of TMD might have some use for this purpose.
 
-\section{Clarifications \label{sec:faq}}
+\section{Clarifications} \label{sec:faq}
 
 The study of axiomatic systems such as ZFC can often be confusing. This section is meant to help possible misunderstandings that the reader may have about the result of this thesis. \\
 
@@ -149,10 +148,9 @@ My claim is that the value \bbstatenum can't be proven in ZFC because if it coul
 
 If the value of \bbstatenum can't be proven in ZFC, does that mean people will never know the value of \bbstatenum with certainty? It depends on what is meant by ``knowledge''! If we restrict ourselves to the axioms of ZFC, we can never \emph{prove} the value of \bbstatenumperiod But if we are willing to assume more powerful axioms than ZFC, then we certainly could! However, then there would be a new upper bound on the highest provable Busy Beaver value, and this is inescapable--there's not algorithmic way to assume new axioms safely, without incurring the risk of inconsistency.  \\
 
-There's no larger mathematical consensus of where exactly our knowledge ends; rather, there is a continuous spectrum of increasingly powerful axiomatic theories, each of which is riskier than than the previous one. ZFC happens to be a particularly salient point on that spectrum, because it is well-known, contains enough power to prove most of modern mathematics, and is generally considered very likely to be consistent. I decided to write my proof for ZFC in particular, but no matter where I had decided to draw that line, there would always have been some value $x$ for which $BB(x)$ would be unprovable. \\
+There's no larger mathematical consensus of where exactly our knowledge ends; rather, there is a continuous spectrum of increasingly powerful axiomatic theories, each of which is riskier than than the previous one. ZFC happens to be a particularly salient point on that spectrum, because it is well-known, contains enough power to prove most of modern mathematics, and is generally considered very likely to be consistent. I decided to write my proof for ZFC in particular, but no matter where I had decided to draw that line, there would always have been some value $k$ for which $BB(k)$ would be unprovable. \\
 
-On the other hand, if the reader is wondering whether or not \bbstatenum will ever be known in practice--well, unfortunately, it seems likely at this point that the value of $BB(6)$ will never be known in practice! Regardless of what systems of axioms we choose to assume, finding very large Busy Beaver values is a practical impossibility.  %TODO cite \\
-
+On the other hand, if the reader is wondering whether or not \bbstatenum will ever be known in practice--well, unfortunately, it seems likely at this point that the value of $BB(10)$ will never be known in practice! Regardless of what systems of axioms we choose to assume, finding very large Busy Beaver values is a practical impossibility.~\cite{bbimpossible}
 % TODO make this section into footnotes??
 
 \chapter{Implementation \label{sec:implementation}}
@@ -171,10 +169,9 @@ In this chapter, each of the four representations will be described in turn, fro
 \caption{This diagram illustrates each of the steps in the conversion between a program written in TMD and a description of a single-tape Turing machine with a binary tape alphabet.\label{fig:process}} 
 \end{center} 
 \end{figure}  
-% TODO improve this figure
 
 
-The full Turing machine, along with the entirety of the TMD code that compiles down to it and the compiler itself, are available for public use at https://github.com/adamyedidia/thesis.git.
+The full Turing machine, along with the entirety of the TMD code that compiles down to it and the compiler itself, are available for public use at~\cite{github}.
 
 \section{Major Design Decisions}
 
@@ -246,13 +243,12 @@ Also, making the compiler more parsimonious at each stage is a good way to impro
 
 \subsection{Exploring Other Axiomatic Systems}
 
-There are many possible axiomatic systems that could have been used as ``the foundation of modern mathematics''; for most purposes, Peano Arithmetic (PA), a weaker axiomatic system than ZFC, is enough to prove interesting mathematical statements. Friedman has even conjectured that the still weaker system of Elementary Function Arithmetic (EFA) could be used to prove every theorem published in the \emph{Annals of Mathematics}. % TODO Citation needed
-This includes Fermat's Last Theorem, whose original proof involved \emph{Grothendieck universes}, which require stronger axioms even than ZFC.  \\ % TODO Whose proof? Cite about FLT (FCT?) and ZFC
+There are many possible axiomatic systems that could have been used as ``the foundation of modern mathematics''; for most purposes, Peano Arithmetic (PA), a weaker axiomatic system than ZFC, is enough to prove interesting mathematical statements. Friedman has even conjectured that the still weaker system of Elementary Function Arithmetic (EFA) could be used to prove every theorem published in the \emph{Annals of Mathematics}.~\cite{grandconjecture}
+This includes Fermat's Last Theorem, whose original proof involved \emph{Grothendieck universes}, which require stronger axioms even than ZFC. (See~\cite{grothendieck}) \\ 
 
 It could therefore be interesting to find the upper bounds on the highest Busy Beaver values provable using these other systems of axioms--PA, EFA, and ZFC with Grothendieck universes. \\
 
-This kind of further research would be helpful to give researchers a numerical value to assign to the complexity of various axiomatic systems. Friedman has helpfully created many relatively-easy-to-program statements, like Statement~\ref{eq:friedman}, % TODO cite 
-which cannot be proved in various axiomatic systems. The TMD compiler is well-suited to turning these statements into small Turing machines.
+This kind of further research would be helpful to give researchers a numerical value to assign to the complexity of various axiomatic systems. Friedman has helpfully created many relatively-easy-to-program statements, like Statement~\ref{eq:friedman},~\cite{friedmanlist} which cannot be proved in various axiomatic systems. The TMD compiler is well-suited to turning these statements into small Turing machines.
 
 \section{TMD}
 
@@ -298,14 +294,7 @@ The following is a list of possible commands. Let \texttt{x}, \texttt{x1}, \text
 
 Main files contain the body of a program, and can be run. Any variable declared at any point in a main file will be initialized before the execution of the program, with an initial value of 0. As part of their execution, main files can call function files, but they cannot call other main files. Main files may not reach the end of the program without accepting or rejecting. \\
 
-\begin{figure} 
-\begin{center} 
-\includegraphics[scale=0.75]{figs/goldbach.png} 
-\caption{TMD code for a parsimonious program that will loop if Goldbach's conjecture is true, and reject if it is false. It is provided as an example of a TMD main file. See Figure~\ref{fig:isprime} for the code of the \texttt{isprime} function, which is called by the main body of the program.\label{fig:goldbach}} 
-\end{center} 
-\end{figure}
-
-%TODO make this figure not suck also
+See Section~\ref{sec:mainfilegoldbach} for an example of a main file.
 
 \subsection{Function Files}
 
@@ -315,13 +304,7 @@ New variables may not be declared from within a function file; instead, any vari
 
 Function files may not reach the end of the program without accepting, rejecting, or returning. When a function returns, execution continues at the location of the line beneath where the function was called. Functions never return values; instead, they work by modifying the inputs they are given. Although functions can be called by other functions, they cannot be called recursively (that is, they cannot call themselves and they cannot call functions that eventually call them). \\
 
-\begin{figure} 
-\begin{center} 
-\includegraphics[scale=0.75]{figs/isprime.png} 
-\caption{TMD code for a function that will set the value of the input \texttt{isPrime?} to 0 if the input \texttt{x} is not a prime number, and will set the value of \texttt{isPrime?} to a positive integer if \texttt{x} is a prime number. The value of \texttt{x} is not modified by the isprime function, but the value of variable \texttt{c1} may be changed to something arbitrary and the value of \texttt{isPrime?} will be changed to depend on the primality of \texttt{x}. The function's result will depend exclusively on the initial value of \texttt{x}. \label{fig:isprime}} 
-\end{center} 
-\end{figure}
-% TODO make this fi
+See Section~\ref{sec:functionfilegoldbach} for an example of a function file.
 
 \subsection{Data Types}
 
@@ -589,7 +572,37 @@ Return statements have the following form: \\ \\
 
 A return statement instructs code execution to exit the function it is currently in and to return to the line below where the function was originally called. Return statements may not appear in main files.
 
-\section{Compilation from TMD to a Multi-Tape Machine \label{sec:turdtotm}}
+\section{Writing a TMD Program that is Independent of ZFC}
+
+In order to write a TMD program that is independent of ZFC, I wrote a program that halts if and only if Statement~\ref{eq:friedman} is false. For convenience, I have duplicated Statement~\ref{eq:friedman} here: \\
+
+\begin{statement} \label{eq:friedman2}
+For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r, \\
+ush(x_1),...,ush(x_r)\}$ of complexity $\le (8knr)!$, each $\{x_1, \dots, x_{(8kni)!}\}$
+reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. \cite{friedman}
+\end{statement}
+
+\subsection{Missing Data Types}
+
+The first apparent problem is that at first glance, TMD does not appear to support the necessary data structures to encode Statement~\ref{eq:friedman}. Statement~\ref{eq:friedman} requires us to iterate over every rational number of complexity at most $(8knr)!$, which requires both fractions and negative numbers, neither of which are explicitly supported by TMD. Recall that the only numerical data type in TMD is the \texttt{int}, which is restricted to non-negative integers (due to ease of unary representation).\\
+
+In the TMD program that I wrote, I obviated the need for fractions simply by multiplying every number in the statement by $((8knr)!)!$. Because a number of complexity $(8knr)!$ is a number which can be represented by a fraction whose numerator and denominator both have absolute value at most $(8knr)!$, multiplying a number of complexity $(8knr)!$ by $((8knr)!)!$ is guaranteed to yield an integer. This is because $((8knr)!)!$ is an integer multiple of every number less than or equal to $(8knr)!$. \\
+
+In the TMD program I wrote, I represented signed numbers $s$ with pairs $(p, n)$ of positive integers, where at all times the value $s$ is presumed equal to $p - n$. Even though $p$ and $n$ are required to be non-negative, the resulting signed value can take on any value, positive or negative. This representation is, of course, highly redundant; however, it has the advantage that it makes addition, multiplication, and comparison of signed values very easy.
+
+\subsection{Program Sketch}
+
+The program iterates over all possible values of $k$, $n$, and $r$ by using the technique of \emph{dovetailing}: it sets a fourth variable, $l$, that it iteratively increases, and tries all values of $k$, $n$, and $r$ such that $k, n, r < l$ for each $l$. \\
+
+For each possible set of values of $k$, $n$, and $r$, the program then creates every possible order invariant graph. It does this by first generating every integer of the form $a / b * ((8knr)!)!$, where $a$ and $b$ are integers that range from 0 to $(8knr)!$. It then sorts every integer of this form from least to greatest, and generates all ${((8knr)!)^2 \choose i}$ different possible vertices of size $i$, for each $i \le k$. Finally, it associates with this set of vertices an \emph{order invariance relation}: a list of tuples, each containing only the symbols $\{<, >, =\}$. Each tuple specifies a possible legal ordering for the elements of the vertices to obey. To give a few examples, the earlier-mentioned order invariant graph that has an edge from $a = (a_1, a_2)$ to $b = (b_1, b_2)$ if and only if $a_1 < b_1 < a_2 < b_2$ would have associated with it the order invariance relation $[(<, >, <, >)]$, which specifies that the smallest element of the two vertices must come from $a$, the next smallest must come from $b$, the next smallest must come from $a$, and so on. The graph with no edges would have associated with it the order invariance relation $[]$, and the complete graph would have associated with it the list containing every possible tuple. \\
+
+For each of these order invariance relations, there is a corresponding order invariant graph. The order invariant graph is then checked to have a free $\{x_1,\dots,x_r, ush(x_1),...,ush(x_r)\}$ satisfying the condition that each $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. If no such set of vertices exists in the order invariant graph, the Turing machine halts. \\
+
+This is checked simply by trying all $({((8knr)!)^2 \choose i})^r$ different ordered sets of $r$ vertices, and if any of them have the property that they are an independent set and that each of their subsets $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$, then the Turing machine continues to the next order invariant graph. If none of the ordered sets have these two properties, the order invariant graph violates the property guaranteed by Statement~\ref{eq:friedman}, and the Turing machine halts. \\
+
+The program itself can be found at~\cite{github}.
+
+\section{Compilation from TMD to a Multi-Tape Machine} \label{sec:turdtotm}
 
 This section is devoted to describing the algorithm used to compile a TMD program into a multi-tape, 3-symbol Turing machine.
 
@@ -607,24 +620,21 @@ Each line defining the Turing machine's behavior in a given state is written as 
 
 In the actual Turing machine text file, [next state] is replaced by the state that the Turing machine would enter if it read the symbol [symbol read], [direction] is one of \{\texttt{R, L, -}\} and indicates the direction the head would move in, and [symbol written] is one of \{\texttt{\_, 1, E}\} and indicates the symbol that is written on the tape. Note that in the higher-level, multi-tape 3-symbol Turing machine, as indicated by the \texttt{-} symbol, the head can remain in place, (unlike the lowest-level Turing machine around which the Busy Beaver function is defined, where it cannot). \\
 
-Figure~\ref{fig:tmexample} shows the example of this Turing machine file. Figure~\ref{fig:behavior} gives a step-by-step depiction of the behavior of this Turing machine for five steps. \\
+Figure~\ref{fig:tmexample} shows an example of such a Turing machine file. Figure~\ref{fig:behavior} gives a step-by-step depiction of the behavior of this Turing machine for five steps. \\
 
 \begin{figure} 
 \begin{center} 
 \includegraphics[scale=0.4]{figs/annotatedtm.png} 
-\caption{This is an example of a multi-tape Turing machine file. The notes in red are explanations of the meanings of the various parts of the Turing machine file. \label{fig:example}} 
+\caption{This is an example of a multi-tape Turing machine file. The notes in red are explanations of the meanings of the various parts of the Turing machine file. \label{fig:tmexample}} 
 \end{center} 
 \end{figure}
 
 \begin{figure} 
 \begin{center} 
 \includegraphics[scale=0.8]{figs/behavior.png} 
-\caption{The machine of Figure~\ref{fig:tmexample} running for five steps. Note that in the multi-tape machine, at initialization, every tape begins with a single \texttt{E} symbol and an infinite number of \texttt{\_} symbols. As will be explained later, this corresponds to every variable having its value be initialized to 0. Naturally, in the lowest-level machine, the tape will be initialized containing only the empty symbol, as required of a standard Turing machine. \label{fig:example}} 
+\caption{The machine of Figure~\ref{fig:tmexample} running for five steps. Note that in the multi-tape machine, at initialization, every tape begins with a single \texttt{E} symbol and an infinite number of \texttt{\_} symbols. As will be explained later, this corresponds to every variable having its value be initialized to 0. Naturally, in the lowest-level machine, the tape will be initialized containing only the empty symbol, as required of a standard Turing machine. \label{fig:behavior}} 
 \end{center} 
 \end{figure}
-
-In the presented Turing machine, the special halting states \texttt{ACCEPT} and \texttt{REJECT} are used. However, there is an additional halting state that was not previously mentioned: the \texttt{ERROR} state. The \texttt{ERROR} state is not, strictly speaking, necessary to the Turing machines created by my compiler; it is, however, useful for debugging. The idea of the \texttt{ERROR} state is that the Turing machine should \emph{never enter} it. Situations which should be impossible point to the \texttt{ERROR} state, although in principle they could point to any state while preserving the same functionality. In addition to helping catch bugs in the compiler (because no compiled TMD program that does not throw an error when interpreted should even enter an \texttt{ERROR} state), the \texttt{ERROR} state helps keep lower-level transformation steps parsimonious, as will be described in Sections~\ref{sec:mttost} and~\ref{sec:mstots}. Section~\ref{sec:compilation} will give examples of the use of the \texttt{ERROR} states. \\
-% TODO move?
 
 \subsection{Variable Encoding}
 
@@ -663,7 +673,7 @@ It is well-known that multi-tape Turing machines are ``equivalent'' to single-ta
 
 In the descriptions that follow, to avoid confusion between the higher-level tapes of the multi-tape Turing machine and the lower-level tape of the single-tape Turing machine, the higher-level tapes are referred to as \emph{mini-tapes} and the single lower-level tape is referred to as the \emph{meta-tape}. \\
 
-The transformation described below results in an overhead of about a factor of 10 to 20 in the number of states used in the machine (the exact overhead depends in part on the number of tapes in the multi-tape machine). 
+The transformation described below results in an overhead of about a factor of 5 in the number of states used in the machine (the exact overhead depends in part on the number of tapes in the multi-tape machine). 
 
 \subsection{Alphabet}
 
@@ -678,6 +688,20 @@ This directly implies what the approximate layout of the single-tape Turing mach
 As shown in Figure~\ref{fig:stmstmlayout}, the single tape is occupied by alternating identifiers and values. These identifiers and values are each separated by instances of the \texttt{\_} symbol (which also happens to be the empty symbol). Because the \texttt{\_} symbol is used as a separator and as an indicator that an identifier or a value has been read, the \texttt{\_} is not used inside the identifiers or the values proper. Therefore, identifiers and values draw only from the set of symbols \{\texttt{1}, \texttt{H}, \texttt{E}\}. \\
 
 The last non-\texttt{\_} on the meta-tape is a \texttt{1}. The only time the \texttt{1\_} pattern appears on the tape signals that the last information on the tape has been read. This will be useful later when attempting to scan the entire tape for a specific value.
+
+%\begin{figure} 
+%\begin{center} 
+%\includegraphics[scale=0.8]{figs/stmstmlayout.png} 
+%\caption{A high-level representation of the information on the meta-tape. The information alternates between mini-tape identifier and mini-tape value. \label{fig:stmstmlayout}} 
+%\end{center} 
+%\end{figure}
+
+\begin{figure} 
+\begin{center} 
+\includegraphics[scale=0.4]{figs/stmstmlayout.png} 
+\caption{A high-level representation of the information on the meta-tape. The information alternates between mini-tape identifier and mini-tape value. \label{fig:stmstmlayout}}
+\end{center} 
+\end{figure}
 
 \subsection{Identifier Format}
 
@@ -714,9 +738,9 @@ The solution to this issue is the \texttt{H} symbol. The \texttt{H} symbol is al
 
 \subsection{Value Expansion}
 
-The high-level diagram in Figure~\ref{stmstmlayout} obscures a detail that complicates this transformation. The issue is that although the diagram appears to allocate a fixed block of the meta-tape to each identifier and each mini-tape value, no fixed number of tape slots can suffice to hold a mini-tape value. Because tape identifiers are static (they are drawn on the tape at initialization and never changed again), tape identifiers can be contained in a fixed number of tape slots. Mini-tape values, however, can get arbitrarily large; this means that they potentially need an arbitrarily large amount of space allocated to them. \\
+The diagram in Figure~\ref{fig:stmstmlayout} obscures a detail that complicates this transformation. The issue is that although the diagram appears to allocate a fixed block of the meta-tape to each identifier and each mini-tape value, no fixed number of tape slots can suffice to hold a mini-tape value. Because tape identifiers are static (they are drawn on the tape at initialization and never changed again), tape identifiers can be contained in a fixed number of tape slots. Mini-tape values, however, can get arbitrarily large; this means that they potentially need an arbitrarily large amount of space allocated to them. \\
 
-The solution is to dynamically increase the space allocated to a mini-tape value whenever the mini-tape value increases in size. In other words, whenever a state in the multi-tape Turing machine is instructed to write a non-\texttt{\_} symbol on top of a \texttt{\_} symbol, it enters a group of intermediate states designed to ``push'' every symbol down along the tape, to create one more symbol of room for the mini-tape value. This group of intermediate states remembers the symbol it just read, moves right, writes down the symbol it just read, and repeats. See Figure~\ref{fig:expandfsm} for a diagram of the state machine used to ``push'' every symbol along the tape and make room for the expanding mini-tape value. \\
+The solution is to dynamically increase the space allocated to a mini-tape value whenever the mini-tape value increases in size. In other words, whenever a state in the multi-tape Turing machine is instructed to write a non-\texttt{\_} symbol on top of a \texttt{\_} symbol, it enters a group of intermediate states designed to ``push'' every symbol down along the tape, to create one more symbol of room for the mini-tape value. This group of intermediate states remembers the symbol it just read, moves right, writes down the symbol it just read, and repeats. See Figure~\ref{fig:goldbach4} for a diagram of the state machine used to ``push'' every symbol along the tape and make room for the expanding mini-tape value. \\
 
 \subsection{Overview of Transformation \label{mttoststeps}}
 
@@ -842,7 +866,7 @@ In this chapter, I will create a description of a Turing machine, $G$, which hal
 
 The first step is to create a TMD program that halts if and only if there exists some even integer greater than two that cannot be expressed as the sum of two primes. To do this, I will create a TMD program that loops over every even integer $n > 2$. While inside that loop, it will loop over every positive integer $i$ between $2$ and $n-2$, and checks the primality of $i$ and $n-i$. If both $i$ and $n-i$ are prime, the program continues to the next even integer, $n+2$; if there exists no $i$ between $2$ and $n-2$ such that both $2$ and $n-2$ are both prime, the program halts. % Sticking to my guns
 
-\subsection{Main File}
+\subsection{Main File \label{sec:mainfilegoldbach}}
 
 The main file is titled \texttt{goldbach.tmd}. In its source, it calls the subrouting \texttt{isPrime}. The file's source is as follows: \\ \\
 {\tt label This program halts if Goldbach's conjecture is false, and loops otherwise. \\ \\
@@ -888,7 +912,7 @@ reject \\
 
 This program is structured as described previously. The outer loop tries each possible value of $n$ (called \texttt{even\_number} in the program), and the inner loop tests each such $n$ to see if there exists some $i$ (called \texttt{c1} in the program) such that $i$ and $n-i$ are both prime. The apparently complicated apparatus present in the inner loop, especially that labeled \texttt{LOAD\_C1}, \texttt{LOAD\_C2}, and \texttt{RUN\_ISPRIME}, is designed to call the \texttt{isprime} function twice: once on $i$, and once on $n-i$. Because to call a function twice directly would be to incur an unnecessary cost in state usage equal to the state usage of the function in question, the program shown above cleverly ``loads'' and ``unloads'' the values of $i$ and $n-i$ into the variable \texttt{h1}, and runs the loop labeled \texttt{RUN\_ISPRIME} twice on the variable \texttt{h1}, to achieve the desired effect without calling \texttt{isprime} twice. The holder variable \texttt{h3} how many \texttt{isprime} calls have already occurred and helps ensure that both $i$ and $n-i$ are checked for primality in sequence. Note that this idea of ``loading'' and ``unloading'' values into the variable \texttt{h1} can be thought of as a rudimentary function stack, with the \texttt{h3} variable holding the \texttt{isprime} return address. 
 
-\subsection{The \texttt{isprime} Function}
+\subsection{The \texttt{isprime} Function \label{sec:functionfilegoldbach}}
 
 This function file is titled \texttt{isprime.tfn}. The file's source is as follows: \\ \\
 {\tt input x y z \\ \\
@@ -972,11 +996,33 @@ The 4-symbol-to-2-symbol transformation algorithm transforms the 1382-state, sin
 \end{center} 
 \end{figure}
 
+\section{Acknowledgements}
+
+First and foremost, I would like to acknowledge my advisor, Prof. Scott Aaronson, for having suggested this problem to me and for having provided me with indispensable aid throughout. Prof. Aaronson explained the finer points of set theory to me in great detail, and put a huge amount of time into helping me refine my writing into something readable. His kindness, his constant availability to talk, and his friendliness made this Master's thesis a great pleasure to write.
+
+I would also like to thank Prof. Harvey Friedman for having done the crucial theoretical work that made this project feasible. Prof. Friedman was endlessly available over email, and provided me with immediate and detailed clarifications when I needed them. At the core, this project was simply the implementation of Prof. Friedman's ideas; without them, this thesis would have been far harder to write, and the resulting upper bound would have been far looser.
+
+I would like to thank Luke Schaeffer for his help early on in understanding the project, and later on in the design of the compiler. Luke Schaeffer gave a lot of very helpful advice, and he helped me more than once to find an important optimization that substantially tightened the resulting bound.
+
+I would like to thank Adam Hesterberg for his help with the mathematics discussed in the paper.
+
+I would like to thank Alex Arkhipov for having introduced me to the pursuit of code golf--this entire thesis can be thought of as an academic version of code golfing..
+
+
+\begin{thebibliography}{100}
+\bibitem{friedman} Friedman, H. ``Order Invariant Graphs and Finite Incompleteness.'' https://u.osu.edu/friedman.8/files/2014/01/FIiniteSeqInc062214a-v9w7q4.pdf
+\bibitem{busybeaver} Rado, T. ``On Non-Computable Functions.'' 
+Bell System Technical Journal, 41: 3. May 1962 pp 877-884.
+\bibitem{bbvalues} http://www.drb.insel.de/~heiner/BB/
+\bibitem{codegolf} http://codegolf.stackexchange.com/
+\bibitem{grandconjecture} http://cs.nyu.edu/pipermail/fom/1999-April/003014.html
+\bibitem{bbimpossible} Marxen, H., Buntrock, J.``Attacking the Busy Beaver 5.'' 
+\bibitem{grothendieck} McLarty, C. ``What Does It Take To Prove Fermat's Last Theorem? Grothendieck and the Logic of Number Theory.'' The Bulletin of Symbolic Logic, Volume 00, Number 0.
+\bibitem{friedmanlist} Friedman, H. ``Order Theoretic Equations, Maximality, and Incompleteness.'' June 7, 2014. http://u.osu.edu/friedman.8/foundational-adventures/downloadable-manuscripts \#78.
+\bibitem{github} https://github.com/adamyedidia/thesis.git
+\bibitem{personalcomm} Personal communication between A. Yedidia and H. Friedman.
+\end{thebibliography}
+
 \end{document}
-% TODO fix claims about factor-twenty
 % TODO talk about init states
 % TODO make underscores bigger
-% TODO find some earlier time to talk about ERROR state?
-% TODO explain negative numbers
-% TODO create all citations
-% TODO fix all broken references
