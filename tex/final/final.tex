@@ -15,6 +15,9 @@
 \newcommand{\gbstatenum}{7,902 }
 \newcommand{\gbstatenumstate}{7,902-state }
 
+\newcommand{\rmstatenum}{36,146 }
+\newcommand{\rmstatenumstate}{36,146-state }
+
 \setcounter{secnumdepth}{4}
 
 \begin{document}
@@ -26,8 +29,8 @@
 
 \begin{abstract}
 
-Since the definition of the Busy Beaver function by Rad\'{o} in 1962, an interesting open question has been what the smallest value of $n$ for which $BB(n)$ is independent of ZFC. Is this $n$ approximately 10, or closer to 1,000,000, or is it unfathomably large? In this thesis, I show that it is at most \statenum by presenting an explicit description of a \statenumstate Turing machine $Z$ whose behavior cannot be proved in ZFC, assuming ZFC is consistent, based on the work of Friedman. \cite{friedman}~
-In doing so, I give the first known upper bound on the highest provable Busy Beaver number in ZFC. I also present an explicit description of a \gbstatenumstate Turing machine $G$ that haltsif and only if there's a counterexample to Goldbach's conjecture. In the process of creating $G$ and $Z$, I define a higher-level language, TMD, which is much more convenient than direct state manipulation, and explain in great detail the process of compiling this language down to a Turing machine description. TMD is a well-documented language that is optimized for parsimony over efficiency. This makes TMD a uniquely useful tool for creating small Turing machines that encode mathematical statements. 
+Since the definition of the Busy Beaver function by Rad\'{o} in 1962, an interesting open question has been what the smallest value of $n$ for which $BB(n)$ is independent of ZFC. Is this $n$ approximately 10, or closer to 1,000,000, or is it unfathomably large? In this thesis, I show that it is at most \statenum by presenting an explicit description of a \statenumstate Turing machine $Z$ with 1 tape and a 2-symbol alphabet whose behavior cannot be proved in ZFC, assuming ZFC is consistent. The machine is based on work of Harvey Freidman on independent statements involving order-invariant graphs. \cite{friedman}~
+In doing so, I give the first known upper bound on the highest provable Busy Beaver number in ZFC. I also present an explicit description of a \gbstatenumstate Turing machine $G$ that halts if and only if there's a counterexample to Goldbach's conjecture, and an explicit description of a \rmstatenumstate Turing machine $R$ that halts if and only if the Riemann hypothesis is false. In the process of creating $G$, $R$, and $Z$, I define a higher-level language, TMD, which is much more convenient than direct state manipulation, and explain in great detail the process of compiling this language down to a Turing machine description. TMD is a well-documented language that is optimized for parsimony over efficiency. This makes TMD a uniquely useful tool for creating small Turing machines that encode mathematical statements. 
 
 \end{abstract}
 
@@ -43,7 +46,7 @@ Like any axiomatic system capable of encoding arithmetic, ZFC is constrained by 
 
 In particular, consider a Turing machine $G$ that enumerates, one after the other, each of the provable statements in ZFC. To describe how such a machine might be constructed, $G$ could start with the axioms and iterate over the inference rules of ZFC, applying each in every possible way to each conclusion that had been reached so far. We might ask $G$ to halt if it ever reaches a contradiction; in other words, $G$ will halt if and only if it ever finds a proof of $0 = 1$. Because we know that this machine will enumerate \emph{every} provable statement in ZFC, we know that it will halt if and only if ZFC is inconsistent. \\
 
-It follows that $G$ is a Turing machine for which the question of its behavior (whether or not it halts when run indefinitely) is equivalent to the consistency of ZFC. Therefore, just as ZFC cannot prove its own consistency (assuming ZFC is consistent), ZFC also cannot prove that $G$ will loop or halt. \\
+It follows that $G$ is a Turing machine for which the question of its behavior (whether or not it halts when run indefinitely) is equivalent to the consistency of ZFC. Therefore, just as ZFC cannot prove its own consistency (assuming ZFC is consistent), ZFC also cannot prove that $G$ will run forever. \\
 
 This is interesting for the following reason. While the undecidability of the halting problem tells us that there cannot exist an algorithmic method for determining whether an \emph{arbitrary} Turing machine loops or halts, $G$ is an example of a \emph{specific} Turing machine whose behavior cannot be proven one way or the other using the foundation of modern mathematics. Mathematicians and computer scientists think of themselves as being able to determine how a given algorithm will behave if we are given enough time to stare at it; despite this intuition, $G$ is a machine whose behavior we can never prove without assuming axioms more powerful than those generally assumed in most of modern mathematics. \\
 
@@ -74,34 +77,33 @@ The \emph{transition function} encodes the Turing machine's behavior. It takes t
 
 The \emph{start state} is the state that the Turing machine is in at initialization. \\
 
-The set of \emph{halting transitions} is the set of transitions such that when the Turing machine takes one of these transitions, execution halts. The question of whether or not a Turing machine halts centers around whether or not a Turing machine will ever enter a state in this set when run indefinitely. While having three possible halting transitions is not necessary for the purpose of this thesis, being able to different between the three different types of halting is useful for the purpose of testing. Typically, the ACCEPT transition is used for the confirmation of the truth of a conjecture, the REJECT transition is used for the confirmation of the falsehood of a conjecture, and the ERROR transition is used only for debugging: when the Turing machine is in an impossible situation, assuming it has been run on correct code.
+A \emph{halting transition} is a transition that causes the Turing machine to halt. While having three possible halting transitions is not necessary for the purpose of this thesis, being able to differentiate between three different types of halting (ACCEPT, REJECT, and ERROR) is useful for testing.
 
 \section{The Busy Beaver Function}
 
-Consider the set of all Turing machines with $k$ states, for some positive integer $k$. In computability theory, we call a Turing machine $B$ a $k$\emph{-State Busy Beaver} if when run on the empty tape as input, the following is true: \\ \\
--$B$ has $k$ states. \\
+Consider the set of all Turing machines with $k$ states, for some positive integer $k$. We call a Turing machine $B$ a $k$\emph{-state Busy Beaver} if when run on the empty tape as input, the following is true: \\ \\
 -$B$ halts. \\
 -$B$ runs for at least as many steps before halting as all other halting $k$-state Turing machines. \cite{busybeaver} \\
 
 In other words, a Busy Beaver is a Turing machine is a Turing machine that runs for at least as long as all other Turing machines with as many states as it. Another common definition for a Busy Beaver is a Turing machine that writes as many 1's on the tape as possible; because the number of 1's written is a somewhat arbitrary measure, it is not used in this thesis. \\
 
-The \emph{Busy Beaver function}, written $BB(k)$, takes as input a positive integer $k$ and returns how many steps it takes for a $k$-Busy Beaver to halt. The Busy Beaver function has many striking properties. To begin with, the Busy Beaver function is not \emph{computable}; in other words, there does not exist an algorithm that takes $k$ as input and returns $BB(k)$, for arbitrary values of $k$. This follows directly from the undecidability of the halting problem. Suppose an algorithm existed that could compute the Busy Beaver function; then, given a $k$-state Turing machine $M$ as input, we could compute $BB(k)$ and run $M$ for $BB(k)$ steps. If, after $BB(k)$ steps, $M$ had not yet halted, we could safely conclude that $M$ would never halt. Thus, if an algorithm $A$ existed to compute the Busy Beaver function, we could construct an algorithm $A'$ to tell us if an arbitrary Turing machine will halt. Because $A'$ cannot exist, $A$ cannot exist either. \\
+The \emph{Busy Beaver function}, written $BB(k)$, takes as input a positive integer $k$ and returns the number of steps it takes for a $k$-Busy Beaver to halt. The Busy Beaver function has many striking properties. To begin with, it is not \emph{computable}; in other words, there does not exist an algorithm that takes $k$ as input and returns $BB(k)$, for arbitrary values of $k$. This follows directly from the undecidability of the halting problem. Suppose an algorithm existed that could compute the Busy Beaver function; then given a $k$-state Turing machine $M$ as input, we could compute $BB(k)$ and run $M$ for $BB(k)$ steps. If, after $BB(k)$ steps, $M$ had not yet halted, we could safely conclude that $M$ would never halt. Thus, if an algorithm $A$ existed to compute the Busy Beaver function, we could construct an algorithm $A'$ to tell us if an arbitrary Turing machine will halt. Because $A'$ cannot exist, $A$ cannot exist either. \\
 
 By the same argument, $BB(k)$ must grow faster than any computable function. (To check this, assume that some computable function $f(k)$ grows faster than $BB(k)$, and substitute $f(k)$ for $BB(k)$ in the rest of the proof.) In particular, the Busy Beaver grows even faster than (for instance) the Ackermann function, a well-known fast-growing function. \\
 
-Partly because the Busy Beaver function grows so quickly, and partly because finding the value of $BB(k)$ for a given $k$ requires so much work (one must fully explore the behavior of all $k$-state Turing machines), few explicit values of the Busy Beaver function are currently known. The known values are as follows: 
+Partly because the Busy Beaver function grows so quickly, and partly because finding the value of $BB(k)$ for a given $k$ requires so much work (one must fully explore the behavior of all $k$-state Turing machines), few explicit values of the Busy Beaver function are currently known. The known values are: 
 
 $$BB(1) = 1$$
 $$BB(2) = 6$$
 $$BB(3) = 21$$
 $$BB(4) = 107$$
 
-For $BB(5)$ and $BB(6)$, only lower bounds are known: $BB(5) \ge 47,176,870$, and $BB(6) \ge 7.4 \times 10^{36534}$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach. A summary of the current state of human knowledge about Busy Beaver values can be found at \cite{bbvalues}.\\
+For $BB(5)$ and $BB(6)$, only lower bounds are known: $BB(5) \ge 47,176,870$, and $BB(6) \ge 7.4 \times 10^{36,534}$. Researchers are currently working on pinning down the value of $BB(5)$ exactly, and consider it to possibly be within reach. A summary of the current state of human knowledge about Busy Beaver values can be found at \cite{bbvalues}.\\
 
 
-Another way to discuss the Busy Beaver sequence is to say that modern mathematics has established a \emph{lower bound} of 4 on the highest provable Busy Beaver value. In this thesis, I prove the first known \emph{upper bound} on the highest provable Busy Beaver value in ZFC; that is, I give a value of $x$ such that the value of $BB(k)$ cannot be proven in ZFC. \\
+Another way to discuss the Busy Beaver sequence is to say that modern mathematics has established a \emph{lower bound} of 4 on the highest provable Busy Beaver value. In this thesis, I prove the first known \emph{upper bound} on the highest provable Busy Beaver value in ZFC; that is, I give a value of $k$, $k=$ \bbstatenumcomma such that the value of $BB(k)$ cannot be proven in ZFC. \\
 
-Intuitively, one might expect that while no algorithm may exist to compute $BB(k)$ for \emph{all} values of $x$, we could find the value of $BB(k)$ for any \emph{specific} value of $k$ using a procedure similar to the one we used to find the value of $BB(k)$ for $k \le 4$. The reason that such an upper bound must exist is closely tied to the existence of a machine like the G\"{o}delian machine $Z$, as described in Section~\ref{sec:background}. Suppose that $Z$ has $k$ states. Because $Z$'s behavior (whether it halts or loops) cannot be proven in ZFC, it follows that the value of $BB(k)$ also cannot be proven in ZFC; if it could, then a proof would exist of $Z$'s behavior in ZFC. Such a proof would consist of a \emph{computation history} for $Z$, which is an explicit step-by-step description of $Z$'s behavior for a certain number of steps. If $Z$ halts, a computation history leading up to $Z$'s halting would be the entire proof; if $Z$ loops, then a computation history that takes $BB(k)$ steps, combined with a proof of the value of $BB(k)$, would constitute a proof that $Z$ will run forever. \\
+Intuitively, one might expect that while no algorithm may exist to compute $BB(k)$ for \emph{all} values of $k$, we could find the value of $BB(k)$ for any \emph{specific} $k$ using a procedure similar to the one we used to find the value of $BB(k)$ for $k \le 4$. The reason this is not so is closely tied to the existence of a machine like the G\"{o}delian machine $Z$, as described in Section~\ref{sec:background}. Suppose that $Z$ has $k$ states. Because $Z$'s behavior (whether it halts or loops) cannot be proven in ZFC, it follows that the value of $BB(k)$ also cannot be proven in ZFC; if it could, then a proof would exist of $Z$'s behavior in ZFC. Such a proof would consist of a \emph{computation history} for $Z$, which is an explicit step-by-step description of $Z$'s behavior for a certain number of steps. If $Z$ halts, a computation history leading up to $Z$'s halting would be the entire proof; if $Z$ loops, then a computation history that takes $BB(k)$ steps, combined with a proof of the value of $BB(k)$, would constitute a proof that $Z$ will run forever. \\
 
 For this thesis, I constructed a machine like $Z$, for which a proof that $Z$ runs forever would imply that ZFC was consistent. In doing so, I found an explicit upper bound on the highest Busy Beaver value provable in ZFC. My machine, which I shall refer to as $Z$ hereafter, contains \statenum states. Therefore, we will never be able to prove the value of \bbstatenum without assuming more powerful axioms than those of ZFC. This upper bound is presumably very far from tight, but it is a first step.
 
@@ -110,7 +112,7 @@ For this thesis, I constructed a machine like $Z$, for which a proof that $Z$ ru
 In Section~\ref{sec:background}, I described a G\"{o}delian Turing machine that would be \emph{independent of ZFC}; it would not be possible to prove that this machine would halt or wouldn't halt using the axioms of ZFC, assuming that ZFC was consistent. I suggested that one might build this machine by instructing the machine to start with the axioms of ZFC and apply the inference rules of first-order logic of ZFC repeatedly in each possible way so as to enumerate every statement ZFC could prove, and to halt if ever a contradiction was found. While the idea for this method is simple, to actually construct such a machine would be very involved, because it would require creating a language in which to encode the axioms of ZFC that could be stored on a Turing machine tape. \\
 
 Thankfully, a simpler method exists for creating $Z$. Friedman \cite{friedman}~
-was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent, and which is false if ZFC is not consistent. Note that these two properties are also true of the statement, ``ZFC is consistent.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC! However, note also that while the statement ``ZFC is consistent'' is equivalent to the consistency of ZFC, Friedman's statement is \emph{not} known to be equivalent to the consistency of ZFC. The statement is as follows: \\
+was able to derive a graph-theoretical statement whose truth cannot be proved in ZFC if ZFC is consistent, and which is false if ZFC is not consistent. Note that these two properties are also true of the statement, ``ZFC is consistent.'' These two properties are what we ultimately need to prove an upper bound on the highest provable Busy Beaver value in ZFC! However, while the statement ``ZFC is consistent'' is equivalent to the consistency of ZFC, Friedman's statement is \emph{not} known to be equivalent to the consistency of ZFC; it is known only to imply it. The statement is as follows: \\
 
 \begin{statement} \label{eq:friedman}
 For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r, \\
@@ -124,13 +126,11 @@ An \emph{order invariant graph} is a graph containing a countably infinite numbe
 
 Also, in an order invariant graph, two nodes $(a,b)$ have an edge between them if and only if each other pair of nodes $(c,d)$ that is \emph{order equivalent} with $(a,b)$ have an edge between them. Two pairs of nodes $(a, b)$ and $(c, d)$ are \emph{order equivalent} if $a$ and $c$ are the same size and $b$ and $d$ are the same size and if for all $1 \le i \le |a|$ and $1 \le j \le |b|$, the $i$-th element of $a$ is less than the $j$-th element of $b$ if and only if the $i$-th element of $c$ is less than the $j$-th element of $d$. \\
 
-To give some trivial examples of order invariant graphs: the graph with no edges is order invariant, as is the complete graph. A more nontrivial example might be a graph on $[Q]^2$, in which each node corresponds to a set of two real numbers, and there is an edge between two nodes if and only if their corresponding sets $a$ and $b$ satisfy $a_1 < b_1 < a_2 < b_2$. (Because edges are undirected in order invariant graphs, such an edge will exist if \emph{either} assignment of the vertices to $a$ and $b$ satisfies the inequality above). \\
+To give some trivial examples of order invariant graphs: the graph with no edges is order invariant, as is the complete graph. A less trivial example is a graph on $[Q]^2$, in which each node corresponds to a set of two real numbers, and there is an edge between two nodes if and only if their corresponding sets $a$ and $b$ satisfy $a_1 < b_1 < a_2 < b_2$. (Because edges are undirected in order invariant graphs, such an edge will exist if \emph{either} assignment of the vertices to $a$ and $b$ satisfies the inequality above). \\
 
 The \emph{ush()} function takes as input a set and returns a copy of that set with all non-negative numbers in that set incremented by 1. \\ 
 
-Finally, a set of vertices $X$ reduces a set of vertices $Y$ if and only if for all $y \in Y$, either $y \in X$ or there is an $x \in X$ such that $x$ and $y$ share an edge and $\max(x) \le \max(y)$. \\
-
-Finally, a set of vertices $X$ \emph{reduces} a set of vertices $Y$ if and only if for all $y \in Y$, there exists $x \in X$ such that $x \le_{rlex} y$. $x \le_{rlex} y$ if and only if $x = y$ or $x_i < y_i$ where $i$ is least such that $x_i \not= y_i$.~\cite{personalcomm} \\
+Finally, a set of vertices $X$ \emph{reduces} a set of vertices $Y$ if and only if for all $y \in Y$, there exists $x \in X$ such that $x \le_{rlex} y$ and an edge exists between $x$ and $y$. $x \le_{rlex} y$ if and only if $x = y$ or $x_i < y_i$ where $i$ is least such that $x_i \not= y_i$.~\cite{personalcomm} \\
 
 In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is consistent, we construct a Turing machine, $Z$, that loops if Statement~\ref{eq:friedman} is true, and halts if it is false. 
 
@@ -138,20 +138,19 @@ In order to show that \bbstatenum was not provable in ZFC assuming that ZFC is c
 
 In most algorithmic study, efficiency is the primary concern. On occasion, space usage is also important. In designing $Z$, however, parsimony is the only thing that matters. This leads to a lot of unorthodox design decisions, which are discussed in detail in Chapter~\ref{sec:implementation}. We note, however, that one historical analogue is the practice of ``code-golfing'': a recreational pursuit adopted by some programmers in which the goal is to produce a piece of code written in a given programming language, using as few characters as possible. Many examples of programmers code-golfing can be found at \cite{codegolf}.~The goal of designing a Turing machine with as few states as possible to accomplish a certain task, without concern for the machine's efficiency or space usage, can be thought of analogous to code-golfing with a particularly low-level programming language. \\
 
-Even for many algorithms used in practice, simplicity of implementation is a consideration on par with efficiency and space usage. It is difficult to find standards with which to rigorously define the simplicity of an algorithm. To attempt to implement the algorithm while using as few characters as possible in most programming languages would fail to capture what it is we mean by the simplicity of an algorithm more accurately than simple code-golfing might, because the rules for Turing machines are much simpler than the rules for most modern programming languages, and the resulting programs would depend much less on the idiosyncracies of the specific language used. It is possible that a step in the direction of rigorously defining the simplicity of an algorithm would be to measure how many states a Turing machine that implements that algorithm would take. The language of TMD might have some use for this purpose.
+Even for many algorithms used in practice, simplicity of implementation is a consideration on par with efficiency and space usage. It is difficult to find standards with which to rigorously define the simplicity of an algorithm. To attempt to implement the algorithm while using as few characters as possible in most programming languages would fail to capture well what it is we mean by the simplicity of an algorithm, because the rules would depend too heavily on the idiosyncracies of the specific language used. Part of the charm of Turing machines is that they give us a ``standard reference point'' for measuring complexity, unencumbered by the details of more sophisticated programming languages.
 
 \section{Clarifications} \label{sec:faq}
 
-The study of axiomatic systems such as ZFC can often be confusing. This section is meant to help possible misunderstandings that the reader may have about the result of this thesis. \\
+The study of axiomatic systems such as ZFC can be confusing. This section is meant to help possible misunderstandings that the reader may have about the result of this thesis. \\
 
 My claim is that the value \bbstatenum can't be proven in ZFC because if it could, then a proof would exist of Statement~\ref{eq:friedman}'s truth in ZFC. But what if the statement was false? Wouldn't a proof of the statement's falsehood exist in ZFC, with or without knowing the value of \bbstatenumcomma by simply give the computation history of $Z$ until $Z$ halts? The answer to this question is that if the Statement~\ref{eq:friedman} was false, there would indeed exist a proof of the statement's falsehood. However, because that would imply that ZFC was inconsistent, there would also exist a proof of $1=0$ in ZFC! \\
 
-If the value of \bbstatenum can't be proven in ZFC, does that mean people will never know the value of \bbstatenum with certainty? It depends on what is meant by ``knowledge''! If we restrict ourselves to the axioms of ZFC, we can never \emph{prove} the value of \bbstatenumperiod But if we are willing to assume more powerful axioms than ZFC, then we certainly could! However, then there would be a new upper bound on the highest provable Busy Beaver value, and this is inescapable--there's not algorithmic way to assume new axioms safely, without incurring the risk of inconsistency.  \\
+If the value of \bbstatenum can't be proven in ZFC, is that a proof that people will never know the value of \bbstatenum with certainty? It depends on what is meant by ``knowledge.'' If we restrict ourselves to the axioms of ZFC, we can never prove the value of \bbstatenumperiod But if we are willing to assume more powerful axioms than ZFC, then we certainly could. However, then there would be a new upper bound on the highest provable Busy Beaver value, and this is inescapable--there's no algorithmic way to assume additional axioms safely, without incurring the risk of inconsistency.  \\
 
-There's no larger mathematical consensus of where exactly our knowledge ends; rather, there is a continuous spectrum of increasingly powerful axiomatic theories, each of which is riskier than than the previous one. ZFC happens to be a particularly salient point on that spectrum, because it is well-known, contains enough power to prove most of modern mathematics, and is generally considered very likely to be consistent. I decided to write my proof for ZFC in particular, but no matter where I had decided to draw that line, there would always have been some value $k$ for which $BB(k)$ would be unprovable. \\
+There's no larger mathematical consensus on where exactly our knowledge ends; rather, there is a continuous spectrum of increasingly powerful axiomatic theories, each of which is riskier than than the previous one. ZFC happens to be a particularly salient point on that spectrum, because it is well-known, contains enough power to prove most of modern mathematics, and is generally considered very likely to be consistent. I decided to write my proof for ZFC in particular, but no matter where I had decided to draw the line, there would always have been some value $k$ for which $BB(k)$ would be unprovable. \\
 
-On the other hand, if the reader is wondering whether or not \bbstatenum will ever be known in practice--well, unfortunately, it seems likely at this point that the value of $BB(10)$ will never be known in practice! Regardless of what systems of axioms we choose to assume, finding very large Busy Beaver values is a practical impossibility.~\cite{bbimpossible}
-% TODO make this section into footnotes??
+On the other hand, if the reader is wondering whether or not \bbstatenum will ever be known in practice--well, unfortunately, it seems likely at this point that the value of $BB(10)$, and perhaps not even $BB(6)$ will never be known in practice! Regardless of what systems of axioms we choose, finding very large Busy Beaver values is a practical impossibility.~\cite{bbimpossible}
 
 \chapter{Implementation \label{sec:implementation}}
 
@@ -223,7 +222,10 @@ For a side-by-side comparison of how a compiled program would look using the inl
 
 \section{Future Directions}
 
-There are many improvements that could be made to the work in this thesis. The improvements can be separated into three categories, which are discussed in turn.
+There are many improvements that could be made to the work in this thesis. The improvements can be separated into five categories, which are discussed in turn.
+
+% TODO interpreter subsection
+% TODO better friedman statement subsection
 
 \subsection{Improving TMD}
 
@@ -231,11 +233,11 @@ TMD is a relatively weak language with many awkward aspects. For example, TMD do
 
 Also, the fact that variables need to have a value of 0 before they can be reassigned is an annoyance. This aspect of TMD exists because sometimes the programmer already knows that the variable has a 0 value, so it would be wasteful to ``build in'' setting the value of the variable to 0 before reassignment. However, it would be more convenient if the compiler could automatically recognize most of the situations where the variable is guaranteed to have a 0 value (such as when it hasn't been touched since declaration) and automatically forgo clearing the variable's value in those situations. \\
 
-Finally, it would be very nice if \texttt{while} and \texttt{for} loops were possible in TMD, to make programs cleaner and easier to read. While \texttt{goto} statements are natural from the point of view of simplicity of compilation, they tend to lead to to bad programming habits and inscrutable code. Providing programmers with the option of using \texttt{while} loops instead would make the job of debugging TMD programs easier. 
+Finally, it would be very nice if \texttt{while} and \texttt{for} loops were possible in TMD, to make programs cleaner and easier to read. While \texttt{goto} statements are natural from the point of view of simplicity of compilation, they tend to lead to bad programming habits and inscrutable code. Providing programmers with the option of using \texttt{while} loops instead would make the job of debugging TMD programs easier. 
 
 \subsection{Simplifying $Z$}
 
-The final Turing machine, $Z$, whose behavior cannot be proven in ZFC, is not as parsimonious as it could be. At a basic level, the process of building a general-purpose compiler to Turing machines and then using that general-purpose compiler to create a specific program cannot possibly be as parsimonious as building the program directly. Abandoning the rigid abstraction barrier between the multi-tape and the single-tape abstraction, for example, would surely make the resulting program more parsimonious. However, this improvement in the number of states in the Turing machine comes at a tremendous cost in programmer effort. \\
+The final Turing machine, $Z$, whose behavior cannot be proven in ZFC, is not as parsimonious as it could be. At a basic level, the process of building a general-purpose compiler to Turing machines and then using that general-purpose compiler to create a specific program cannot possibly be as parsimonious as building the program directly. Abandoning the rigid abstraction barrier between the multi-tape and the single-tape models, for example, would surely make the resulting program more parsimonious. However, this improvement in the number of states in the Turing machine comes at a tremendous cost in programmer effort. \\
 
 Nonetheless, there are many more optimizations that are possible to reduce the number of states. To start with, writing the function stack on the tape and trying as much as possible to rewrite different functions to reuse the same code could potentially result in a savings in the number of states. Although we rarely call identical functions in the final program, there are many instances where we call two very similar functions at different points. When those functions are complex enough, it becomes worth it to build a single function capable of running both depending on its inputs, and calling that function twice with different arguments each time. Assuming the stack-on-tape method of compiling functions is used (see~\ref{sec:functions} for a description of this method), this will most likely result in the number of states in the final program being substantially reduced. \\
 
@@ -673,7 +675,7 @@ It is well-known that multi-tape Turing machines are ``equivalent'' to single-ta
 
 In the descriptions that follow, to avoid confusion between the higher-level tapes of the multi-tape Turing machine and the lower-level tape of the single-tape Turing machine, the higher-level tapes are referred to as \emph{mini-tapes} and the single lower-level tape is referred to as the \emph{meta-tape}. \\
 
-The transformation described below results in an overhead of about a factor of 5 in the number of states used in the machine (the exact overhead depends in part on the number of tapes in the multi-tape machine). 
+The transformation described below results in an overhead of about a factor of 10 in the number of states used in the machine (the exact overhead depends in part on the number of tapes in the multi-tape machine). 
 
 \subsection{Alphabet}
 
@@ -792,7 +794,7 @@ The output of the transformation process presented in Section~\ref{sec:mttost} i
 
 Like the transformation described in Section~\ref{sec:mttost}, the equivalence of Turing machines with differently-sized finite alphabets is well-known. Unlike the transformation described in Section~\ref{sec:mttost}, common proofs of their equivalence tend to use the same techniques as the one described here. The general idea is to assign to each symbol in the larger alphabet an equivalent sequence of symbols in the smaller alphabet. \\
 
-The transformation described below results in an overhead of about a factor of 20 in the number of states used in the machine.
+The transformation described below results in an overhead of about a factor of 5 in the number of states used in the machine.
 
 \subsection{Alphabet}
 
@@ -860,7 +862,7 @@ Goldbach's Conjecture is one of the most famous unproven conjectures in mathemat
 \label{goldbachstatement}
 \end{statement}
 
-In this chapter, I will create a description of a Turing machine, $G$, which halts if and only if Goldbach's Conjecture is false. Each step of $G$'s creation will be illustrated.
+In this chapter, I will describe a Turing machine, $G$, which halts if and only if Goldbach's Conjecture is false. Each step of $G$'s creation will be illustrated.
 
 \section{TMD \label{sec:tmdgoldbach}}
 
@@ -969,7 +971,7 @@ The compilation algorithm transforms many of the lines of code in \texttt{goldba
 
 The multi-tape-to-single-tape transformation algorithm transforms the 89-state, 6-tape, 3-symbol Turing machine given in Section~\ref{sec:turdtotmgoldbach} into a 1382-state, single-tape, 4-symbol Turing machine. The details of the transformation algorithm are described in depth in Section~\ref{sec:mttost}. \\
 
-First, a sequence of initialization states are added to the Turing machine, the first of which is the start state. These initialization states write the alternating sequence of identifiers and empty tape values (initialized to \texttt{\_E\_\_\_}\dots, which corresponds to \texttt{0}. The last of the initialization states points to a state corresponding to the start state of the multi-tape Turing machine. From there, the remainder of the algorithm simply takes every state transition in the multi-tape Turing machine, and transforms it using a process described in more detail in Subsection~\ref{mttoststeps}, and shown pictorially in Figure~\ref{fig:goldbach4}.
+First, a sequence of initialization states are added to the Turing machine, the first of which is the start state. These initialization states write the alternating sequence of identifiers and empty tape values (initialized to \texttt{\_E\_\_\_}\dots, which corresponds to \texttt{0}). The last of the initialization states points to a state corresponding to the start state of the multi-tape Turing machine. From there, the remainder of the algorithm simply takes every state transition in the multi-tape Turing machine, and transforms it using a process described in more detail in Subsection~\ref{mttoststeps}, and shown pictorially in Figure~\ref{fig:goldbach4}.
 
 \begin{figure} 
 \begin{center} 
@@ -1000,13 +1002,13 @@ The 4-symbol-to-2-symbol transformation algorithm transforms the 1382-state, sin
 
 First and foremost, I would like to acknowledge my advisor, Prof. Scott Aaronson, for having suggested this problem to me and for having provided me with indispensable aid throughout. Prof. Aaronson explained the finer points of set theory to me in great detail, and put a huge amount of time into helping me refine my writing into something readable. His kindness, his constant availability to talk, and his friendliness made this Master's thesis a great pleasure to write.
 
-I would also like to thank Prof. Harvey Friedman for having done the crucial theoretical work that made this project feasible. Prof. Friedman was endlessly available over email, and provided me with immediate and detailed clarifications when I needed them. At the core, this project was simply the implementation of Prof. Friedman's ideas; without them, this thesis would have been far harder to write, and the resulting upper bound would have been far looser.
+I also thank Prof. Harvey Friedman for having done the crucial theoretical work that made this project feasible. Prof. Friedman was endlessly available over email, and provided me with immediate and detailed clarifications when I needed them. At the core, this project was simply the implementation of Prof. Friedman's ideas; without them, this thesis would have been far harder to write, and the resulting upper bound would have been far looser.
 
-I would like to thank Luke Schaeffer for his help early on in understanding the project, and later on in the design of the compiler. Luke Schaeffer gave a lot of very helpful advice, and he helped me more than once to find an important optimization that substantially tightened the resulting bound.
+I thank Luke Schaeffer for his help early on in understanding the project, and later on in the design of the compiler. Luke gave a lot of very helpful advice, and he helped me more than once to find an important optimization that substantially tightened the resulting bound.
 
-I would like to thank Adam Hesterberg for his help with the mathematics discussed in the paper.
+I thank Adam Hesterberg for his help with the mathematics discussed in the paper.
 
-I would like to thank Alex Arkhipov for having introduced me to the pursuit of code golf--this entire thesis can be thought of as an academic version of code golfing..
+I thank Alex Arkhipov for having introduced me to the pursuit of code golf--this entire thesis can be thought of as an academic version of code golfing..
 
 
 \begin{thebibliography}{100}

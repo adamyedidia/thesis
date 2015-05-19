@@ -1,0 +1,42 @@
+input n deltanfac k two h1 sum h2
+
+label n, deltanfac, and k are inputs.
+label k is really weird! it starts out equal to delta(n), but it gets modified. It's a modified input! DAMN!
+label sum is the output
+
+clear sum
+clear two
+modify two with add_small_const 2
+
+label MAIN_LOOP
+
+clear h1
+assign h1 to deltanfac / k
+modify h2 with - h1
+label Now the term of delta(n)!/k is computed
+
+modify sum with + h2
+
+modify k with sub_small_const 1
+if k goto MAIN_LOOP
+
+clear h1
+assign h1 to n
+clear h2
+assign h2 to h1 * n
+label computing n^2
+clear h1
+assign h1 to h2 * deltanfac
+clear h2
+assign h2 to h1 / two
+label now the second term of delta(n)!*n^2/2 is computed
+
+modify sum with - h2
+
+label square the result
+clear h1
+assign h1 to sum
+clear h2
+assign h2 to h1 * sum
+
+return

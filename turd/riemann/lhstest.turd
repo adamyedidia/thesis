@@ -1,0 +1,16 @@
+vars n deltanfac k h1 h2 h3 sum
+
+modify n with add_small_const 2
+modify deltanfac with add_small_const 6
+modify k with add_small_const 3
+
+modify h1 with append_small_const 0
+modify h2 with append_small_const 0
+modify h3 with append_small_const 0
+modify sum with append_small_const 0
+
+function lhs n deltanfac k h1 h2 h3 sum
+
+print sum
+
+accept

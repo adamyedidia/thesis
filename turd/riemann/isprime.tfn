@@ -1,0 +1,23 @@
+input x y z
+
+label this Function can't handle having 1 get passed in
+label isPrime? is the boolean that gets set to whether or not x is prime
+
+clear y
+modify y with add_small_const 1
+
+goto INCR_Y
+
+label MAIN_LOOP
+clear z
+assign z to x % y
+if z goto INCR_Y
+return
+
+label INCR_Y
+modify y with add_small_const 1
+clear z
+assign z to x != y
+if z goto MAIN_LOOP
+modify z with add_small_const 1
+return

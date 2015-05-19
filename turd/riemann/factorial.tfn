@@ -1,0 +1,16 @@
+input unchangedx x holder product
+clear product
+clear x
+assign x to unchangedx
+modify product with add_small_const 1
+if x then goto MULTIPLY_LOOP
+return
+label MULTIPLY_LOOP
+clear holder
+assign holder to product
+clear product
+assign product to holder * x
+label print product
+modify x with sub_small_const 1
+if x then goto MULTIPLY_LOOP
+return 
