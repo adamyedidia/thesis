@@ -1,0 +1,25 @@
+input n deltanfac h1 h2
+
+label inputs are n and delta(n)fac
+label output is h3
+
+label delta(n)fac gets modified! watch out!!
+
+clear h2
+assign h2 to deltanfac
+clear h1
+assign h1 to h2 * deltanfac
+clear deltanfac 
+modify deltanfac with add_small_const 6
+clear h2
+assign h2 to h1 * deltanfac
+clear h1
+assign h1 to h2 * deltanfac
+clear h2
+assign h2 to h1 * n
+clear h1
+assign h1 to h2 * n
+clear h2
+assign h2 to h1 * n
+
+return

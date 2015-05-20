@@ -1,0 +1,12 @@
+vars j h1 h2 p
+
+modify j with add_small_const 0
+modify h1 with append_small_const 2
+modify h2 with append_small_const 0
+modify p with append_small_const 0
+
+function eta j h1 h2 p
+
+print p
+
+accept

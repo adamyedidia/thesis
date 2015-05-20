@@ -1,0 +1,22 @@
+vars n deltan deltanfac h1 h2 h3 h4
+
+modify n with add_small_const 1
+
+label INCR_N_LOOP
+modify n with add_small_const 1
+function delta n deltanfac h1 h2 h3 h4 deltan
+function factorial deltan h1 h2 deltanfac
+
+function lhs n deltanfac deltan h1 h2 h3 h4
+function rhs n deltanfac h1 h2
+
+print h4
+print h2
+print n
+
+clear h1
+assign h1 to h2 > h4
+
+if h1 goto INCR_N_LOOP
+
+reject	

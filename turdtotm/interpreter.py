@@ -55,7 +55,7 @@ def evaluate(value1, value2, operation, lineNumber, functionName):
 		try:
 			assert value1 >= value2
 		except:
-			print "Number is going negative on line", lineNumber
+			print "Number is going negative on line", lineNumber, "of", functionName
 			raise
 		return value1 - value2
 
@@ -373,7 +373,7 @@ while stepCounter < float(numSteps):
 	currentMapping = stack[-1].variableMapping	
 	currentLabelDictionary = stack[-1].labelDictionary
 
-	print lineNumber, stack[-1].functionName
+#	print lineNumber, stack[-1].functionName
 
 #s	print lineNumber
 

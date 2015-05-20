@@ -1,0 +1,13 @@
+vars n deltanfac h1 h2
+
+modify n with add_small_const 5
+modify deltanfac with add_small_const 2
+
+modify h1 with append_small_const 0
+modify h2 with append_small_const 0
+
+function rhs n deltanfac h1 h2
+
+print h2
+
+accept

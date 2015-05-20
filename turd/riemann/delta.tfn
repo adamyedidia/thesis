@@ -1,0 +1,34 @@
+input x n j eta(j) h1 h2 delta(x)
+
+label input is x
+label output is delta(x)
+label definition of this mess of a Function is here https://mathoverflow.net/questions/39944/collection-of-equivalent-forms-of-riemann-hypothesis/107083#107083?newreg=2a9cd4bb52db445282ff78fdb2237bb3
+
+clear delta(x)
+modify delta(x) with add_small_const 1
+clear n
+label INCR_N_LOOP
+	clear j
+	label INCR_J_LOOP
+		function eta j h1 h2 eta(j)
+		clear h1
+		assign h1 to delta(x) * eta(j)
+		clear delta(x)
+		assign delta(x) to h1
+		
+		label INCR_J
+		modify j with add_small_const 1
+		clear h1
+		assign h1 to j > n
+		if h1 goto INCR_N
+		goto INCR_J_LOOP
+
+	label INCR_N
+	modify n with add_small_const 1
+	clear h1
+	assign h1 to n = x
+	if h1 goto RETURN
+	goto INCR_N_LOOP
+
+label RETURN
+return	

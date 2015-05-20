@@ -1,0 +1,69 @@
+vars n deltanfac lhs rhs sum nsquaredovertwo h1 h2
+
+modify n with add_small_const 1
+label INCR_N_LOOP
+	modify n with add_small_const 1
+
+	function delta n deltanfac lhs rhs sum nsquaredovertwo h2
+	function factorial h2 lhs rhs deltanfac
+	
+	clear sum
+	label COMPUTE_SUM_LOOP
+		clear h1
+		assign h1 to deltanfac / h2
+		modify sum with + h1
+		modify h2 with sub_small_const 1
+		if h2 goto COMPUTE_SUM_LOOP
+
+	clear h1
+	assign h1 to deltanfac
+	clear h2
+	assign h2 to h1 * n
+	clear h1 
+	assign h1 to h2 * n
+	clear h2
+	modify h2 with add_small_const 2
+	clear nsquaredovertwo
+	assign nsquaredovertwo to h1 / h2
+
+	clear h1
+	modify h1 with add_small_const 6
+	clear h2
+	assign h2 to h1
+	clear lhs
+	assign lhs to h1 * h2
+	clear h1
+	assign h1 to lhs * n
+	clear h2
+	assign h2 to h1 * n
+	clear h1 
+	assign h1 to h2 * n
+	clear h2
+	assign h2 to h1 * deltanfac
+	clear rhs
+	assign rhs to h2 * deltanfac
+	clear h1
+	assign h1 to sum * nsquaredovertwo
+	modify rhs with + h1
+	modify rhs with + h1	
+
+	clear h1
+	assign h1 to sum
+	clear lhs
+	assign lhs to h1 * sum
+	clear h1
+	assign h1 to nsquaredovertwo
+	clear h2
+	assign h2 to h1 * nsquaredovertwo
+	modify lhs with + h2
+
+	print n
+	print lhs
+	print rhs
+
+	clear h1
+	assign h1 to rhs > lhs
+
+	if h1 goto INCR_N_LOOP
+
+reject

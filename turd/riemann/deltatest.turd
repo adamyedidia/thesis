@@ -1,0 +1,15 @@
+vars x n j eta(j) h1 h2 delta(x)
+
+modify x with add_small_const 5
+modify n with append_small_const 2
+modify j with append_small_const 2
+modify eta(j) with append_small_const 2
+modify h1 with append_small_const 2
+modify h2 with append_small_const 2
+modify delta(x) with append_small_const 2
+
+function delta x n j eta(j) h1 h2 delta(x)
+
+print delta(x)
+
+accept

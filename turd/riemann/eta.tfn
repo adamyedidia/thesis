@@ -1,0 +1,43 @@
+input j h1 h2 p
+
+label input is j
+label output is p
+label eta(j) = p if j = p^k, p is prime
+label eta(j)=1 otherwise
+
+clear p
+modify p with add_small_const 2
+label INCR_P_LOOP
+	function isprime p h1 h2
+	if h2 goto EXPONENTIATE_P_LOOP_PREPROCESSING
+	goto INCR_P
+			
+	label EXPONENTIATE_P_LOOP_PREPROCESSING
+	clear h1
+	modify h1 with add_small_const 1
+	label EXPONENTIATE_P_LOOP
+		clear h2
+		assign h2 to h1 * p
+		clear h1
+		assign h1 to h2
+		clear h2
+		assign h2 to h1 = j
+		if h2 goto RETURN_P
+		assign h2 to h1 > j
+		if h2 goto INCR_P
+		goto EXPONENTIATE_P_LOOP
+
+	label INCR_P
+	modify p with add_small_const 1
+	clear h1
+	assign h1 to p > j
+	if h1 goto RETURN_1
+	goto INCR_P_LOOP
+
+label RETURN_1
+
+clear p
+modify p with add_small_const 1
+
+label RETURN_P
+return
