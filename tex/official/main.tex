@@ -33,6 +33,31 @@
 \usepackage[T1]{fontenc}
 \pagestyle{plain}
 
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\newtheorem{statement}{Statement}
+
+\newcommand{\statenumstate}{340,943-state }
+\newcommand{\statenum}{340,943 }
+\newcommand{\bbstatenum}{$BB($340,943) }
+\newcommand{\bbstatenumcomma}{$BB($340,943), }
+\newcommand{\bbstatenumperiod}{$BB($340,943). }
+
+\newcommand{\gbstatenum}{7,902 }
+\newcommand{\gbstatenumstate}{7,902-state }
+
+\newcommand{\rmstatenum}{36,146 }
+\newcommand{\rmstatenumstate}{36,146-state }
+
+\newenvironment{nscenter}
+ {\parskip=0pt\par\nopagebreak\centering}
+ {\par\noindent\ignorespacesafterend}
+
+
 %% This bit allows you to either specify only the files which you wish to
 %% process, or `all' to process all files which you \include.
 %% Krishna Sethuraman (1990).
@@ -50,12 +75,12 @@ process all files:}
 % applicable.
 % \include{signature}
 \pagestyle{plain}
-\include{contents}
-\include{chap1}
-\include{chap2}
-\appendix
-\include{appa}
-\include{appb}
-\include{biblio}
+\include{everything}
+%\include{chap1}
+%\include{chap2}
+%\appendix
+%\include{appa}
+%\include{appb}
+%\include{biblio}
 \end{document}
 

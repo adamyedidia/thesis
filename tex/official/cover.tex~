@@ -82,7 +82,7 @@
 % This is the department committee chairman, not the thesis committee
 % chairman.  You should replace this with your Department's Committee
 % Chairman.
-\chairman{Anantha Chandrakasan}{Chairman, Department Committee on Graduate Theses}
+\chairman{Albert Meyer}{Chairman, Department Committee on Graduate Theses}
 
 % Make the titlepage based on the above information.  If you need
 % something special and can't use the standard form, you can specify
@@ -103,6 +103,7 @@
 %% You can either \input (*not* \include) your abstract file, or you can put
 %% the text of the abstract directly between the \begin{abstractpage} and
 %% \end{abstractpage} commands.
+
 
 % First copy: start a new page, and save the page number.
 \cleardoublepage
@@ -127,8 +128,14 @@
 
 \section*{Acknowledgments}
 
-This is the acknowledgements section.  You should replace this with your
-own acknowledgements.
+First and foremost, I would like to acknowledge my advisor, Prof. Scott Aaronson, for having suggested this problem to me and for having provided me with indispensable aid throughout. Prof. Aaronson explained the finer points of set theory to me in great detail, and put a huge amount of time into helping me refine my writing into something readable. His kindness, his constant availability to talk, and his friendliness made this Master's thesis a great pleasure to write.
 
+I also thank Prof. Harvey Friedman for having done the crucial theoretical work that made this project feasible. Prof. Friedman was endlessly available over email, and provided me with immediate and detailed clarifications when I needed them. At the core, this project was simply the implementation of Prof. Friedman's ideas; without them, this thesis would have been far harder to write, and the resulting upper bound would have been far looser.
+
+I thank Luke Schaeffer for his help early on in understanding the project, and later on in the design of the compiler. Luke gave a lot of very helpful advice, and he helped me more than once to find an important optimization that substantially tightened the resulting bound.
+
+I thank Adam Hesterberg for his help with the mathematics discussed in the paper.
+
+I thank Alex Arkhipov for having introduced me to the pursuit of code golf--this entire thesis can be thought of as an academic version of code golfing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % -*-latex-*-
