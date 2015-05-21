@@ -18,6 +18,10 @@
 \newcommand{\rmstatenum}{36,146 }
 \newcommand{\rmstatenumstate}{36,146-state }
 
+\newenvironment{nscenter}
+ {\parskip=0pt\par\nopagebreak\centering}
+ {\par\noindent\ignorespacesafterend}
+
 \setcounter{secnumdepth}{4}
 
 \begin{document}
@@ -224,9 +228,6 @@ For a side-by-side comparison of how a compiled program would look using the inl
 
 There are many improvements that could be made to the work in this thesis. The improvements can be separated into five categories, which are discussed in turn.
 
-% TODO interpreter subsection
-% TODO better friedman statement subsection
-
 \subsection{Improving TMD}
 
 TMD is a relatively weak language with many awkward aspects. For example, TMD does not support complex arithmetical expressions, either in assignment or as part of an \texttt{if} statement. Ideally, arbitrary expressions could be used in any of these places, to make TMD programs shorter. \\
@@ -251,6 +252,20 @@ This includes Fermat's Last Theorem, whose original proof involved \emph{Grothen
 It could therefore be interesting to find the upper bounds on the highest Busy Beaver values provable using these other systems of axioms--PA, EFA, and ZFC with Grothendieck universes. \\
 
 This kind of further research would be helpful to give researchers a numerical value to assign to the complexity of various axiomatic systems. Friedman has helpfully created many relatively-easy-to-program statements, like Statement~\ref{eq:friedman},~\cite{friedmanlist} which cannot be proved in various axiomatic systems. The TMD compiler is well-suited to turning these statements into small Turing machines.
+
+\subsection{On-Tape Interpretation}
+
+The previously-mentioned Turing machine $G$ contains \gbstatenum states. Figure~\ref{fig:goldbach1} shows that the TMD file has 27 lines of code that compile to groups of states. This suggests that each substantive line of code compiles to nearly 300 states. This is an order of magnitude larger than the number of bits of information contained in a single line of code, which suggests waste. Additionally, most of these states are lower-level states created as part of the transitions between multi-tape Turing machine states (these are the states depicted in Figures~\ref{fig:goldbach4} and~\ref{fig:goldbach6}. As a result, most of these states are doing very similar things, such as reading the name of a specific variable or pushing all the symbols on the tape down. This, also, suggests waste; in general, if much of a program is in some way repetitive, it could be made more parsimonious. \\
+
+Both of these observations are symptoms of the same problem. The problem is that the compiler in its current form does not have a true ``interpreter''; that is, it does not have an interpreter capable of reading the Turing machine program if it were written on the tape. If instead of re-encoding the transformation algorthm into each pair of states that has a transformation applied to it, the transformation algorithm was expressed once, and applied repeatedly to an on-tape encoding of the TMD program, an order of magnitude could potentially shaved off the state usage of the program. \\
+
+Concretely, the idea is as follows. The overall program would consist of two steps. The first step would be to write a description of the program onto the tape. The second step would be interpret the on-tape program. The total state usage would be the sum of the state usage of the size interpreter and of the size of the program (as opposed to the current approach, where the state usage is more like their product). \\
+
+This approach and the one following it are the most promising directions for future work.
+
+\subsection{Improved Statements}
+
+Each Turing machine presented in this paper checks a statement shown to imply some interesting mathematical truth (such as the consistency of ZFC, the Riemann hypothesis, or the Goldbach conjecture). Simpler versions of these statements would result in a simpler checking program.
 
 \section{TMD}
 
@@ -574,36 +589,6 @@ Return statements have the following form: \\ \\
 
 A return statement instructs code execution to exit the function it is currently in and to return to the line below where the function was originally called. Return statements may not appear in main files.
 
-\section{Writing a TMD Program that is Independent of ZFC}
-
-In order to write a TMD program that is independent of ZFC, I wrote a program that halts if and only if Statement~\ref{eq:friedman} is false. For convenience, I have duplicated Statement~\ref{eq:friedman} here: \\
-
-\begin{statement} \label{eq:friedman2}
-For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r, \\
-ush(x_1),...,ush(x_r)\}$ of complexity $\le (8knr)!$, each $\{x_1, \dots, x_{(8kni)!}\}$
-reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. \cite{friedman}
-\end{statement}
-
-\subsection{Missing Data Types}
-
-The first apparent problem is that at first glance, TMD does not appear to support the necessary data structures to encode Statement~\ref{eq:friedman}. Statement~\ref{eq:friedman} requires us to iterate over every rational number of complexity at most $(8knr)!$, which requires both fractions and negative numbers, neither of which are explicitly supported by TMD. Recall that the only numerical data type in TMD is the \texttt{int}, which is restricted to non-negative integers (due to ease of unary representation).\\
-
-In the TMD program that I wrote, I obviated the need for fractions simply by multiplying every number in the statement by $((8knr)!)!$. Because a number of complexity $(8knr)!$ is a number which can be represented by a fraction whose numerator and denominator both have absolute value at most $(8knr)!$, multiplying a number of complexity $(8knr)!$ by $((8knr)!)!$ is guaranteed to yield an integer. This is because $((8knr)!)!$ is an integer multiple of every number less than or equal to $(8knr)!$. \\
-
-In the TMD program I wrote, I represented signed numbers $s$ with pairs $(p, n)$ of positive integers, where at all times the value $s$ is presumed equal to $p - n$. Even though $p$ and $n$ are required to be non-negative, the resulting signed value can take on any value, positive or negative. This representation is, of course, highly redundant; however, it has the advantage that it makes addition, multiplication, and comparison of signed values very easy.
-
-\subsection{Program Sketch}
-
-The program iterates over all possible values of $k$, $n$, and $r$ by using the technique of \emph{dovetailing}: it sets a fourth variable, $l$, that it iteratively increases, and tries all values of $k$, $n$, and $r$ such that $k, n, r < l$ for each $l$. \\
-
-For each possible set of values of $k$, $n$, and $r$, the program then creates every possible order invariant graph. It does this by first generating every integer of the form $a / b * ((8knr)!)!$, where $a$ and $b$ are integers that range from 0 to $(8knr)!$. It then sorts every integer of this form from least to greatest, and generates all ${((8knr)!)^2 \choose i}$ different possible vertices of size $i$, for each $i \le k$. Finally, it associates with this set of vertices an \emph{order invariance relation}: a list of tuples, each containing only the symbols $\{<, >, =\}$. Each tuple specifies a possible legal ordering for the elements of the vertices to obey. To give a few examples, the earlier-mentioned order invariant graph that has an edge from $a = (a_1, a_2)$ to $b = (b_1, b_2)$ if and only if $a_1 < b_1 < a_2 < b_2$ would have associated with it the order invariance relation $[(<, >, <, >)]$, which specifies that the smallest element of the two vertices must come from $a$, the next smallest must come from $b$, the next smallest must come from $a$, and so on. The graph with no edges would have associated with it the order invariance relation $[]$, and the complete graph would have associated with it the list containing every possible tuple. \\
-
-For each of these order invariance relations, there is a corresponding order invariant graph. The order invariant graph is then checked to have a free $\{x_1,\dots,x_r, ush(x_1),...,ush(x_r)\}$ satisfying the condition that each $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. If no such set of vertices exists in the order invariant graph, the Turing machine halts. \\
-
-This is checked simply by trying all $({((8knr)!)^2 \choose i})^r$ different ordered sets of $r$ vertices, and if any of them have the property that they are an independent set and that each of their subsets $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$, then the Turing machine continues to the next order invariant graph. If none of the ordered sets have these two properties, the order invariant graph violates the property guaranteed by Statement~\ref{eq:friedman}, and the Turing machine halts. \\
-
-The program itself can be found at~\cite{github}.
-
 \section{Compilation from TMD to a Multi-Tape Machine} \label{sec:turdtotm}
 
 This section is devoted to describing the algorithm used to compile a TMD program into a multi-tape, 3-symbol Turing machine.
@@ -839,17 +824,83 @@ In the 2-symbol Turing machine, this instruction will take many more states to r
 
 Note that although the higher-level Turing machines with more than 2-symbol alphabets allow the head to stay in place, the bottom-most representation does not, which is important: in the standard definition of the Busy Beaver function, the head must move left or right at each step and cannot stay in place.
 
-% TODO elaborate on possible optimizations to the mstots compiler?
-
-\section{Miscellaneous Optimizations}
-
 \subsection{Pruning}
 
 The output of the compiler as presented sometimes contains states where both possible transitions out of the state lead to the error state. In this case, the states in question are clearly themselves equivalent to the error state, and can be replaced with the error state, thereby reducing the number of states in the final Turing machine. Running this simple optimization on the Turing machine reduces the state usage of the final Turing machine by about 5\%.
 
-% TODO: make the code use ternary and H_
+\chapter{Turing Machine Explanations}
 
-% TODO conclusion?
+\section{Explanation of $Z$}
+
+This chapter is devoted to explaining the algorithms behind each of $Z$, $G$, and $R$.
+
+In order to write a TMD program that is independent of ZFC, I wrote a program that halts if and only if Statement~\ref{eq:friedman} is false. For convenience, I have duplicated Statement~\ref{eq:friedman} here: \\
+
+\begin{statement} \label{eq:friedman2}
+For all $k, n, r \ge 0$, every order invariant graph on $[Q]^{\le k}$ has a free $\{x_1,\dots,x_r, \\
+ush(x_1),...,ush(x_r)\}$ of complexity $\le (8knr)!$, each $\{x_1, \dots, x_{(8kni)!}\}$
+reducing $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. \cite{friedman}
+\end{statement}
+
+\subsection{Missing Data Types}
+
+The first apparent problem is that at first glance, TMD does not appear to support the necessary data structures to encode Statement~\ref{eq:friedman}. Statement~\ref{eq:friedman} requires us to iterate over every rational number of complexity at most $(8knr)!$, which requires both fractions and negative numbers, neither of which are explicitly supported by TMD. Recall that the only numerical data type in TMD is the \texttt{int}, which is restricted to non-negative integers (due to ease of unary representation).\\
+
+In the TMD program that I wrote, I obviated the need for fractions simply by multiplying every number in the statement by $((8knr)!)!$. Because a number of complexity $(8knr)!$ is a number which can be represented by a fraction whose numerator and denominator both have absolute value at most $(8knr)!$, multiplying a number of complexity $(8knr)!$ by $((8knr)!)!$ is guaranteed to yield an integer. This is because $((8knr)!)!$ is an integer multiple of every number less than or equal to $(8knr)!$. \\
+
+In the TMD program I wrote, I represented signed numbers $s$ with pairs $(p, n)$ of positive integers, where at all times the value $s$ is presumed equal to $p - n$. Even though $p$ and $n$ are required to be non-negative, the resulting signed value can take on any value, positive or negative. This representation is, of course, highly redundant; however, it has the advantage that it makes addition, multiplication, and comparison of signed values very easy.
+
+\subsection{Program Sketch}
+
+The program iterates over all possible values of $k$, $n$, and $r$ by using the technique of \emph{dovetailing}: it sets a fourth variable, $l$, that it iteratively increases, and tries all values of $k$, $n$, and $r$ such that $k, n, r < l$ for each $l$. \\
+
+For each possible set of values of $k$, $n$, and $r$, the program then creates every possible order invariant graph. It does this by first generating every integer of the form $a / b * ((8knr)!)!$, where $a$ and $b$ are integers that range from 0 to $(8knr)!$. It then sorts every integer of this form from least to greatest, and generates all ${((8knr)!)^2 \choose i}$ different possible vertices of size $i$, for each $i \le k$. Finally, it associates with this set of vertices an \emph{order invariance relation}: a list of tuples, each containing only the symbols $\{<, >, =\}$. Each tuple specifies a possible legal ordering for the elements of the vertices to obey. To give a few examples, the earlier-mentioned order invariant graph that has an edge from $a = (a_1, a_2)$ to $b = (b_1, b_2)$ if and only if $a_1 < b_1 < a_2 < b_2$ would have associated with it the order invariance relation $[(<, >, <, >)]$, which specifies that the smallest element of the two vertices must come from $a$, the next smallest must come from $b$, the next smallest must come from $a$, and so on. The graph with no edges would have associated with it the order invariance relation $[]$, and the complete graph would have associated with it the list containing every possible tuple. \\
+
+For each of these order invariance relations, there is a corresponding order invariant graph. The order invariant graph is then checked to have a free $\{x_1,\dots,x_r, ush(x_1),...,ush(x_r)\}$ satisfying the condition that each $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$. If no such set of vertices exists in the order invariant graph, the Turing machine halts. \\
+
+This is checked simply by trying all $({((8knr)!)^2 \choose i})^r$ different ordered sets of $r$ vertices, and if any of them have the property that they are an independent set and that each of their subsets $\{x_1, \dots, x_{(8kni)!}\}$ reduces $[x_1 \cup \dots \cup x_i \cup \{0,\dots,n\}]^{\le k}$, then the Turing machine continues to the next order invariant graph. If none of the ordered sets have these two properties, the order invariant graph violates the property guaranteed by Statement~\ref{eq:friedman}, and the Turing machine halts. \\
+
+The program itself can be found at~\cite{github}.
+
+\section{Explanation of $R$}
+
+In order to create a TMD program that halts if and only if the Riemann hypothesis is false, I used the following statement, which has been shown to be equivalent to the Riemann hypothesis:~\cite{riemann}\\
+
+\begin{statement} \label{eq:riemann}
+For all integers $n \ge 1$, 
+$$\left(\left(\sum_{k \le \delta(n)} \frac{1}{k}\right) - \frac{n^2}{2}\right)^2 < 36n^3$$
+\end{statement}
+
+The function $\delta(n)$ used in Statement~\ref{eq:riemann} is defined as follows: \\
+
+\begin{nscenter}
+$\eta(j)$ if $j = p^k$, $p$ is prime, $k$ is a positive integer \\
+$\eta(j) = 1$ otherwise
+\end{nscenter}
+$$\delta(x) = \prod_{n<x}\prod_{j \le n} \eta(j)$$
+
+Once again, there is the issue that although Statement~\label{eq:riemann} involves both negative numbers and non-integers, TMD only supports positive integers. This issue can be entirely solved by manipulated Statement~\ref{eq:riemann} as follows:
+
+$$\left(\left(\sum_{k \le \delta(n)} \frac{1}{k}\right) - \frac{n^2}{2}\right)^2 < 36n^3$$
+$$\left(\left(\sum_{k \le \delta(n)} \frac{\delta(n)!}{k}\right) - \delta(n)!\frac{n^2}{2}\right)^2 < 36n^3(\delta(n)!)^2$$
+$$\left(\sum_{k \le \delta(n)} \frac{\delta(n)!}{k}\right)^2 - 2\left(\sum_{k \le \delta(n)} \frac{\delta(n)!}{k}\right) \left(\delta(n)!\frac{n^2}{2}\right) + \left(\delta(n)!\frac{n^2}{2}\right)^2 < 36n^3(\delta(n)!)^2$$
+$$\left(\sum_{k \le \delta(n)} \frac{\delta(n)!}{k}\right)^2 + \left(\delta(n)!\frac{n^2}{2}\right)^2 < 36n^3(\delta(n)!)^2 + 2\left(\sum_{k \le \delta(n)} \frac{\delta(n)!}{k}\right) \left(\delta(n)!\frac{n^2}{2}\right)$$
+
+When the statement is in this form, no negative numbers appear, and no non-integer terms appear for $n \ge 2$, because $\delta(n)!$ is a multiple of both 2 and all integers $1 \le k \le \delta(n)$ for $n \ge 3$. For $n = 1$, the statement can be verified to be true by inspection. \\
+
+The statement can be reorganized further. Let 
+
+$$a(n) = \sum_{k \le \delta(n)!} \frac{\delta(n)!}{k}$$
+$$b(n) = \delta(n)!\frac{n^2}{2}$$
+
+and let
+
+$$l(n) = (a(n))^2 + (b(n))^2$$
+$$r(n) = 36n^3(\delta(n)!)^2 + 2a(n)b(n)$$.
+
+When rewritten in terms of $l$ and $r$, Riemann's hypothesis is equivalent to whether or not $l(n) < r(n)$ for all positive integers $n$. \\
+
+To check the Riemann hypothesis, my program computes $a(n)$, $b(n)$, $l(n)$, and $r(n)$, in that order, for each possible value of $n$. If $l(n) \ge r(n)$, my program halts.
 
 \chapter{Example Compilation: Goldbach's Conjecture}
 
@@ -870,7 +921,7 @@ The first step is to create a TMD program that halts if and only if there exists
 
 \subsection{Main File \label{sec:mainfilegoldbach}}
 
-The main file is titled \texttt{goldbach.tmd}. In its source, it calls the subrouting \texttt{isPrime}. The file's source is as follows: \\ \\
+The main file is titled \texttt{goldbach.tmd}. In its source, it calls the subroutine \texttt{isPrime}. The file's source is as follows: \\ \\
 {\tt label This program halts if Goldbach's conjecture is false, and loops otherwise. \\ \\
 vars even\_number c1 h1 h2 h3 isPrime? \\ \\
 modify even\_number with add\_small\_const 4 \\ \\
@@ -1023,6 +1074,7 @@ Bell System Technical Journal, 41: 3. May 1962 pp 877-884.
 \bibitem{friedmanlist} Friedman, H. ``Order Theoretic Equations, Maximality, and Incompleteness.'' June 7, 2014. http://u.osu.edu/friedman.8/foundational-adventures/downloadable-manuscripts \#78.
 \bibitem{github} https://github.com/adamyedidia/thesis.git
 \bibitem{personalcomm} Personal communication between A. Yedidia and H. Friedman.
+\bibitem{riemann} Browder, F. ``Mathematical Developments Arising from Hilbert Problems.'' American Mathematical Society. Volume 28, Part 1.
 \end{thebibliography}
 
 \end{document}
